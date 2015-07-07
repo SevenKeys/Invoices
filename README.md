@@ -26,16 +26,16 @@ This project includes the following:
 
   and so on
 
- ##How to make it run in your local machine:
- * Install python3.4 and pip
- * Download and install Git and any source control app you like and download the code
- * Download and install any application to edit the files (We are using PyCharm)
- * Download and install Node.js
- * Download and install PostgreSQL
- * Create database 'wysely'
- * Run 'npm install'
- * Run 'npm install -g bower'
- * Run 'bower install'
- * Run 'pip install -r requirements.txt'
- * Start the application with 'python manage.py runserver' under the root project
+##How to make it run in your local machine:
+* Install python3.4 and pip
+* Download and install Git and any source control app you like and download the code
+* Download and install any application to edit the files (We are using PyCharm)
+* Download and install Node.js
+* Download and install PostgreSQL
+* Create database 'wysely'
+* Run 'npm install'
+* Run 'npm install -g bower'
+* Run 'bower install'
+* Run 'pip install -r requirements.txt'
+* Start the application with 'python manage.py runserver' under the root project
 

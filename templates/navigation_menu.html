@@ -1,0 +1,50 @@
+{% load i18n %}
+
+<ul class="nav navbar-nav">
+
+    {% if user.is_authenticated %}
+        <li>
+            <a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span>{% trans "Home" %}</a>
+        </li>
+        <li>
+            <a href="{% url 'invoices.views.main' %}"><span class="glyphicon glyphicon-list-alt"></span>{% trans "Invoices" %}</a>
+        </li>
+        <li>
+            <a href="{% url 'clients' %}"><span class="glyphicon glyphicon-user"></span>{% trans "Clients" %}</a>
+        </li>
+        <li>
+            <a href="{% url "products" %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>
+        </li>
+    {% endif %}
+</ul>
+
+<ul class="nav navbar-nav navbar-right">
+
+    {% if user.is_authenticated %}
+
+        <li>
+            <a class="dropdown glyphicon glyphicon-cog dropdown-toggle" href="#" data-toggle="dropdown" id="navLogin">
+                Settings
+                </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="{% url 'auth_password_change' %}">{% trans "Change password" %}</a>
+                </li>
+                <li>
+                    <a href="{% url 'auth_password_change' %}">{% trans "Edit company information" %}</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="{% url 'auth_logout' %}">{% trans "Log  out: " %} {{ user.username }}</a>
+        </li>
+    {% else %}
+        <li>
+            <a href="{% url 'auth_login' %}">{% trans "Log In" %}</a>
+        </li>
+        <li>
+            <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>
+        </li>
+    {% endif %}
+</ul>
+

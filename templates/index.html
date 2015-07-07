@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block page-header %}
+    {% if user.is_authenticated %}
+    {% else %}
+        {% include "./main_logged_out/landing_page_header.html" %}
+    {% endif %}
+{% endblock page-header %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        {% include "./main_logged_in/invoices.html" %}
+    {% else %}
+        {% include "./main_logged_out/landing_page_content.html" %}
+    {% endif %}
+{% endblock %}
+{% block footer %}
+    {% include "./footer.html" %}
+{% endblock footer %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% load view_rendering %}
+{% block head %}
+    {% load pipeline %}
+    {% javascript 'products_scripts' %}
+{% endblock %}
+
+{% load i18n %}
+
+{% block content %}
+    <!-- TODO: everything in this file is here for testing purposes and will be removed-->
+    <style>
+        #product-details {
+            margin: 20px;
+        }
+
+        .input-group {
+            margin-top: 10px;
+        }
+
+    </style>
+
+    <form method="post" id="product-form">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-xs-3" id="group-selection">
+                <div class="input-group">
+                    <button type="submit" id="create-product" data-method="createProduct" class="form-control form_button">Create Product</button>
+                    <button type="submit" id="create-group" data-method="createGroup" class="form-control form_button">Create Group</button>
+                </div>
+                {% view '/product_groups/' category='products' %}
+            </div>
+            <div class="col-xs-9">
+                <div id="product-details" class="display-table" >
+                    <div class="display-cell col-xs-12" id="product-settings">
+                        <div class=" input-group">
+                            <span class="input-group-addon" id="basic-addon1">@</span>
+                            <input type="text" class="form-control" placeholder="Product name" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">@</span>
+                            <input type="text" class="form-control" placeholder="Product name" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">@</span>
+                            <input type="text" class="form-control" placeholder="Product name" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">@</span>
+                            <input type="text" class="form-control" placeholder="Product name" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">@</span>
+                            <input type="text" class="form-control" placeholder="Product name" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div id="product-buttons">
+                        <input type="button" id="delete-product" class="form-control form_button"value="Delete">
+                        <input type="button" id="save-product" class="form-control form_button" value="Save" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+
+
+
+{% block footer %}
+    {% include "./footer.html" %}
+{% endblock footer %}

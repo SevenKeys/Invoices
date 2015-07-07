@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="main">
+
+        <!-- invoices  -->
+        <ul>
+            {% for invoice in invoices.object_list %}
+                <div class="title">{{ invoice.title }}</div>
+                <ul>
+                    <div class="time">{{ invoice.created }}</div>
+                    <div class="body">{{ invoice.body|linebreaks }}</div>
+                </ul>
+            {% endfor %}
+        </ul>
+
+        <!-- Next/Prev page links  -->
+        {% if invoices.object_list and invoices.paginator.num_pages > 1 %}
+        <div class="pagination" style="margin-top: 20px; margin-left: -20px; ">
+            <span class="step-links">
+                {% if invoices.has_previous %}
+                    <a href= "?page={{ invoices.previous_page_number }}">newer entries &lt;&lt; </a>
+                {% endif %}
+
+                <span class="current">
+                    &nbsp;Page {{ invoices.number }} of {{ invoices.paginator.num_pages }}
+                </span>
+
+                {% if invoices.has_next %}
+                    <a href="?page={{ invoices.next_page_number }}"> &gt;&gt; older entries</a>
+                {% endif %}
+            </span>
+        </div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
+
+
+
+{% block footer %}
+    {% include "./footer.html" %}
+{% endblock footer %}

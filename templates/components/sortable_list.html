@@ -1,0 +1,17 @@
+<div id="sortable-list-component">
+    <div class="input-group">
+        <span class="input-group-addon glyphicon glyphicon-search" id="basic-addon1"></span>
+        <input type="text" id="search-bar" class="glyphicon form-control" placeholder="Search" aria-describedby="basic-addon1">
+    </div>
+
+    {% for group in view.get_groups %}
+        <h3>{{ group.name }}</h3>
+        <div>
+            <ul id="sortable1" class="connectedSortable">
+            {% for product in group.products %}
+                <li class="ui-state-default product-selector" data-value="{{ product.id }}">{{ product.name }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+</div>

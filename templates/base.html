@@ -1,0 +1,70 @@
+{% load i18n %}
+{% load url from future %}
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <title>
+        {% block title %}
+            Wysely - the invoicing is real!
+        {% endblock %}
+    </title>
+    <meta name="viewport" content="width=device-width">
+    <!-- compressed tags is created by Django Pipeline.  -->
+    {% load pipeline %}
+    {% stylesheet 'common_styles' %}
+
+    {% load staticfiles %}
+    <link rel="shortcut icon" type="image/png" href='{% static "wysely/favicon.png" %}'/>
+    <meta name="description" content="">
+
+    <!-- Include JavaScript files -->
+    {% javascript 'common_scripts' %}
+
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+<!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+      <style type="text/css">
+			#wrapper { height:100%; }
+		</style>
+    <![endif]-->
+<div class="wrapper">
+    <!-- Add your site or application content here -->
+    <header class="navbar navbar-inverse navbar-static-top" >
+        <div role="container">
+            <div class="navbar-header">
+
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#js-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Wysely</a>
+            </div>
+
+            <nav class="collapse navbar-collapse" id="js-navbar-collapse">
+                {% include "navigation_menu.html" %}
+            </nav>
+        </div>
+    </header>
+<div class="full-content">
+    {% block page-header %}
+    {% endblock page-header %}
+    <div class="content-block">
+        <div class="container">
+        {% block content %}
+        {% endblock content %}
+        </div>
+    </div>
+</div>
+        {% block footer %}
+        {% endblock %}
+</div>
+</body>
+</html>
+

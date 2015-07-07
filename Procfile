@@ -1,0 +1,1 @@
+web: gunicorn wysely.wsgi --log-file -

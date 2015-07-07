@@ -1,0 +1,22 @@
+{
+  "name": "wysely",
+  "version": "1.0.0",
+  "description": "Wysely project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://festudillo@bitbucket.org/wysely/wysely.git"
+  },
+  "keywords": [
+    "wysely"
+  ],
+  "author": "Francisco Estudillo",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/wysely/wysely#readme",
+  "dependencies": {
+    "bower": "^1.4.1"
+  }
+}

@@ -1,4 +1,5 @@
 static/bower_components/
 static/
-*/__pycache__/*
 .idea/
+node_modules/
+__pycache__/

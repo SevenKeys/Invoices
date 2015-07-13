@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Customer Details</h2>
+    <ul>
+        {% for detail in customer_details %}
+            <li>{{ detail.customer }}</li>
+            <li>{{ detail.field_name }}</li>
+            <li>{{ detail.field_value }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

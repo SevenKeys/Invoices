@@ -1,13 +1,17 @@
 {% extends "base.html" %}
-
 {% block content %}
     <h2>Customers</h2>
+    {% block success %}{% endblock %}
     <ul>
         {% for customer in customer_list %}
             <li>{{ customer.company }}</li>
-            <li>{{ customer.name }}</li>
+            <li><a href="{% url 'customer-detail' customer.id %}">{{ customer.name }}</a>
+		    <button type="button"><a href="{% url 'edit-customer' customer.id %}">Edit</a></button>
+		    <button type="button"><a href="{% url 'delete-customer' customer.id %}">Delete</a></button>
+            </li>
             <li>{{ customer.created }}</li>
             <li>{{ customer.contact }}</li>
         {% endfor %}
     </ul>
+    <button type="button"><a href="{% url 'add-customer' %}/">Add customer</a></button>
 {% endblock %}

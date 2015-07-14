@@ -12,4 +12,7 @@ class Contact(models.Model):
     country = models.CharField(max_length=60)
     website = models.CharField(max_length=150)
 
+    def __str__(self):
+    	return self.email
+
 # Create your models here.

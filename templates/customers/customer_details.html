@@ -1,12 +1,20 @@
 {% extends "base.html" %}
-
 {% block content %}
     <h2>Customer Details</h2>
     <ul>
         {% for detail in customer_details %}
-            <li>{{ detail.customer }}</li>
-            <li>{{ detail.field_name }}</li>
-            <li>{{ detail.field_value }}</li>
+            <li>Name: {{ detail.customer }}</li>
+            <li>Field name: {{ detail.field_name }}</li>
+            <li>Field value: {{ detail.field_value }}</li>
+            <li>Groups: 
+            {% if customer_group %}
+            	<ul>
+            		{% for group in customer_group %}
+            			<li>{{ group }}</li>
+            		{% endfor %}
+            	</ul>
+            {% endif %}
+            </li>
         {% endfor %}
     </ul>
 {% endblock %}

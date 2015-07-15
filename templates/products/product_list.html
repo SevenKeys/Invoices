@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h2>Products</h2>
+    <ul>
+        {% for product in product_list %}
+            <li>{{ product.name }}
+		    <button type="button"><a href="{% url 'edit_product' product.id %}">Edit</a></button>
+		    <button type="button"><a href="{% url 'delete_product' product.id %}">Delete</a></button>
+            </li>
+            <li>{{ product.company }}</li>
+            <li>Groups: 
+            {% if product.productgroup_set.all %}
+                <ul>
+                    {% for group in product.productgroup_set.all %}
+                        <li>{{ group }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <button type="button"><a href="{% url 'add_product' %}">Add product</a></button>
+
+{% endblock %}

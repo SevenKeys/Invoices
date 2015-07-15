@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
     <h2>Customers</h2>
-    {% block success %}{% endblock %}
     <ul>
         {% for customer in customer_list %}
             <li>{{ customer.company }}</li>

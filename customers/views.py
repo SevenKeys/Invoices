@@ -33,11 +33,6 @@ class CustomerDetail(ListView):
 		return context
 
 
-
-class DeleteCustomer(DeleteView):
-	template_name = 'customers/delete_customer.html'
-
-
 class AddCustomer(CreateView):
 	model = Customer
 	form_class = CustomerForm

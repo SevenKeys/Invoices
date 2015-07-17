@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from products.models import Product
+from users.models import User
 from json import dumps
 from .forms import ProductForm
 from common.components.sortable_list import SortableListView
@@ -56,7 +57,14 @@ class ProductList(LoginRequiredMixin, ListView):
     template_name = 'products/product_list.html'
 
     def get_queryset(self):
-        return Product.objects.order_by('name')
+        try:
+            user = User.objects.get(name=self.request.user)
+            if user:
+                return Product.objects.filter(company=user.company)
+            else:
+                return False
+        except User.DoesNotExist:
+            return False
 
 
 class AddProduct(CreateView):

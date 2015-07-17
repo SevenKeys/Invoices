@@ -7,7 +7,7 @@ from products.models import Product
 from json import dumps
 from .forms import ProductForm
 from common.components.sortable_list import SortableListView
-
+from users.permissions import LoginRequiredMixin
 from django.views.generic import TemplateView
 
 
@@ -51,7 +51,7 @@ class ProductView(TemplateView):
             )
 
 # CRUD for Product app
-class ProductList(ListView):
+class ProductList(LoginRequiredMixin, ListView):
     context_oject_name = 'product_list'
     template_name = 'products/product_list.html'
 

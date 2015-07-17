@@ -6,18 +6,27 @@ from django.http import HttpResponse
 from .models import Customer, CustomerDetails, CustomerGroup
 from .forms import CustomerForm
 from contacts.models import Contact
+from users.models import User
+from users.permissions import LoginRequiredMixin
 
-# Create your views here.
-class CustomerList(ListView):
+
+
+class CustomerList(LoginRequiredMixin, ListView):
 	context_objects_name = 'customer_list'
 	template_name = 'customers/customer_list.html'
 
 	def get_queryset(self):
-		return Customer.objects.order_by('name')
+		try:
+			user = User.objects.get(name=self.request.user)
+			if user:
+				return Customer.objects.filter(company=user.company)
+			else:
+				return False
+		except User.DoesNotExist:
+			return False
 
 
 class CustomerDetail(ListView):
-
 	context_object_name = 'customer_details'
 	template_name = 'customers/customer_details.html'
 	pk_url_kwarg = 'customer_id'
@@ -39,7 +48,6 @@ class AddCustomer(CreateView):
 	template_name = 'customers/edit_customer.html'
 	success_url = '/customers/all/'
 
-
 	def form_invalid(self,form):
 		return HttpResponse('form is invalid')
 
@@ -50,6 +58,7 @@ class UpdateCustomer(UpdateView):
 	template_name = 'customers/edit_customer.html'
 	pk_url_kwarg = 'customer_id'
 	success_url = '/customers/all/'
+
 
 class DeleteCustomer(DeleteView):
 	model = Customer

@@ -58,9 +58,10 @@ class ProductList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         try:
-            user = User.objects.get(name=self.request.user)
+            user = User.objects.get(username=self.request.user)
             if user:
-                return Product.objects.filter(company=user.company)
+                company = user.userprofile.company
+                return Product.objects.filter(company=company)
             else:
                 return False
         except User.DoesNotExist:

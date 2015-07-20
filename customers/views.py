@@ -5,7 +5,7 @@ from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.http import HttpResponse
 from .models import Customer, CustomerDetails, CustomerGroup
 from .forms import CustomerForm
-from contacts.models import Contact
+# from contacts.models import Contact
 from users.models import User
 from users.permissions import LoginRequiredMixin
 
@@ -17,9 +17,10 @@ class CustomerList(LoginRequiredMixin, ListView):
 
 	def get_queryset(self):
 		try:
-			user = User.objects.get(name=self.request.user)
+			user = User.objects.get(username=self.request.user)
 			if user:
-				return Customer.objects.filter(company=user.company)
+				company = user.userprofile.company
+				return Customer.objects.filter(company=company)
 			else:
 				return False
 		except User.DoesNotExist:

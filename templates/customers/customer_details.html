@@ -1,20 +1,22 @@
 {% extends "base.html" %}
+
 {% block content %}
-    <h2>Customer Details</h2>
+    <h2>Client {{ object.name }}</h2>
+    {% if object.customerdetails_set.count > 0 %}
     <ul>
-        {% for detail in customer_details %}
-            <li>Name: {{ detail.customer }}</li>
-            <li>Field name: {{ detail.field_name }}</li>
-            <li>Field value: {{ detail.field_value }}</li>
-            <li>Groups: 
-            {% if customer_group %}
-            	<ul>
-            		{% for group in customer_group %}
-            			<li>{{ group }}</li>
-            		{% endfor %}
-            	</ul>
-            {% endif %}
+        <h3>Details</h3>
+        {% for detail in object.customerdetails_set.all %}
+            <li>
+            <p>Field name: {{ detail.field_name }}</p>
+            <p>Field value: {{ detail.field_value }}</p>
+            <button type="button"><a href="{% url 'edit_detail' detail.id %}">Update detail</a></button>
+            <button type="button"><a href="{% url 'delete_detail' detail.id %}">Delete detail</a></button>
             </li>
         {% endfor %}
     </ul>
+    {% else %}
+        <h3>No details was added yet.</h3>
+    {% endif %}
+    <button type="button"><a href="{% url 'add_detail' object.id %}">Add detail</a></button>
+
 {% endblock %}

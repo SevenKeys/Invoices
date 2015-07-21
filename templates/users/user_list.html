@@ -4,13 +4,11 @@
     <h2>Users</h2>
     <ul>
         {% for user in user_list %}
-            <!-- <li>{{ user.company }}</li> -->
             <li>Username: <a href="{% url 'user_detail' user.id %}">{{ user.username }}</a>
             {% if user.userprofile %}
                 <p>Created: {{ user.userprofile.created }}</p>
             {% endif %}
             </li>
-            <!-- <li>{{ user.contact }}</li> -->
         {% endfor %}
     </ul>
 

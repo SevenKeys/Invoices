@@ -12,7 +12,7 @@
         <li>Email: {{ object.email }}</li>
     </ul>
     {% if object == logging %}
-        <button type="button"><a href="{% url 'edit_user' user.userprofile.id %}">Edit profile</a></button>
+        <button type="button"><a href="{% url 'edit_user' user.id %}">Edit profile</a></button>
         <button type="button"><a href="{% url 'delete_user' user.id %}">Delete</a></button>
     {% endif %}
 {% endblock %}

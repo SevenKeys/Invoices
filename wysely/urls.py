@@ -18,8 +18,6 @@ from django.conf.urls import include, url
 from django.views.generic import TemplateView
 from invoices import urls as invoice_urls
 
-# from products import views as prod_views
-
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -35,6 +33,7 @@ urlpatterns = [
     # url(r'^product_groups/', prod_views.ProductListView.as_view(), name='product_list'),
     # url(r'^client_groups/', prod_views.ClientListView.as_view(), name='client_list'),
     url(r'^customers/',include('customers.urls')),
-    url(r'^clients/',include('users.urls')),
-    url(r'^products/',include('products.urls'))
+    url(r'^users/',include('users.urls')),
+    url(r'^products/',include('products.urls')),
+    url(r'^companies/',include('companies.urls'))
 ]

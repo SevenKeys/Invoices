@@ -3,6 +3,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.http import HttpResponse
+from django.core.urlresolvers import reverse_lazy
 from .models import Customer, CustomerDetails, CustomerGroup
 from .forms import CustomerForm, CustomerDetailForm, CustomerGroupForm
 # from contacts.models import Contact
@@ -56,20 +57,11 @@ class DeleteCustomer(DeleteView):
 
 
 # CRUD for CustomerGroup
-class CustomerGroupDetail(ListView):
-	context_object_name = 'customer_details'
-	template_name = 'customers/customer_details.html'
-	pk_url_kwarg = 'customer_id'
+class CustomerGroupDetail(DetailView):
+	model = CustomerGroup
+	template_name = 'customers/group_details.html'
+	pk_url_kwarg = 'group_id'
 
-	def get_queryset(self):
-		self.customer = get_object_or_404(Customer,pk=self.kwargs[self.pk_url_kwarg])
-		queryset = CustomerDetails.objects.filter(customer__name=self.customer)
-		return queryset
-
-	def get_context_data(self,**kwargs):
-		context = super(CustomerDetail,self).get_context_data(**kwargs)
-		context['customer_group'] = self.customer.customergroup_set.all()
-		return context
 
 
 class AddCustomerGroup(CreateView):
@@ -97,19 +89,18 @@ class AddCustomerGroup(CreateView):
 
 
 class UpdateCustomerGroup(UpdateView):
-	model = Customer
-	form_class = CustomerForm
-	template_name = 'customers/edit_customer.html'
-	pk_url_kwarg = 'customer_id'
+	model = CustomerGroup
+	form_class = CustomerGroupForm
+	template_name = 'customers/edit_customer_group.html'
+	pk_url_kwarg = 'group_id'
 	success_url = '/customers/all/'
 
 
 class DeleteCustomerGroup(DeleteView):
-	model = Customer
-	form_class = CustomerForm
-	template_name = 'customers/delete_customer.html'
-	pk_url_kwarg = 'customer_id'
-	success_url = '/customers/all/'
+	model = CustomerGroup
+	template_name = 'customers/delete_group.html'
+	pk_url_kwarg = 'group_id'
+	success_url = reverse_lazy('customers')
 
 
 # CRUD for CustomerDetails

@@ -1,55 +1,23 @@
 from django.shortcuts import render
 from django.template import loader, Context
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from products.models import Product
+from products.models import Product, ProductGroup
 from users.models import User
 from json import dumps
-from .forms import ProductForm
+from .forms import ProductForm, ProductGroupForm
 from common.components.sortable_list import SortableListView
 from users.permissions import LoginRequiredMixin
 from django.views.generic import TemplateView
 
 
-class ProductListView(SortableListView):
-    def __init__(self):
-        super(ProductListView, self).__init__()
+# def get_company(self):
+#     user = self.request.user
+#     company = user.userprofile.company
+#     return company
 
-    def get_groups(self):
-        # add DB reading
-        return super(ProductListView, self).get_test_groups()
-
-
-class ClientListView(SortableListView):  # todo: move this to clients view
-    def __init__(self):
-        super(ClientListView, self).__init__()
-        self.get_groups()
-
-    def get_groups(self):
-        return super(ClientListView, self).get_test_groups()  # todo: load groups from DB
-
-
-# Create your views here.
-
-class ProductView(TemplateView):
-    template_name = 'main_logged_in/products.html'
-
-    def create_new(request):
-        if request.method == 'POST':
-            response_data = {}
-
-            product = Product(company='test', name='test')
-            product.save()
-
-            response_data['result'] = 'OK'
-            response_data['company'] = product.company
-            response_data['name'] = product.name
-
-            return HttpResponse(
-                dumps(response_data),
-                content_type="application/json"
-            )
 
 # CRUD for Product app
 class ProductList(LoginRequiredMixin, ListView):
@@ -65,7 +33,14 @@ class ProductList(LoginRequiredMixin, ListView):
             else:
                 return False
         except User.DoesNotExist:
-            return False
+            return HttpResponseRedirect('/accounts/login/')
+
+    def get_context_data(self):
+        context = super(ProductList,self).get_context_data()
+        user = self.request.user
+        company = user.userprofile.company
+        context['company'] = company
+        return context
 
 
 class AddProduct(CreateView):
@@ -73,6 +48,14 @@ class AddProduct(CreateView):
     form_class = ProductForm
     template_name = 'products/edit_product.html'
     success_url = '/products/all/'
+
+    def form_valid(self, form):
+        new_product = form.save(commit=False)
+        user = self.request.user
+        company = user.userprofile.company
+        new_product.company = company
+        new_product.save()
+        return super(AddProduct,self).form_valid(form)
 
 
     def form_invalid(self,form):
@@ -92,4 +75,46 @@ class DeleteProduct(DeleteView):
     form_class = ProductForm
     template_name = 'products/delete_product.html'
     pk_url_kwarg = 'product_id'
+    success_url = '/products/all/'
+
+# CRUD for ProductGroup
+class ProductGroupDetail(DetailView):
+    model = ProductGroup
+    template_name = 'products/product_group.html'
+    pk_url_kwarg = 'group_id'
+
+
+
+class AddProductGroup(CreateView):
+    model = ProductGroup
+    form_class = ProductGroupForm
+    template_name = 'products/edit_product_group.html'
+    success_url = '/products/all/'
+
+    def form_valid(self, form):
+        new_group = form.save(commit=False)
+        user = self.request.user
+        company = user.userprofile.company
+        new_group.company = company
+        new_group.save()
+        return super(AddProductGroup,self).form_valid(form)
+
+
+    def form_invalid(self,form):
+        return HttpResponse('form is invalid')
+
+
+class UpdateProductGroup(UpdateView):
+    model = ProductGroup
+    form_class = ProductGroupForm
+    template_name = 'products/edit_product_group.html'
+    pk_url_kwarg = 'group_id'
+    success_url = '/products/all/'
+
+
+class DeleteProductGroup(DeleteView):
+    model = ProductGroup
+    form_class = ProductForm
+    template_name = 'products/delete_product_group.html'
+    pk_url_kwarg = 'group_id'
     success_url = '/products/all/'

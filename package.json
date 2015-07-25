@@ -17,6 +17,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/wysely/wysely#readme",
   "dependencies": {
-    "bower": "^1.4.1"
+    "bower": "^1.4.1",
+    "yuglify": "0.1.4"
   }
 }

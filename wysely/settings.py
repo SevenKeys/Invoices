@@ -142,6 +142,7 @@ PIPELINE_CSS = {
             'bower_components/bootstrap-theme-white-plum/dist/css/bootstrap.css',
             'bower_components/w2ui-1.4.2.min.css',
             'css/main.css',
+            'bower_components/gridster/dist/jquery.gridster.min.css',
             # components
             'css/components/sortable_list.css'
         ),
@@ -160,6 +161,7 @@ PIPELINE_JS = {
             'bower_components/jquery-ui/jquery-ui.min.js',
             'bower_components/w2ui/w2ui-1.4.2.min.js',
             'wysely/site.js',
+            'bower_components/gridster/dist/jquery.gridster.min.js',
             # components
             'wysely/components/sortable_list.js',
         ),

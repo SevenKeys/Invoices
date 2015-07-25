@@ -21,7 +21,7 @@
     "jquery-ui": "~1.11.4"
   },
   "resolutions": {
-    "bootstrap": "3.3.4"
+    "bootstrap": "3.3.5"
   },
   "authors": [
     "Francisco Estudillo <festudillobernal@gmail.com>"

@@ -141,7 +141,6 @@ PIPELINE_CSS = {
     'common_styles': {
         'source_filenames': (
             'bower_components/bootstrap-theme-white-plum/dist/css/bootstrap.css',
-            'bower_components/w2ui-1.4.2.min.css',
             'css/main.css',
             # components
             'css/components/sortable_list.css'
@@ -159,7 +158,6 @@ PIPELINE_JS = {
             'bower_components/jquery/dist/jquery.js',
             'bower_components/bootstrap/dist/js/bootstrap.js',
             'bower_components/jquery-ui/jquery-ui.min.js',
-            'bower_components/w2ui/w2ui-1.4.2.min.js',
             'wysely/site.js',
             # components
             'wysely/components/sortable_list.js',

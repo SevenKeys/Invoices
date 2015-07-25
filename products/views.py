@@ -1,26 +1,21 @@
-from django.shortcuts import render
-from django.template import loader, Context
+# from django.shortcuts import render
+# from django.template import loader, Context
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from products.models import Product, ProductGroup
 from users.models import User
-from json import dumps
+# from json import dumps
 from .forms import ProductForm, ProductGroupForm
-from common.components.sortable_list import SortableListView
+# from common.components.sortable_list import SortableListView
 from users.permissions import LoginRequiredMixin
-from django.views.generic import TemplateView
-
-
-# def get_company(self):
-#     user = self.request.user
-#     company = user.userprofile.company
-#     return company
+from companies.views import CompanyMixin
+# from django.views.generic import TemplateView
 
 
 # CRUD for Product app
-class ProductList(LoginRequiredMixin, ListView):
+class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
     context_oject_name = 'product_list'
     template_name = 'products/product_list.html'
 
@@ -35,15 +30,15 @@ class ProductList(LoginRequiredMixin, ListView):
         except User.DoesNotExist:
             return HttpResponseRedirect('/accounts/login/')
 
-    def get_context_data(self):
-        context = super(ProductList,self).get_context_data()
-        user = self.request.user
-        company = user.userprofile.company
-        context['company'] = company
+    def get_context_data(self,**kwargs):
+        context = super(ProductList,self).get_context_data(**kwargs)
+        # user = self.request.user
+        # company = user.userprofile.company
+        context['company'] = self.get_company()
         return context
 
 
-class AddProduct(CreateView):
+class AddProduct(CreateView, CompanyMixin):
     model = Product
     form_class = ProductForm
     template_name = 'products/edit_product.html'
@@ -51,9 +46,9 @@ class AddProduct(CreateView):
 
     def form_valid(self, form):
         new_product = form.save(commit=False)
-        user = self.request.user
-        company = user.userprofile.company
-        new_product.company = company
+        # user = self.request.user
+        # company = user.userprofile.company
+        new_product.company = self.get_company()
         new_product.save()
         return super(AddProduct,self).form_valid(form)
 

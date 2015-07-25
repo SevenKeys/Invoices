@@ -9,6 +9,13 @@ from .forms import CompanyForm
 from users.models import UserProfile
 from users.permissions import LoginRequiredMixin
 
+# Mixin to get company of user
+class CompanyMixin(object):
+
+    def get_company(self,**kwargs):
+        user = self.request.user
+        company = user.userprofile.company
+        return company
 
 
 class CompanyList(LoginRequiredMixin, ListView):

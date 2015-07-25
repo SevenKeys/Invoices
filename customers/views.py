@@ -9,6 +9,7 @@ from .forms import CustomerForm, CustomerDetailForm, CustomerGroupForm
 # from contacts.models import Contact
 from users.models import User
 from users.permissions import LoginRequiredMixin
+from companies.views import CompanyMixin
 
 
 # CRUD for Customer
@@ -64,7 +65,7 @@ class CustomerGroupDetail(DetailView):
 
 
 
-class AddCustomerGroup(CreateView):
+class AddCustomerGroup(CreateView, CompanyMixin):
 	model = CustomerGroup
 	form_class = CustomerGroupForm
 	template_name = 'customers/edit_customer_group.html'
@@ -75,15 +76,15 @@ class AddCustomerGroup(CreateView):
 
 	def get_context_data(self,**kwargs):
 		context = super(AddCustomerGroup,self).get_context_data(**kwargs)
-		user = self.request.user
-		company = user.userprofile.company
-		context['company'] = company
+		# user = self.request.user
+		# company = user.userprofile.company
+		context['company'] = self.get_company()
 		return context
 
 	def form_valid(self, form):
 		customer_group = form.save(commit=False)
-		user = self.request.user
-		customer_group.company = user.userprofile.company
+		# user = self.request.user
+		customer_group.company = self.get_company()
 		customer_group.save()
 		return super(AddCustomerGroup,self).form_valid(form)
 

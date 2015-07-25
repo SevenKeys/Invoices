@@ -10,10 +10,13 @@
             <a href="{% url 'invoices.views.main' %}"><span class="glyphicon glyphicon-list-alt"></span>{% trans "Invoices" %}</a>
         </li>
         <li>
-            <a href="{% url 'clients' %}"><span class="glyphicon glyphicon-user"></span>{% trans "Clients" %}</a>
+            <a href="{% url 'customers' %}"><span class="glyphicon glyphicon-user"></span>{% trans "Clients" %}</a>
         </li>
         <li>
-            <a href="{% url "products" %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>
+            <a href="{% url 'companies' %}"><span class="glyphicon glyphicon-user"></span>{% trans "Companies" %}</a>
+        </li>
+        <li>
+            <a href="{% url 'products' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>
         </li>
     {% endif %}
 </ul>

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>User Details</h2>
+    <ul>
+        <li>Username: {{ object.username }}</li>
+        <li>Created: {{ object.userprofile.created }}</li>
+        <li>Company: {{ object.userprofile.company }}</li>
+        <li>Contact: {{ object.userprofile.contact }}</li>
+        <li>First name: {{ object.first_name }}</li>
+        <li>Second name: {{ object.last_name }}</li>
+        <li>Email: {{ object.email }}</li>
+    </ul>
+    {% if object == logging %}
+        <button type="button"><a href="{% url 'edit_user' user.id %}">Edit profile</a></button>
+        <button type="button"><a href="{% url 'delete_user' user.id %}">Delete</a></button>
+    {% endif %}
+{% endblock %}

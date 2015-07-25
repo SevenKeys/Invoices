@@ -1,11 +1,11 @@
 from django.db import models
 from companies.models import Company
 from contacts.models import Contact
+from django.contrib.auth.models import User
 
 
-class User(models.Model):
+class UserProfile(models.Model):
     company = models.ForeignKey(Company, blank=True, null=True)
-    name = models.CharField(max_length=60)
-    created = models.DateTimeField(auto_now=True)
     contact = models.ForeignKey(Contact, null=True)
+    user = models.OneToOneField(User)
 # Create your models here.

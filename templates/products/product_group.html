@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Product Group {{ object.name }} of company {{ object.company }}</h2>
+    {% if object.products.count > 0 %}
+    <ul>
+        <h3>Products</h3>
+        {% for product in object.products.all %}
+            <li>
+                {{ product.name }}
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <h3>No products was added yet.</h3>
+    {% endif %}
+    <button type="button"><a href="{% url 'edit_product_group' object.id %}">Update group</a></button>
+    <button type="button"><a href="{% url 'delete_product_group' object.id %}">Delete group</a></button>
+
+{% endblock %}

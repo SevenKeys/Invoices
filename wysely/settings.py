@@ -160,6 +160,7 @@ PIPELINE_JS = {
             'bower_components/bootstrap/dist/js/bootstrap.js',
             'bower_components/jquery-ui/jquery-ui.min.js',
             'bower_components/w2ui/w2ui-1.4.2.min.js',
+            'bower_components/ckeditor/ckeditor.js',
             'wysely/site.js',
             'bower_components/gridster/dist/jquery.gridster.min.js',
             # components

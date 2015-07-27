@@ -10,3 +10,6 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
     created = models.DateTimeField(auto_now=True)
     contact = models.ForeignKey(Contact, null=True)
+
+    def __str__(self):
+    	return self.name

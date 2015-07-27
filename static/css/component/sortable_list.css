@@ -1,0 +1,23 @@
+#sortable-list-component {
+    color: purple;
+}
+
+#sortable1, #sortable2, #sortable3 {
+    border: 1px solid #eee;
+    min-height: 20px;
+    list-style-type: none;
+    margin: 0;
+    padding: 5px 0 0 0;
+}
+
+#sortable1 li, #sortable2 li, #sortable3 li {
+    margin: 0 5px 5px 5px;
+    padding: 5px;
+    font-size: 1.2em;
+    width: 120px;
+}
+
+#foldable-container h3 {
+    cursor: hand;
+    cursor: pointer;
+}

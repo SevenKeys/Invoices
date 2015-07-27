@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import include, url
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import TemplateView
 from invoices import urls as invoice_urls
 
@@ -37,3 +38,5 @@ urlpatterns = [
     url(r'^products/',include('products.urls')),
     url(r'^companies/',include('companies.urls'))
 ]
+
+urlpatterns += staticfiles_urlpatterns()

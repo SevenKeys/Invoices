@@ -2,8 +2,65 @@
 {% load i18n %}
 
 {% block content %}
-    <div class="main">
+<div class="container">
+    <div class="row">
+    	<div id="components" class="col-md-3">
+            <h3>Common components</h3>
+            <div class="row">
+                <div class="element col-md-2">
+                    <span class="draggable-element" data-text="This is a 1-5 element" data-x-size="1" data-y-size="1" data-x="1" data-y="1">Slot 1-5</span>
+                </div>
+                <div class="col-md-10">
+                </div>
+            </div>
+            <div class="row">
+                <div class="element col-md-4">
+                    <span class="draggable-element" data-text="This is a 2-5 element" data-x-size="2" data-y-size="1" data-x="1" data-y="1">Slot 2-5</span>
+                </div>
+                <div class="col-md-8 empty">
+                </div>
+            </div>
+            <div class="row">
+                <div class="element col-md-6">
+                    <span class="draggable-element" data-text="This is a 3-5 element" data-x-size="3" data-y-size="1" data-x="1" data-y="1">Slot 3-5</span>
+                </div>
+                <div class="col-md-6 empty">
+                </div>
+            </div>
+            <div class="row">
+                <div class="element col-md-8">
+                    <span class="draggable-element" data-text="This is a 4-5 element" data-x-size="4" data-y-size="1" data-x="1" data-y="1">Slot 4-5</span>
+                </div>
+                <div class="col-md-4 empty">
+                </div>
+            </div>
+            <div class="row">
+                <div class="element col-md-10">
+                    <span class="draggable-element" data-text="This is a 5-5 element" data-x-size="5" data-y-size="1" data-x="1" data-y="1">Slot 5-5</span>
+                </div>
+                <div class="col-md-2 empty">
 
+                </div>
+            </div>
+			<h3>Custom components</h3>
+            <div class="row">
+                <div class="element col-md-2">
+                    <span class="draggable-element" data-text="Logo" data-type="single" data-x-size="1" data-y-size="1" data-x="1" data-y="1">Logo</span>
+                </div>
+                <div class="col-md-10 empty">
+                </div>
+            </div>
+        </div>
+        <div class="gridster col-md-9">
+            <ul>
+                <li id="widget_first" class="empty" data-row="1" data-col="5" data-sizex="6" data-sizey="1"><div id="editable_widget_first"></div></li>
+            </ul>
+        </div>
+    </div>
+    <button id="save">Save the template</button>
+</div>
+
+    <div class="main">
         <!-- invoices  -->
         <ul>
             {% for invoice in invoices.object_list %}

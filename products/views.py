@@ -5,7 +5,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from products.models import Product, ProductGroup
-from users.models import User
+from users.models import UserProfile
 # from json import dumps
 from .forms import ProductForm, ProductGroupForm
 # from common.components.sortable_list import SortableListView
@@ -21,18 +21,18 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
 
     def get_queryset(self):
         try:
-            user = User.objects.get(username=self.request.user)
-            if user:
-                company = user.userprofile.company
-                return Product.objects.filter(company=company)
-            else:
-                return False
-        except User.DoesNotExist:
-            return HttpResponseRedirect('/accounts/login/')
+            company = self.get_company()
+            queryset = Product.objects.filter(company=company)
+        except:
+            queryset = False
 
-    def get_context_data(self,**kwargs):
-        context = super(ProductList,self).get_context_data(**kwargs)
-        context['company'] = self.get_company()
+    def get_context_data(self):
+        context = super(ProductList, self).get_context_data()
+        try:
+            company = self.get_company()
+        except UserProfile.DoesNotExist:
+            company = False
+        context['company'] = company
         return context
 
 

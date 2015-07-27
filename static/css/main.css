@@ -54,7 +54,10 @@ body {
 }
 
 .title-section-main {
-  padding: 80px 0;
+    background-image: url("/static/images/wysely.jpg");
+    background-position-x: 100%;
+    background-position-y: 75%;
+  padding: 300px 0;
 }
 
 footer{
@@ -79,4 +82,13 @@ footer{
     width: 100px;
     margin: 10px;
     display:inline-block;
+}
+
+.gridster {
+    border-style: solid;
+    border-color: #000000;
+}
+
+.element-added {
+    list-style: none;
 }

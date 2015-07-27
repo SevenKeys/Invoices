@@ -83,3 +83,12 @@ footer{
     margin: 10px;
     display:inline-block;
 }
+
+.gridster {
+    border-style: solid;
+    border-color: #000000;
+}
+
+.element-added {
+    list-style: none;
+}

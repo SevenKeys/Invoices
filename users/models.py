@@ -8,4 +8,8 @@ class UserProfile(models.Model):
     company = models.ForeignKey(Company, blank=True, null=True)
     contact = models.ForeignKey(Contact, null=True)
     user = models.OneToOneField(User)
-# Create your models here.
+    name = models.CharField(max_length=120, blank=True, null=True)
+
+
+    def __str__(self):
+    	return self.name

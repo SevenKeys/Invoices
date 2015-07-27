@@ -1,23 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Customers</h2>
-    <ul>
-        {% for customer in customer_list %}
-            <li>Name: <a href="{% url 'customer_detail' customer.id %}">{{ customer.name }}</a>
-		    <button type="button"><a href="{% url 'edit_customer' customer.id %}">Edit</a></button>
-		    <button type="button"><a href="{% url 'delete_customer' customer.id %}">Delete</a></button>
-            <p>Company: {{ customer.company }}</p>
-            <p>Created: {{ customer.created }}</p>
-            <p>Contact: {{ customer.contact }}</p>
-            {% if customer.customergroup_set %}
-                {% for group in customer.customergroup_set.all %}
-                    <p>Group: <a href="{% url 'get_group' group.id %}">{{ group }}</a></p>
-                {% endfor %}
-            {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
-    <button type="button"><a href="{% url 'add_customer' %}">Add customer</a></button>
-    <button type="button"><a href="{% url 'add_group' %}">Add client group</a></button>
+    {% if company %}
+        <h2>Customers of {{ company }} company.</h2>
+        <ul>
+            {% for customer in customer_list %}
+                <li>Name: <a href="{% url 'customer_detail' customer.id %}">{{ customer.name }}</a>
+    		    <button type="button"><a href="{% url 'edit_customer' customer.id %}">Edit</a></button>
+    		    <button type="button"><a href="{% url 'delete_customer' customer.id %}">Delete</a></button>
+                <p>Company: {{ customer.company }}</p>
+                <p>Created: {{ customer.created }}</p>
+                <p>Contact: {{ customer.contact }}</p>
+                {% if customer.customergroup_set %}
+                    {% for group in customer.customergroup_set.all %}
+                        <p>Group: <a href="{% url 'get_group' group.id %}">{{ group }}</a></p>
+                    {% endfor %}
+                {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="button"><a href="{% url 'add_customer' %}">Add customer</a></button>
+        <button type="button"><a href="{% url 'add_group' %}">Add client group</a></button>
+    {% else %}
+        <h3>You have not registered a company yet.</h3>
+        <button type="button"><a href="{% url 'add_company' %}">Create company</a></button>
+    {% endif %}
 {% endblock %}

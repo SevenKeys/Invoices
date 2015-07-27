@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import *
+from .forms import InvoiceForm
 from companies.views import CompanyMixin
 
 

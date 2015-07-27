@@ -7,30 +7,35 @@ from django.core.urlresolvers import reverse_lazy
 from .models import Customer, CustomerDetails, CustomerGroup
 from .forms import CustomerForm, CustomerDetailForm, CustomerGroupForm
 # from contacts.models import Contact
-from users.models import User
+from users.models import UserProfile
 from users.permissions import LoginRequiredMixin
 from companies.views import CompanyMixin
 
 
 # CRUD for Customer
-class CustomerList(LoginRequiredMixin, ListView):
+class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
 	context_objects_name = 'customer_list'
 	template_name = 'customers/customer_list.html'
 
 	def get_queryset(self):
 		try:
-			user = User.objects.get(username=self.request.user)
-			if user:
-				company = user.userprofile.company
-				return Customer.objects.filter(company=company)
-			else:
-				return False
-		except User.DoesNotExist:
-			return False
+			company = self.get_company()
+			queryset = Customer.objects.filter(company=company)
+		except:
+			queryset = False
+
+	def get_context_data(self):
+		context = super(CustomerList, self).get_context_data()
+		try:
+			company = self.get_company()
+		except UserProfile.DoesNotExist:
+			company = False
+		context['company'] = company
+		return context
 
 
 
-class AddCustomer(CreateView):
+class AddCustomer(CreateView, CompanyMixin):
 	model = Customer
 	form_class = CustomerForm
 	template_name = 'customers/edit_customer.html'
@@ -38,6 +43,12 @@ class AddCustomer(CreateView):
 
 	def form_invalid(self,form):
 		return HttpResponse('form is invalid')
+
+	def form_valid(self, form):
+		new_customer = form.save(commit=False)
+		new_customer.company = self.get_company()
+		new_customer.save()
+		return super(AddCustomer, self).form_valid(form)
 
 
 class UpdateCustomer(UpdateView):

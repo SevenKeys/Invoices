@@ -32,8 +32,6 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
 
     def get_context_data(self,**kwargs):
         context = super(ProductList,self).get_context_data(**kwargs)
-        # user = self.request.user
-        # company = user.userprofile.company
         context['company'] = self.get_company()
         return context
 
@@ -46,8 +44,6 @@ class AddProduct(CreateView, CompanyMixin):
 
     def form_valid(self, form):
         new_product = form.save(commit=False)
-        # user = self.request.user
-        # company = user.userprofile.company
         new_product.company = self.get_company()
         new_product.save()
         return super(AddProduct,self).form_valid(form)

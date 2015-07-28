@@ -41,24 +41,28 @@ $(function() {
 				helper: "clone"
 			});
 
+			CKEDITOR.replace("widget-content");
 			$(".gridster").droppable({
 				drop: function(event, ui) {
 					$("#add-widget").modal();
-					CKEDITOR.replace("widget-content");
-					$('#create-widget').on('click', function() {
-						var widget_id = uuid();
-						var id = "editable_" + widget_id;
-						gridster.add_widget(
-						'<li id="' + widget_id + '" style="border: 2px solid red;" class="element-added"><span class="glyphicon glyphicon-move" aria-hidden="true"></span><button type="button" class="btn btn-default remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></button><div id="' + id + '" name="' + id + '" class="editable" style="width:100%;height:100%">' + CKEDITOR.instances["widget-content"].getData() +  '</div></li>', document.getElementById("x-size").value, document.getElementById("y-size").value, 1, 1);
-						$(document).on('click', '.remove', function() {
-							gridster.remove_widget( $(this).parent());
-						});
-						$("#add-widget").modal('hide');
-					});
 				}
 			});
 
+			$('#create-widget').on('click', function() {
+				var widget_id = uuid();
+				var id = "editable_" + widget_id;
+				gridster.add_widget(
+				'<li id="' + widget_id + '" style="border: 2px solid red;" class="element-added"><span class="glyphicon glyphicon-move" aria-hidden="true"></span><button type="button" class="btn btn-default remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></button><div id="' + id + '" name="' + id + '" class="editable" style="width:100%;height:100%">' + CKEDITOR.instances["widget-content"].getData() +  '</div></li>', document.getElementById("x-size").value, 1, 1, 1);
+				$(document).on('click', '.remove', function() {
+					gridster.remove_widget( $(this).parent());
+				});
+				CKEDITOR.disableAutoInline = true;
+				CKEDITOR.inline(id);
+				$("#add-widget").modal('hide');
+			});
+
 			$('#save').on('click', function() {
+				CKEDITOR.instances["widget-content"].destroy();
 				alert(JSON.stringify(gridster.serialize()));
 			});
 		}

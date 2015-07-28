@@ -31,6 +31,7 @@ $(function() {
 					$(document).on('click', '.remove', function() {
 						gridster.remove_widget( $(this).parent());
 					});
+					CKEDITOR.disableAutoInline = true;
 					CKEDITOR.inline("editable_" + this.id);
 					CKEDITOR.instances["editable_" + this.id].setData(this.htmlContent.toString().replace("_salto_", "\n"));
 				});

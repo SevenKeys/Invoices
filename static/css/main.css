@@ -87,6 +87,7 @@ footer{
 .gridster {
     border-style: solid;
     border-color: #000000;
+    min-height: 30px;
 }
 
 .element-added {

@@ -140,7 +140,7 @@ PIPELINE_CSS = {
     # Project libraries.
     'common_styles': {
         'source_filenames': (
-            'bower_components/bootstrap-theme-white-plum/dist/css/bootstrap.css',
+            'css/custom-bootstrap.css',
             'css/main.css',
             'bower_components/gridster/dist/jquery.gridster.min.css',
             # components

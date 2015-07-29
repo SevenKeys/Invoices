@@ -12,26 +12,25 @@
     <h2>{% trans "Edit template" %}</h2>
     <div class="row">
     	<div id="components" class="col-md-3">
-            <h3>Common components</h3>
-            <div class="row">
-                <div class="element col-md-2">
-                    <span class="draggable-element" data-text="This is a element" data-x-size="1" data-y-size="1" data-x="1" data-y="1">Add element</span>
-                </div>
-                <div class="col-md-10">
-                </div>
-            </div>
-			<h3>My components</h3>
-            <div class="row">
-                <div class="element col-md-2">
-                    <span class="draggable-element" data-text="Logo" data-type="single" data-x-size="1" data-y-size="1" data-x="1" data-y="1">Logo</span>
-                </div>
-                <div class="col-md-10 empty">
-                </div>
-            </div>
+            <h3>{% trans "Common components" %}</h3>
+            <ul class="nav nav-pills nav-stacked">
+                {% for component in defaultComponents %}
+                    <li role="presentation"><a href="#" id="{{component.id}}" class="addable-element" data-x-size="{{component.size_x}}" data-y-size="{{component.size_y}}" data-content="{{component.content}}">{{component.title}}</a><span class="glyphicon glyphicon-add"></span></li>
+                {% endfor %}
+            </ul>
+			<h3>{% trans "My components" %}</h3>
+             <ul class="nav nav-pills nav-stacked">
+                <li role="presentation"><a id="add-element" href="#" class="btn btn-primary">{% trans "Add new" %}</a></li>
+                {% for custom in customComponents %}
+                    <li role="presentation"><a href="#" id="{{custom.id}}" class="addable-element" data-x-size="{{custom.size_x}}" data-y-size="{{custom.size_y}}" data-content="{{custom.content}}">{{component.title}}</a><span class="glyphicon glyphicon-add"></span></li>
+                {% endfor %}
+            </ul>
         </div>
         <div class="gridster col-md-9">
             <ul>
-
+                {% for item in unremovablecomponents %}
+                    <li id="{{item.id}}" class="element" data-row="1" data-col="1" data-sizex="{{item.size_x}}" data-sizey="{{item.size_y}}"><span class="glyphicon glyphicon-move" aria-hidden="true"></span>{{item.content}}</li>
+                {% endfor %}
             </ul>
         </div>
         <button id="save" class="btn btn-primary">Save the template</button>

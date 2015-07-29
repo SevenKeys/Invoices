@@ -40,6 +40,7 @@ class InvoiceComponent(models.Model):
 class InvoiceTemplate(models.Model):
     company = models.ForeignKey(Company)
     title = models.CharField(max_length=150)
+    description = models.CharField(max_length=300, default="")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
@@ -49,11 +50,13 @@ class InvoiceTemplate(models.Model):
 
 
 class TemplateComponent(models.Model):
-    company = models.ForeignKey(Company)
+    company = models.ForeignKey(Company, blank=True, null=True)
     default = models.BooleanField(default=False)
+    removable = models.BooleanField(default=True)
     title = models.CharField(max_length=40)
     size_x = models.IntegerField()
     size_y = models.IntegerField()
+    content = models.CharField(max_length=1000, default="")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
 
@@ -64,6 +67,7 @@ class TemplateComponent(models.Model):
 class TemplateComponentInstance(models.Model):
     component = models.ForeignKey(TemplateComponent)
     template = models.ForeignKey(InvoiceTemplate)
+    reference = models.CharField(max_length=200, default="")
     position_x = models.IntegerField()
     position_y = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)

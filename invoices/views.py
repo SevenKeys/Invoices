@@ -37,7 +37,12 @@ def templates_list(request):
 
 
 def new_template(request):
-    return render_to_response("invoices/template_generator.html", {"user": request.user})
+    defaultcomponents = TemplateComponent.objects.filter(default=True)
+    unremovablecomponents = []
+    for item in defaultcomponents:
+        if not item.removable:
+            unremovablecomponents.append(item)
+    return render_to_response("invoices/template_generator.html", {"user": request.user, "defaultComponents": defaultcomponents, "unremovablecomponents": unremovablecomponents})
 
 
 class AddInvoice(CreateView):

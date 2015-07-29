@@ -2,11 +2,19 @@
 
 {% block content %}
 
-	<h2>Add company</h2>
-		<form action="" method="post">{% csrf_token %}
-			{% for field in form %}
-				<p>{{ field.label_tag }}{{ field }}</p>
-			{% endfor %}
-			<input type="submit" name="submit" value="Submit">
-		</form>
+	<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:30%">
+		{% csrf_token %} 
+		{% for field in form %}
+		<fieldset class="form-group" >
+		  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+		      <input type="text" class="form-control"
+		        name="{{ field.name }}"
+		        id="id_{{ field.name }}"
+		        value="{{ field.value }}" style="" > 
+		        <p class="help-text">{{ field.help_text }} </p>
+		</fieldset>
+		{% endfor %}
+		   <input type="submit" value="Submit"  class="btn btn-primary">
+	</form>
+
 {% endblock %}

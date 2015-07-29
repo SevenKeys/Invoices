@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<h2 style="text-align:center">Add company</h2>
-	<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:30%">
+	<form class="form-horizontal" action="" method="POST">
+	    <legend><span  class="col-sm-offset-6">Add company</span></legend>
 		{% csrf_token %} 
 		{% for hidden in form.hidden_fields %}
 			{{ hidden }}
@@ -16,15 +16,23 @@
 		    </ol>
 		{% endif %}
 		<fieldset class="form-group" >
-		  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+		  <label class="col-lg-3 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+            <div class="col-lg-8 ">
 		      <input type="text" class="form-control"
 		        name="{{ field.name }}"
 		        id="id_{{ field.name }}"
-		        value="{{ field.value|default_if_none:"" }}" style="" >
+		        value="{{ field.value|default_if_none:"" }}" required >
 		        <p class="help-text">{{ field.help_text }} </p>
+            </div>
 		</fieldset>
 		{% endfor %}
-		   <input type="submit" value="Submit"  class="btn btn-primary">
+
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-6">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  &nbsp;<button type="reset" class="btn">Cancel</button>
+            </div>
+        </div>
 	</form>
 
 {% endblock %}

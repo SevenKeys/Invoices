@@ -24,20 +24,19 @@ class CompanyForm(forms.ModelForm):
         try:
             contact = user.userprofile.contact
             super(CompanyForm, self).__init__(*args, **kwargs)
-            if contact:
-                self.fields['phone_number'] = forms.IntegerField(initial=contact.phone_number,
-                                                                 label='Phone number')
-                self.fields['email'] = forms.EmailField(initial=contact.email,
-                                                        label='Email')
-                self.fields['city'] = forms.CharField(initial=contact.city,
-                                                      label='City')
-                self.fields['street'] = forms.CharField(initial=contact.street,
-                                                        label='Street')
-                self.fields['postcode'] = forms.IntegerField(initial=contact.postcode,
-                                                             label='Postcode')
-                self.fields['country'] = forms.CharField(initial=contact.country,
-                                                         label='Country')
-                self.fields['website'] = forms.CharField(initial=contact.website,
-                                                         label='Website')
+            self.fields['phone_number'] = forms.IntegerField(initial=contact.phone_number if contact else '',
+                                                             label='Phone number')
+            self.fields['email'] = forms.EmailField(initial=contact.email if contact else '',
+                                                    label='Email')
+            self.fields['city'] = forms.CharField(initial=contact.city if contact else '',
+                                                  label='City')
+            self.fields['street'] = forms.CharField(initial=contact.street if contact else '',
+                                                    label='Street')
+            self.fields['postcode'] = forms.IntegerField(initial=contact.postcode if contact else '',
+                                                         label='Postcode')
+            self.fields['country'] = forms.CharField(initial=contact.country if contact else '',
+                                                     label='Country')
+            self.fields['website'] = forms.CharField(initial=contact.website if contact else '',
+                                                     label='Website')
         except UserProfile.DoesNotExist:
             super(CompanyForm, self).__init__(*args, **kwargs)

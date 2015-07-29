@@ -3,10 +3,28 @@
 {% block content %}
 
 	<h2>Add or edit Product Group</h2>
-		<form action="" method="post">{% csrf_token %}
-		
-			{{ form.as_ul }}
-
-			<input type="submit" name="submit" value="Submit">
+		<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:30%">
+			{% csrf_token %} 
+			{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+			{% endfor %}
+			{% for field in form.visible_fields %}
+			{% if field.errors %}
+			    <ol>
+			    {% for error in field.errors %}
+			        <li><strong>{{ error|escape }}</strong></li>
+			    {% endfor %}
+			    </ol>
+			{% endif %}
+			<fieldset class="form-group" >
+			  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+			      <input type="text" class="form-control"
+			        name="{{ field.name }}"
+			        id="id_{{ field.name }}"
+			        value="{{ field.value }}" style="" > 
+			        <p class="help-text">{{ field.help_text }} </p>
+			</fieldset>
+			{% endfor %}
+			   <input type="submit" value="Submit"  class="btn btn-primary">
 		</form>
 {% endblock %}

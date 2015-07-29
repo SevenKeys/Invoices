@@ -1,10 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+	<h2 style="text-align:center">Add company</h2>
 	<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:30%">
 		{% csrf_token %} 
-		{% for field in form %}
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+		{% for field in form.visible_fields %}
+		{% if field.errors %}
+		    <ol>
+		    {% for error in field.errors %}
+		        <li><strong>{{ error|escape }}</strong></li>
+		    {% endfor %}
+		    </ol>
+		{% endif %}
 		<fieldset class="form-group" >
 		  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}</label>
 		      <input type="text" class="form-control"

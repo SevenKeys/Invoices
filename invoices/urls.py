@@ -1,5 +1,7 @@
-from django.conf.urls import patterns
+from django.conf.urls import patterns, url
 
-urlpatterns = patterns('invoices.views',
-                       (r"", "main"),
+urlpatterns = patterns('',
+                       url(r'^invoices/$', 'invoices.views.main'),
+                       url(r'^templates/$', 'invoices.views.templates_list'),
+                       url(r'^templates/new/$', 'invoices.views.new_template'),
                        )

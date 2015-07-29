@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<script type="text/javascript">
+    $(document).on("ready", function() {
+        var jsonString = '[{"id":"9e1cb557-8081-41ab-a02c-b6c2220f669b","col":3,"row":4,"size_x":3,"size_y":1,"htmlContent":"<p>This is a 3-5 element</p>_salto_"},{"id":"104f453c-575d-483d-bd26-42c984a36196","col":1,"row":4,"size_x":2,"size_y":1,"htmlContent":"<p>This is a 2-5 element</p>_salto_"},{"id":"b55b210c-9a92-4b32-a836-0a6bf3b814ff","col":2,"row":3,"size_x":4,"size_y":1,"htmlContent":"<p>This is a 4-5 element</p>_salto_"},{"id":"24716f9f-5581-4a6a-b680-64f343355f09","col":1,"row":3,"size_x":1,"size_y":1,"htmlContent":"<p>This is a 1-5 element</p>_salto_"},{"id":"b8fb6f3b-ed9f-4864-9ebb-0e763170e4c7","col":1,"row":2,"size_x":5,"size_y":1,"htmlContent":"<p>This is a 5-5 element</p>_salto_"},{"id":"b905e6b7-01c3-432d-94f9-4ae22edfdfcc","col":2,"row":1,"size_x":3,"size_y":1,"htmlContent":"<p>This is a 3-5 element</p>_salto_"},{"id":"f2a339af-a3db-413f-9a50-9a7d105217d9","col":1,"row":1,"size_x":1,"size_y":1,"htmlContent":"<p>This is a 1-5 element</p>_salto_"}]';
+        $(".gridster ul").template("");
+    });
+</script>
+<div class="container">
+    <h2>{% trans "Edit template" %}</h2>
+    <div class="row">
+    	<div id="components" class="col-md-3">
+            <h3>Common components</h3>
+            <div class="row">
+                <div class="element col-md-2">
+                    <span class="draggable-element" data-text="This is a element" data-x-size="1" data-y-size="1" data-x="1" data-y="1">Add element</span>
+                </div>
+                <div class="col-md-10">
+                </div>
+            </div>
+			<h3>My components</h3>
+            <div class="row">
+                <div class="element col-md-2">
+                    <span class="draggable-element" data-text="Logo" data-type="single" data-x-size="1" data-y-size="1" data-x="1" data-y="1">Logo</span>
+                </div>
+                <div class="col-md-10 empty">
+                </div>
+            </div>
+        </div>
+        <div class="gridster col-md-9">
+            <ul>
+
+            </ul>
+        </div>
+        <button id="save" class="btn btn-primary">Save the template</button>
+    </div>
+    <div class="modal fade" id="add-widget" tabindex="-1" role="dialog" aria-labelledby="add-widget-label">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="add-widget-label">Add new element</h4>
+          </div>
+          <div class="modal-body">
+              <div id="div-x-size">
+                  <label id="label-input-size-x" for="x-size">Horizontal size</label>
+                  <input type="text" name="x-size" id="x-size">
+              </div>
+              <div id="div-content">
+                  <div id="widget-content" contenteditable="true" class="editable" name="widget-content"></div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button id="create-widget" type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+{% block footer %}
+    {% include "./footer.html" %}
+{% endblock footer %}

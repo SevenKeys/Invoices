@@ -26,6 +26,20 @@ def main(request):
                                                 invoices_list=invoices.object_list))
 
 
+def templates_list(request):
+    my_company = request.user.userprofile.company
+    if my_company is None:
+        templates = InvoiceTemplate.objects.all().order_by("-created")
+    else:
+        templates = None
+    return render_to_response("invoices/templates_list.html", {
+        "templates": templates, "user": request.user, "company": my_company})
+
+
+def new_template(request):
+    return render_to_response("invoices/template_generator.html", {"user": request.user})
+
+
 class AddInvoice(CreateView):
     model = Invoice
     form_class = InvoiceForm

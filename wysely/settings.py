@@ -120,8 +120,13 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-STATIC_ROOT = PROJECT_ROOT+'/static/'
+
+STATIC_ROOT = 'static'
 STATIC_URL = '/static/'
+#
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'static'),
+# )
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
@@ -135,9 +140,9 @@ PIPELINE_CSS = {
     # Project libraries.
     'common_styles': {
         'source_filenames': (
-            'bower_components/bootstrap-theme-white-plum/dist/css/bootstrap.css',
-            'bower_components/w2ui-1.4.2.min.css',
+            'css/custom-bootstrap.css',
             'css/main.css',
+            'bower_components/gridster/dist/jquery.gridster.min.css',
             # components
             'css/components/sortable_list.css'
         ),
@@ -154,8 +159,9 @@ PIPELINE_JS = {
             'bower_components/jquery/dist/jquery.js',
             'bower_components/bootstrap/dist/js/bootstrap.js',
             'bower_components/jquery-ui/jquery-ui.min.js',
-            'bower_components/w2ui/w2ui-1.4.2.min.js',
+            'bower_components/ckeditor/ckeditor.js',
             'wysely/site.js',
+            'bower_components/gridster/dist/jquery.gridster.min.js',
             # components
             'wysely/components/sortable_list.js',
         ),
@@ -182,3 +188,5 @@ SEND_ACTIVATION_EMAIL = True
 REGISTRATION_AUTO_LOGIN = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+AUTH_PROFILE_MODULE = 'wysely.User'

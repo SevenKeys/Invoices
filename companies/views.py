@@ -63,15 +63,15 @@ class AddCompany(CreateView, ContactMixin):
 	def form_valid(self,form):
 		new_company = form.save(commit=False)
 		# define user has userprofile or create it
-		try:
-			self.request.user.userprofile
+		# try:
+			# self.request.user.userprofile
 			# if self.request.user.userprofile.contact is not None:
 				# self.get_form_kwargs()
 				# contact = self.get_contact()
-				# new_company.postcode = contact.postcode
-		except UserProfile.DoesNotExist:
-			UserProfile.objects.create(user=self.request.user,
-									   name=self.request.POST['full_user_name'])
+		# except UserProfile.DoesNotExist:
+			# print('userprofile not exist')
+			# UserProfile.objects.create(user=self.request.user,
+									   # name=self.request.POST['full_user_name'])
 		# get from request Contact data
 		contact = Contact(phone_number=self.request.POST['phone_number'],
 						  email=self.request.POST['email'],
@@ -81,15 +81,24 @@ class AddCompany(CreateView, ContactMixin):
 						  country=self.request.POST['country'],
 						  website=self.request.POST['website'])
 		contact.save()
+		# write user's first and last names
+		full_name = self.request.POST['full_user_name']
+		register_user = self.request.user
+		if len(full_name.split(' '))==2:
+			print('name is twofold')
+			register_user.first_name = full_name.split(' ')[0] 
+			register_user.last_name = full_name.split(' ')[1]
+			register_user.save()
+
 		# connect the new company with Contact model
 		new_company.contact = contact
 		new_company.save()
-		# connect the new company with user
-		name = self.request.user.userprofile.name
-		user = UserProfile.objects.get(name=name)
-		new_company.userprofile_set.add(user)
+		# connect data - company, user and contact
+		current_user = UserProfile.objects.get(user=register_user)
+		current_user.name = full_name
+		new_company.userprofile_set.add(current_user)
 
-		contact.userprofile_set.add(user)
+		contact.userprofile_set.add(current_user)
 		return super(AddCompany, self).form_valid(form)
 
 	

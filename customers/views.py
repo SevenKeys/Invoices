@@ -10,11 +10,12 @@ from .forms import CustomerForm, CustomerDetailForm, CustomerGroupForm
 from users.models import UserProfile
 from users.permissions import LoginRequiredMixin
 from companies.views import CompanyMixin
+from contacts.views import ContactMixin
 
 
 # CRUD for Customer
 class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
-	context_objects_name = 'customer_list'
+	context_object_name = 'customer_list'
 	template_name = 'customers/customer_list.html'
 
 	def get_queryset(self):
@@ -23,6 +24,7 @@ class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
 			queryset = Customer.objects.filter(company=company)
 		except:
 			queryset = False
+		return queryset
 
 	def get_context_data(self):
 		context = super(CustomerList, self).get_context_data()
@@ -35,7 +37,7 @@ class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
 
 
 
-class AddCustomer(CreateView, CompanyMixin):
+class AddCustomer(CreateView, CompanyMixin, ContactMixin):
 	model = Customer
 	form_class = CustomerForm
 	template_name = 'customers/edit_customer.html'
@@ -47,6 +49,7 @@ class AddCustomer(CreateView, CompanyMixin):
 	def form_valid(self, form):
 		new_customer = form.save(commit=False)
 		new_customer.company = self.get_company()
+		new_customer.contact = self.get_contact()
 		new_customer.save()
 		return super(AddCustomer, self).form_valid(form)
 
@@ -94,7 +97,6 @@ class AddCustomerGroup(CreateView, CompanyMixin):
 
 	def form_valid(self, form):
 		customer_group = form.save(commit=False)
-		# user = self.request.user
 		customer_group.company = self.get_company()
 		customer_group.save()
 		return super(AddCustomerGroup,self).form_valid(form)

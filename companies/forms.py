@@ -27,20 +27,25 @@ class CompanyForm(forms.ModelForm):
 			contact = user.userprofile.contact
 			super(CompanyForm, self).__init__(*args,**kwargs)
 			self.fields['phone_number'] = forms.IntegerField(initial=contact.phone_number, 
-															label='Phone number')
+															label='Phone number',
+															required=False)
 			self.fields['email'] = forms.EmailField(initial=contact.email, 
 															label='Email')
 			self.fields['city'] = forms.CharField(initial=contact.city, 
-															label='City')
+															label='City',
+															required=False)
 			self.fields['street'] = forms.CharField(initial=contact.street, 
-															label='Street')
+															label='Street',
+															required=False)
 			self.fields['postcode'] = forms.IntegerField(initial=contact.postcode, 
-															label='Postcode')
+															label='Postcode',
+															required=False)
 			self.fields['country'] = forms.CharField(initial=contact.country, 
 															label='Country')
 			self.fields['website'] = forms.CharField(initial=contact.website, 
-															label='Website')
-		except UserProfile.DoesNotExist:
+															label='Website',
+															required=False)
+		except (UserProfile.DoesNotExist, AttributeError):
 			contact = False
 			super(CompanyForm, self).__init__(*args,**kwargs)
 			

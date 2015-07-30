@@ -1,10 +1,9 @@
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView
 from .models import *
 from .forms import InvoiceForm
-from companies.views import CompanyMixin
+from django.http import HttpResponse
 
 
 def main(request):
@@ -29,7 +28,7 @@ def main(request):
 def templates_list(request):
     my_company = request.user.userprofile.company
     if my_company is None:
-        templates = InvoiceTemplate.objects.all().order_by("-created")
+        templates = InvoiceTemplate.objects.filter(company=request.user.userprofile.company).order_by("-created")
     else:
         templates = None
     return render_to_response("invoices/templates_list.html", {
@@ -39,10 +38,17 @@ def templates_list(request):
 def new_template(request):
     defaultcomponents = TemplateComponent.objects.filter(default=True)
     unremovablecomponents = []
+    customcomponents = TemplateComponent.objects.filter(company=request.user.userprofile.company)
     for item in defaultcomponents:
         if not item.removable:
             unremovablecomponents.append(item)
-    return render_to_response("invoices/template_generator.html", {"user": request.user, "defaultComponents": defaultcomponents, "unremovablecomponents": unremovablecomponents})
+    return render_to_response("invoices/template_generator.html", {"user": request.user, "defaultcomponents": defaultcomponents, "unremovablecomponents": unremovablecomponents, "customcomponents": customcomponents})
+
+
+def add_custom_component(request):
+    saved_component = TemplateComponent(company=request.user.userprofile.company, default=False, removable=False, title=request.POST['title'], size_x=request.POST['size_x'], size_y=request.POST['size_y'], content=request.POST['content'])
+    saved_component.save()
+    return HttpResponse(saved_component.id)
 
 
 class AddInvoice(CreateView):

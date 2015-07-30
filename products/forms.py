@@ -10,7 +10,6 @@ class ProductForm(forms.ModelForm):
 
 
 class ProductGroupForm(forms.ModelForm):
-
 	class Meta:
 		model = ProductGroup
 		fields = ['name','products']

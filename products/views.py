@@ -25,6 +25,7 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
             queryset = Product.objects.filter(company=company)
         except:
             queryset = False
+        return queryset
 
     def get_context_data(self):
         context = super(ProductList, self).get_context_data()

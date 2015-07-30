@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+	{% load extra_products %}
 	<h2>Add or edit Product Group</h2>
 		<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:30%">
 			{% csrf_token %} 
@@ -17,14 +17,20 @@
 			    </ol>
 			{% endif %}
 			<fieldset class="form-group" >
+			{% if field.field|fieldtype != 'ModelMultipleChoiceField' %}
 			  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}</label>
 			      <input type="text" class="form-control"
 			        name="{{ field.name }}"
 			        id="id_{{ field.name }}"
-			        value="{{ field.value|default_if_none:"" }}" style="" >
+			        value="{{ field.value|default_if_none:"" }}">
 			        <p class="help-text">{{ field.help_text }} </p>
+			{% else %}
+				<strong>{{ field.label }}</strong>
+				{{ field }}
+			{% endif %}
 			</fieldset>
 			{% endfor %}
 			   <input type="submit" value="Submit"  class="btn btn-primary">
 		</form>
+	}
 {% endblock %}

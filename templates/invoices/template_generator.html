@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<script type="text/javascript">
+    $(document).on("ready", function() {
+        var jsonString = '[{"id":"9e1cb557-8081-41ab-a02c-b6c2220f669b","col":3,"row":4,"size_x":3,"size_y":1,"htmlContent":"<p>This is a 3-5 element</p>_salto_"},{"id":"104f453c-575d-483d-bd26-42c984a36196","col":1,"row":4,"size_x":2,"size_y":1,"htmlContent":"<p>This is a 2-5 element</p>_salto_"},{"id":"b55b210c-9a92-4b32-a836-0a6bf3b814ff","col":2,"row":3,"size_x":4,"size_y":1,"htmlContent":"<p>This is a 4-5 element</p>_salto_"},{"id":"24716f9f-5581-4a6a-b680-64f343355f09","col":1,"row":3,"size_x":1,"size_y":1,"htmlContent":"<p>This is a 1-5 element</p>_salto_"},{"id":"b8fb6f3b-ed9f-4864-9ebb-0e763170e4c7","col":1,"row":2,"size_x":5,"size_y":1,"htmlContent":"<p>This is a 5-5 element</p>_salto_"},{"id":"b905e6b7-01c3-432d-94f9-4ae22edfdfcc","col":2,"row":1,"size_x":3,"size_y":1,"htmlContent":"<p>This is a 3-5 element</p>_salto_"},{"id":"f2a339af-a3db-413f-9a50-9a7d105217d9","col":1,"row":1,"size_x":1,"size_y":1,"htmlContent":"<p>This is a 1-5 element</p>_salto_"}]';
+        $(".gridster ul").template("");
+    });
+</script>
+<div class="container">
+    <h2>{% trans "Edit template" %}</h2>
+    <div class="row">
+    	<div id="components" class="col-md-3">
+            <h3>{% trans "Common components" %}</h3>
+            <ul class="nav nav-pills nav-stacked">
+                {% for component in defaultcomponents %}
+                    <li role="presentation"><a id="{{component.id}}" class="addable-element" data-x-size="{{component.size_x}}" data-y-size="{{component.size_y}}" data-content="{{component.content}}">{{component.title}}</a><span class="glyphicon glyphicon-add"></span></li>
+                {% endfor %}
+            </ul>
+			<h3>{% trans "My components" %}</h3>
+             <ul id="custom-components" class="nav nav-pills nav-stacked">
+                <li role="presentation"><a id="add-element" class="btn btn-primary">{% trans "Add new" %}</a></li>
+                {% for custom in customcomponents %}
+                    <li role="presentation"><a id="{{custom.id}}" class="addable-element" data-x-size="{{custom.size_x}}" data-y-size="{{custom.size_y}}" data-content="{{custom.content}}">{{custom.title}}<span class="glyphicon glyphicon-add"></span></a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="gridster col-md-9" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+            <ul>
+                {% for item in unremovablecomponents %}
+                    <li id="{{item.id}}" class="element" data-row="1" data-col="1" data-sizex="{{item.size_x}}" data-sizey="{{item.size_y}}"><span class="glyphicon glyphicon-move" aria-hidden="true"></span>{{item.content}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <button id="save" class="btn btn-primary">Save the template</button>
+    </div>
+    <div class="modal fade" id="add-widget" tabindex="-1" role="dialog" aria-labelledby="add-widget-label">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="add-widget-label">Add new element</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" name="contact">
+                <div class="form-group">
+                    <label for="title" class="col-sm-2 control-label">{% trans "Title"%}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Title">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="x-size" class="col-sm-2 control-label">{% trans "Horizontal size"%}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="x-size" name="x-size" placeholder="1..5">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="y-size" class="col-sm-2 control-label">{% trans "Vertical size"%}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="y-size" name="y-size" placeholder="1..5">
+                    </div>
+                </div>
+                <div id="form-group">
+                    <div id="widget-content" contenteditable="true" class="editable" name="widget-content"></div>
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button id="create-component" type="button" class="btn btn-primary" onclick="saveComponent(document.getElementById('title').value,document.getElementById('x-size').value,document.getElementById('y-size').value, CKEDITOR.instances['widget-content'].getData());">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+{% block footer %}
+    {% include "./footer.html" %}
+{% endblock footer %}

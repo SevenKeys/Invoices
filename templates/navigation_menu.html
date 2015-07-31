@@ -6,11 +6,18 @@
         <li>
             <a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span>{% trans "Home" %}</a>
         </li>
-        <li>
-            <a href="{% url 'invoices.views.main' %}"><span class="glyphicon glyphicon-list-alt"></span>{% trans "Invoices" %}</a>
+        <li class="dropdown">
+           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-list-alt"></span>{% trans "Invoices" %}</a>
+            <ul class="dropdown-menu">
+                <li><a href="{% url 'invoices.views.main' %}"><span class="glyphicon glyphicon-list-alt"></span>{% trans "Invoices" %}</a></li>
+                <li><a href="{% url 'invoices.views.templates_list' %}"><span class="glyphicon glyphicon-tasks"></span>{% trans "Templates" %}</a></li>
+          </ul>
         </li>
         <li>
             <a href="{% url 'customers' %}"><span class="glyphicon glyphicon-user"></span>{% trans "Clients" %}</a>
+        </li>
+        <li>
+            <a href="{% url 'companies' %}"><span class="glyphicon glyphicon-user"></span>{% trans "Companies" %}</a>
         </li>
         <li>
             <a href="{% url 'products' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>

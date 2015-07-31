@@ -8,9 +8,9 @@ class Invoice(models.Model):
     companyFrom = models.ForeignKey(Company)
     companyTo = models.CharField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.title
 
 
@@ -19,9 +19,9 @@ class InvoiceProduct(models.Model):
     product = models.ForeignKey(Product)
     quantity = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.product.name
 
 
@@ -31,28 +31,47 @@ class InvoiceComponent(models.Model):
     type = models.CharField(max_length=20)
     content = models.CharField(max_length=300)
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.title
 
 
 class InvoiceTemplate(models.Model):
     company = models.ForeignKey(Company)
     title = models.CharField(max_length=150)
+    description = models.CharField(max_length=300, default="")
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.title
 
 
-class InvoiceTemplateComponent(models.Model):
-    component = models.ForeignKey(InvoiceComponent)
-    invoiceTemplate = models.ForeignKey(InvoiceTemplate)
-    position = models.CharField(max_length=50)
+class TemplateComponent(models.Model):
+    company = models.ForeignKey(Company, blank=True, null=True)
+    default = models.BooleanField(default=False)
+    removable = models.BooleanField(default=True)
+    title = models.CharField(max_length=40)
+    size_x = models.IntegerField()
+    size_y = models.IntegerField()
+    content = models.CharField(max_length=1000, default="")
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def __unicode__(self):
+        return self.title
+
+
+class TemplateComponentInstance(models.Model):
+    component = models.ForeignKey(TemplateComponent)
+    template = models.ForeignKey(InvoiceTemplate)
+    reference = models.CharField(max_length=200, default="")
+    position_x = models.IntegerField()
+    position_y = models.IntegerField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
         return self.component.title+'_'+self.invoiceTemplate.title

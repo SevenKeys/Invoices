@@ -66,7 +66,7 @@ class TemplateComponent(models.Model):
 
 class TemplateComponentInstance(models.Model):
     component = models.ForeignKey(TemplateComponent)
-    template = models.ForeignKey(InvoiceTemplate)
+    template = models.ForeignKey(InvoiceTemplate, related_name='component_instances')
     reference = models.CharField(max_length=200, default="")
     position_x = models.IntegerField()
     position_y = models.IntegerField()

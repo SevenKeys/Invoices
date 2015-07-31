@@ -18,6 +18,7 @@ from django.conf.urls import include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import TemplateView
 from invoices import urls as invoice_urls
+from companies.views import NavMenuView
 
 
 urlpatterns = [
@@ -25,7 +26,8 @@ urlpatterns = [
     url(r'^accounts/', include('registration.backends.simple.urls')),
     url(r'^invoices/', include(invoice_urls)),
     url(r'^accounts/profile/', TemplateView.as_view(template_name='registration/profile.html'), name='profile'),
-    url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
+    # url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
+    url(r'^$', NavMenuView.as_view(), name='index'),
     url(r'^about-us/', TemplateView.as_view(template_name='aboutus.html'), name='aboutus'),
     # url(r'^invoices/', TemplateView.as_view(template_name='main_logged_in/invoices.html'), name='invoices'),
     url(r'^home/', TemplateView.as_view(template_name='main_logged_in/home.html'), name='home'),

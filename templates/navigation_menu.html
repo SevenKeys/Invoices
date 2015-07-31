@@ -31,7 +31,11 @@
                     <a href="{% url 'auth_password_change' %}">{% trans "Change password" %}</a>
                 </li>
                 <li>
-                    <a href="{% url 'auth_password_change' %}">{% trans "Edit company information" %}</a>
+                {% if company %}
+                    <a href="{% url 'company_details' company.id %}">{% trans "Edit company information" %}</a>
+                {% else %}
+                    <a href="{% url 'add_company' %}">{% trans "Create company" %}</a>
+                {% endif %}
                 </li>
             </ul>
         </li>

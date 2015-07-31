@@ -43,8 +43,8 @@ class AddCustomer(CreateView, CompanyMixin, ContactMixin):
 	template_name = 'customers/edit_customer.html'
 	success_url = '/customers/all/'
 
-	def form_invalid(self,form):
-		return HttpResponse('form is invalid')
+	# def form_invalid(self,form):
+	# 	return HttpResponse('form is invalid')
 
 	def form_valid(self, form):
 		new_customer = form.save(commit=False)

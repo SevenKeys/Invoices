@@ -36,33 +36,48 @@ def templates_list(request):
 def new_template(request):
     defaultcomponents = TemplateComponent.objects.filter(default=True)
     unremovablecomponents = []
+    removablecomponents = []
     customcomponents = TemplateComponent.objects.filter(company=request.user.userprofile.company)
     for item in defaultcomponents:
-        if not item.removable:
+        if item.removable:
+            removablecomponents.append(item)
+        else:
             unremovablecomponents.append(item)
-    return render_to_response("invoices/template_generator.html", {"user": request.user, "defaultcomponents": defaultcomponents, "unremovablecomponents": unremovablecomponents, "customcomponents": customcomponents})
+    return render_to_response("invoices/template_generator.html", {"user": request.user, "defaultcomponents": removablecomponents, "unremovablecomponents": unremovablecomponents, "customcomponents": customcomponents})
 
 
 def edit_template(request):
     defaultcomponents = TemplateComponent.objects.filter(default=True)
     unremovablecomponents = []
+    removablecomponents = []
     customcomponents = TemplateComponent.objects.filter(company=request.user.userprofile.company)
     template = InvoiceTemplate.objects.get(id=request.GET['id_template'])
     component_instances = TemplateComponentInstance.objects.filter(template=template)
     for item in defaultcomponents:
-        if not item.removable:
+        if item.removable:
+            removablecomponents.append(item)
+        else:
             unremovablecomponents.append(item)
     list = []
     for row in component_instances:
         list.append({'id': row.id, 'reference': row.reference, 'position_x': row.position_x, 'position_y': row.position_y, "size_x": row.component.size_x, "size_y": row.component.size_y, "component": row.component.id, "content": row.component.content, "removable": row.component.removable})
     recipe_list_json = json.dumps(list)
-    return render_to_response("invoices/template_generator.html", {"user": request.user, "defaultcomponents": defaultcomponents, "unremovablecomponents": unremovablecomponents, "customcomponents": customcomponents, "id_template": template.id, "template": recipe_list_json})
+    return render_to_response("invoices/template_generator.html", {"user": request.user, "defaultcomponents": removablecomponents, "unremovablecomponents": unremovablecomponents, "customcomponents": customcomponents, "id_template": template.id, "template": recipe_list_json})
 
 
 def add_custom_component(request):
     saved_component = TemplateComponent(company=request.user.userprofile.company, default=False, removable=True, title=request.POST['title'], size_x=request.POST['size_x'], size_y=request.POST['size_y'], content=request.POST['content'])
     saved_component.save()
     return HttpResponse(saved_component.id)
+
+
+def delete_custom_component(request):
+    component = TemplateComponent.objects.get(id=request.GET['id_component'])
+    instances = TemplateComponentInstance.objects.filter(component=component)
+    if instances.exists():
+        return HttpResponse("ko")
+    else:
+        return HttpResponse("ok")
 
 
 def save_template(request):

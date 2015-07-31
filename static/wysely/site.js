@@ -32,7 +32,9 @@ $(function() {
 						gridster.remove_widget( $(this).parent());
 					});
 					CKEDITOR.disableAutoInline = true;
-					CKEDITOR.inline("editable_" + this.id);
+					CKEDITOR.inline("editable_" + this.id, {
+						removePlugins: 'toolbar'
+					});
 					CKEDITOR.instances["editable_" + this.id].setData(decrypt(this.content));
 				});
 			}
@@ -52,7 +54,9 @@ $(function() {
 					gridster.remove_widget( $(this).parent());
 				});
 				CKEDITOR.disableAutoInline = true;
-				CKEDITOR.inline(id);
+				CKEDITOR.inline(id, {
+					removePlugins: 'toolbar'
+				} );
 			});
 
 			$('#save').on('click', function() {
@@ -94,13 +98,7 @@ function widgetsJson(jsonList) {
 
 function saveComponent(title, sizex, sizey, cnt) {
     $(document).ready(function(){
-		$.ajaxSetup({
-			beforeSend: function(xhr, settings) {
-				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-				}
-			}
-		});
+		prepareAjax();
         $.ajax({
             url: '/invoices/templates/customcomponents/new/',
             data: {
@@ -114,7 +112,7 @@ function saveComponent(title, sizex, sizey, cnt) {
                 console.error(data);
             },
             success: function(data) {
-            	var customcomponent = '<li role="presentation"><a id="' + JSON.stringify(data) + '" class="addable-element" data-x-size="' + sizex + '" data-y-size="' + sizey + '" data-content="' + cnt + '">' + title + '</a><span class="glyphicon glyphicon-add"></span></li>';
+            	var customcomponent = '<li role="presentation" class="list-group-item"><a>' + title + '</a><a id="' + JSON.stringify(data) + '" class="addable-element" data-x-size="' + sizex + '" data-y-size="' + sizey + '" data-content="' + cnt + '"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a><a class="edit-component"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a><a class="delete-component"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></li></li>';
             	$("#custom-components").append(customcomponent);
             	$("#add-widget").modal('hide');
             	$('.addable-element').on('click', function() {
@@ -126,7 +124,9 @@ function saveComponent(title, sizex, sizey, cnt) {
 						gridster.remove_widget( $(this).parent());
 					});
 					CKEDITOR.disableAutoInline = true;
-					CKEDITOR.inline(id);
+					CKEDITOR.inline(id, {
+						removePlugins: 'toolbar'
+					});
 				});
             },
             type: 'POST'
@@ -136,13 +136,7 @@ function saveComponent(title, sizex, sizey, cnt) {
 
 function saveTemplate(id_template, title, description, component_instances) {
     $(document).ready(function(){
-		$.ajaxSetup({
-			beforeSend: function(xhr, settings) {
-				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-				}
-			}
-		});
+		prepareAjax();
         $.ajax({
             url: '/invoices/templates/save/',
             data: {
@@ -222,4 +216,20 @@ function getWidget(id, component, removable) {
 	}
 	widget = widget + '<div id="editable_' + id + '" name="editable_' + id + '" class="editable" style="width:100%;height:100%"></div></li>';
 	return widget;
+}
+
+/**
+ * Prepare the csrf for
+ * ajax calls.
+ */
+function prepareAjax() {
+	$(document).ready(function(){
+		$.ajaxSetup({
+			beforeSend: function(xhr, settings) {
+				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+				}
+			}
+		});
+	});
 }

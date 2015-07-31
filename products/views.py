@@ -50,8 +50,8 @@ class AddProduct(CreateView, CompanyMixin):
         return super(AddProduct,self).form_valid(form)
 
 
-    def form_invalid(self,form):
-        return HttpResponse('form is invalid')
+    # def form_invalid(self,form):
+    #     return HttpResponse('form is invalid')
 
 
 class UpdateProduct(UpdateView):

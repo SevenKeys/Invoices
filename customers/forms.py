@@ -5,12 +5,14 @@ from .models import Customer, CustomerDetails, CustomerGroup
 
 class CustomerForm(forms.ModelForm):
 	name = forms.CharField(label='Client name')
+
 	class Meta:
 		model = Customer
 		fields = ['name']
 
 
 class CustomerGroupForm(forms.ModelForm):
+	name = forms.CharField(label='Client group name')
 
 	class Meta:
 		model = CustomerGroup

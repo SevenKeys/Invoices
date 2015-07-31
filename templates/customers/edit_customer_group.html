@@ -21,7 +21,11 @@
 			{% endif %}
 			<fieldset class="form-group" >
 			{% if field.field|fieldtype != 'ModelMultipleChoiceField' %}
-			  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:</label>
+			  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+			  {% if field.field.required %}
+				 <span class="special_class">*</span>
+		  	  {% endif %}
+			  </label>
 			      <input type="text" class="form-control"
 			        name="{{ field.name }}"
 			        id="id_{{ field.name }}"

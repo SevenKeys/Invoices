@@ -85,13 +85,11 @@ class AddCustomerGroup(CreateView, CompanyMixin):
 	template_name = 'customers/edit_customer_group.html'
 	success_url = '/customers/all/'
 
-	def form_invalid(self,form):
-		return HttpResponse('form is invalid')
+	# def form_invalid(self,form):
+	# 	return HttpResponse('form is invalid')
 
 	def get_context_data(self,**kwargs):
 		context = super(AddCustomerGroup,self).get_context_data(**kwargs)
-		# user = self.request.user
-		# company = user.userprofile.company
 		context['company'] = self.get_company()
 		return context
 

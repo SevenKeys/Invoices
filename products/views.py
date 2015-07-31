@@ -77,7 +77,7 @@ class ProductGroupDetail(DetailView):
 
 
 
-class AddProductGroup(CreateView):
+class AddProductGroup(CreateView, CompanyMixin):
     model = ProductGroup
     form_class = ProductGroupForm
     template_name = 'products/edit_product_group.html'
@@ -85,15 +85,15 @@ class AddProductGroup(CreateView):
 
     def form_valid(self, form):
         new_group = form.save(commit=False)
-        user = self.request.user
-        company = user.userprofile.company
-        new_group.company = company
+        # user = self.request.user
+        # company = user.userprofile.company
+        new_group.company = self.get_company()
         new_group.save()
         return super(AddProductGroup,self).form_valid(form)
 
 
-    def form_invalid(self,form):
-        return HttpResponse('form is invalid')
+    # def form_invalid(self,form):
+    #     return HttpResponse('form is invalid')
 
 
 class UpdateProductGroup(UpdateView):

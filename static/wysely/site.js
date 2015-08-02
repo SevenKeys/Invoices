@@ -90,12 +90,12 @@ function uuid(){
 };
 
 /**
- * Parse the String to a JSON list.
+ * Save a custom component.
+ * @param title Title of the component
+ * @param sizex Horizontal size of the component
+ * @param sizey Vertical size of the component
+ * @param cont Content of the component in html
  */
-function widgetsJson(jsonList) {
-	return JSON.parse(jsonList);
-}
-
 function saveComponent(title, sizex, sizey, cnt) {
     $(document).ready(function(){
 		$.ajaxSetup({
@@ -221,6 +221,10 @@ function deleteComponent(id_component) {
     });
 }
 
+/**
+ * Get the cookie of the browser.
+ * @param name Name of the cookie to get
+ */
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -237,12 +241,17 @@ function getCookie(name) {
     return cookieValue;
 }
 
+/**
+ * Check the csrf safe method.
+ * @param method Method to check
+ */
 function csrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
 
 /**
  * Encryp the message.
+ * @paam toEncrypt String to encrypt
  */
 function encrypt(toEncrypt) {
 	var Re = new RegExp('&quot;', "g");
@@ -256,6 +265,10 @@ function encrypt(toEncrypt) {
 	return formated;
 }
 
+/**
+ * Decrypt the message.
+ * @param toDecrypt String to decrypt
+ */
 function decrypt(toDecrypt) {
 	Re = new RegExp("__jump__", "g");
 	formated = toDecrypt.replace(Re, '\n')

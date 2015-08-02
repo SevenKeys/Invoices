@@ -72,12 +72,16 @@ def add_custom_component(request):
 
 
 def delete_custom_component(request):
-    component = TemplateComponent.objects.get(id=request.GET['id_component'])
-    instances = TemplateComponentInstance.objects.filter(component=component)
-    if instances.exists():
-        return HttpResponse("ko")
+    if request.method == 'GET':
+        component = TemplateComponent.objects.get(id=request.GET['id_component'])
+        instances = TemplateComponentInstance.objects.filter(component=component)
+        if instances.exists():
+            return HttpResponse("ko")
+        else:
+            component.delete()
+            return HttpResponse("ok")
     else:
-        return HttpResponse("ok")
+        return HttpResponse("ko")
 
 
 def save_template(request):

@@ -98,7 +98,13 @@ function widgetsJson(jsonList) {
 
 function saveComponent(title, sizex, sizey, cnt) {
     $(document).ready(function(){
-		prepareAjax();
+		$.ajaxSetup({
+			beforeSend: function(xhr, settings) {
+				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+				}
+			}
+		});
         $.ajax({
             url: '/invoices/templates/customcomponents/new/',
             data: {
@@ -112,7 +118,7 @@ function saveComponent(title, sizex, sizey, cnt) {
                 console.error(data);
             },
             success: function(data) {
-            	var customcomponent = '<li role="presentation" class="list-group-item"><a>' + title + '</a><a id="' + JSON.stringify(data) + '" class="addable-element" data-x-size="' + sizex + '" data-y-size="' + sizey + '" data-content="' + cnt + '"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a><a class="edit-component"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a><a class="delete-component"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></li></li>';
+            	var customcomponent = '<li role="presentation" class="list-group-item"><a>' + title + '</a><a id="' + JSON.stringify(data) + '" class="addable-element" data-x-size="' + sizex + '" data-y-size="' + sizey + '" data-content="' + cnt + '"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a><a class="edit-component"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a><a class="delete-component" onclick="deleteComponent(' + JSON.stringify(data) + ')"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></li></li>';
             	$("#custom-components").append(customcomponent);
             	$("#add-widget").modal('hide');
             	$('.addable-element').on('click', function() {
@@ -134,9 +140,22 @@ function saveComponent(title, sizex, sizey, cnt) {
     });
 }
 
+/**
+ * Save a complete template, creating or editing it.
+ * @param id_template If is editing the template, can be null if is new
+ * @param title Title of the template
+ * @param description Description of the template
+ * @param component_instances List of widgets of the template
+ */
 function saveTemplate(id_template, title, description, component_instances) {
     $(document).ready(function(){
-		prepareAjax();
+		$.ajaxSetup({
+			beforeSend: function(xhr, settings) {
+				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+				}
+			}
+		});
         $.ajax({
             url: '/invoices/templates/save/',
             data: {
@@ -154,6 +173,50 @@ function saveTemplate(id_template, title, description, component_instances) {
             	document.getElementById("id_template").value = JSON.stringify(data)
             },
             type: 'POST'
+        });
+    });
+}
+
+/**
+ * Delete the component.
+ * @param id_component id of the component to delete
+ */
+function deleteComponent(id_component) {
+    $(document).ready(function(){
+		$.ajaxSetup({
+			beforeSend: function(xhr, settings) {
+				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+				}
+			}
+		});
+        $.ajax({
+            url: '/invoices/templates/customcomponents/delete/',
+            data: {
+                    id_component: id_component
+            },
+            dataType: "json",
+            error: function(data) {
+             	if (data.responseText == "ok") {
+            	    $("#success-delete-component").show();
+            	    $("#error-delete-component").alert('close');
+            	    $("#" + id_component).parent().remove();
+            	} else {
+            	    $("#error-delete-component").show();
+            	    $("#success-delete-component").alert('close');
+            	}
+            },
+            success: function(data) {
+            	if (data.responseText == "ok") {
+            	    $("#success-delete-component").show();
+            	    $("#error-delete-component").alert('close');
+            	    $("#" + id_component).parent().remove();
+            	} else {
+            	    $("#error-delete-component").show();
+            	    $("#success-delete-component").alert('close');
+            	}
+            },
+            type: 'GET'
         });
     });
 }
@@ -210,7 +273,9 @@ function decrypt(toDecrypt) {
  * @param removable if is removable or not
  */
 function getWidget(id, component, removable) {
-	var widget = '<li id="' + id + '" style="border: 2px solid red;" class="element" data-component="' + component + '"><span class="glyphicon glyphicon-move" aria-hidden="true"></span>';
+	var widget = '<li id="' + id + '" style="border: 2px solid red;" class="element" data-component="'
+	    + component +
+	    '"><span class="glyphicon glyphicon-move" aria-hidden="true"></span>';
 	if (removable) {
 		widget = widget + '<button type="button" class="btn btn-default remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></button>';
 	}

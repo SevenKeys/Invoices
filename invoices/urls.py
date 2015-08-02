@@ -7,4 +7,5 @@ urlpatterns = patterns('',
                        url(r'^templates/customcomponents/new/$', 'invoices.views.add_custom_component'),
                        url(r'^templates/save/$', 'invoices.views.save_template'),
                        url(r'^templates/edit/$', 'invoices.views.edit_template'),
+                       url(r'^templates/customcomponents/delete/$', 'invoices.views.delete_custom_component')
                        )

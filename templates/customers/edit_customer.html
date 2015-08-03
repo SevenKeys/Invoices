@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<h2 style="text-align:center">Add or edit customer</h2>
+	<h2 style="text-align:center">Add or edit client</h2>
 	<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:30%">
 		{% csrf_token %} 
 		{% for hidden in form.hidden_fields %}
@@ -16,7 +16,11 @@
 		    </ol>
 		{% endif %}
 		<fieldset class="form-group" >
-		  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+		  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+		  {% if field.field.required %}
+			 <span class="special_class">*</span>
+	  	  {% endif %}
+	  	  </label>
 		      <input type="text" class="form-control"
 		        name="{{ field.name }}"
 		        id="id_{{ field.name }}"

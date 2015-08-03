@@ -2,14 +2,14 @@
 {% block content %}
     <h2>Company Details</h2>
     <ul>
-        <li>Name: {{ object.name }}
-            {% if match %}
-                <button type="button"><a href="{% url 'edit_company' object.id %}">Edit</a></button>
-                <button type="button"><a href="{% url 'delete_company' object.id %}">Delete</a></button>
-            {% endif %}
-        </li>
-        <li>Created: {{ object.created }}</li>
-        <li>Contact: {{ object.contact }}</li>
-        <li>Register code: {{ object.reg_code }}</li>
+        <!-- {% if company %} -->
+            <li>Name: {{ object.name }}
+                    <button type="button"><a href="{% url 'edit_company' object.id %}">Edit</a></button>
+                    <button type="button"><a href="{% url 'delete_company' object.id %}">Delete</a></button>
+            </li>
+            <li>Created: {{ object.created }}</li>
+            <li>Contact: {{ object.contact }}</li>
+            <li>Register code: {{ object.reg_code }}</li>
+        <!-- {% endif %} -->
     </ul>
 {% endblock %}

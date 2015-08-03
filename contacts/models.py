@@ -6,7 +6,7 @@ class Contact(models.Model):
     phone_number = models.CharField(max_length=16,
                                     validators=[phone_regex], blank=True)
     email = models.EmailField()
-    street = models.CharField(max_length=200, blank=True)
+    street = models.CharField(max_length=200)
     city = models.CharField(max_length=60, blank=True)
     postcode = models.CharField(max_length=10, blank=True)
     country = models.CharField(max_length=60)

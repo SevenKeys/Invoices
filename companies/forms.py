@@ -3,13 +3,13 @@ from .models import Company
 from users.models import UserProfile
 
 class CompanyForm(forms.ModelForm):
-    phone_number = forms.IntegerField()
+    phone_number = forms.IntegerField(required=False)
     email = forms.EmailField()
-    street = forms.CharField()
-    city = forms.CharField()
-    postcode = forms.IntegerField()
+    street = forms.CharField(required=False)
+    city = forms.CharField(required=False)
+    postcode = forms.IntegerField(required=False)
     country = forms.CharField()
-    website = forms.CharField()
+    website = forms.CharField(required=False)
     full_user_name = forms.CharField()
     name = forms.CharField(label='Company name')
 
@@ -24,10 +24,10 @@ class CompanyForm(forms.ModelForm):
             contact = user.userprofile.contact
             super(CompanyForm, self).__init__(*args,**kwargs)
             self.fields['phone_number'] = forms.IntegerField(initial=contact.phone_number, 
-                                                     label='Phone number',
-                                                         required=False)
+                                                             label='Phone number',
+                                                             required=False)
             self.fields['email'] = forms.EmailField(initial=contact.email, 
-                                                         label='Email')
+                                                    label='Email')
             self.fields['city'] = forms.CharField(initial=contact.city, 
                                                          label='City',
                                                          required=False)
@@ -42,6 +42,7 @@ class CompanyForm(forms.ModelForm):
             self.fields['website'] = forms.CharField(initial=contact.website, 
                                                          label='Website', 
                                                          required=False)
+            self.fields['full_user_name'] = forms.CharField(initial=user.userprofile.name)
         except (UserProfile.DoesNotExist, AttributeError):
             contact=False
             super(CompanyForm, self).__init__(*args,**kwargs)

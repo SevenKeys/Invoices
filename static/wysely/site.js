@@ -19,29 +19,30 @@ $(function() {
 						reference: $($w).attr('id'),
 						position_y: wgd.col,
 						position_x: wgd.row,
-						component: {
-						    id: $($w).data('component')
-						}
+						id_component: $($w).data('component')
 					};
 				}
 			}).data("gridster");
 
 			if (initialData != undefined && initialData != null && "" != initialData) {
 				gridster.remove_all_widgets();
-				$.each(Gridster.sort_by_row_and_col_asc(JSON.parse(initialData)), function() {
-					gridster.add_widget('<li id="' + this.id + '" style="border: 2px solid red;" class="element-added"><span class="glyphicon glyphicon-move" aria-hidden="true"></span><button type="button" class="btn btn-default remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></button><div id="editable_' + this.id + '" name="editable_' + this.id + '" class="editable" style="width:100%;height:100%"></div></li>', this.position_x, this.position_y, this.col, this.row);
+				$.each(Gridster.sort_by_row_and_col_asc(JSON.parse(encrypt(initialData))), function() {
+					gridster.add_widget(getWidget(this.id, this.component, this.removable), this.size_x, this.size_y, this.position_y, this.position_x);
 					$(document).on('click', '.remove', function() {
 						gridster.remove_widget( $(this).parent());
 					});
 					CKEDITOR.disableAutoInline = true;
-					CKEDITOR.inline("editable_" + this.id);
-					CKEDITOR.instances["editable_" + this.id].setData(this.content.toString().replace("__jump__", "\n"));
+					CKEDITOR.inline("editable_" + this.id, {
+						removePlugins: 'toolbar'
+					});
+					CKEDITOR.instances["editable_" + this.id].setData(decrypt(this.content));
 				});
 			}
 
 			CKEDITOR.replace("widget-content");
 			$("#add-element").on('click', function() {
 				$("#add-widget").modal();
+
 			});
 
 			$('.addable-element').on('click', function() {
@@ -53,12 +54,22 @@ $(function() {
 					gridster.remove_widget( $(this).parent());
 				});
 				CKEDITOR.disableAutoInline = true;
-				CKEDITOR.inline(id);
+				CKEDITOR.inline(id, {
+					removePlugins: 'toolbar'
+				} );
 			});
 
 			$('#save').on('click', function() {
-				CKEDITOR.instances["widget-content"].destroy();
-				alert(JSON.stringify(gridster.serialize()));
+				if (CKEDITOR.instances['widget-content']) {
+					CKEDITOR.instances["widget-content"].destroy();
+				}
+				document.getElementById("instances_template").value = JSON.stringify(gridster.serialize());
+				saveTemplate(
+					document.getElementById('id_template').value,
+					document.getElementById('title_template').value,
+					document.getElementById('description_template').value,
+					document.getElementById('instances_template').value);
+				CKEDITOR.replace("widget-content");
 			});
 		}
 	});
@@ -79,12 +90,12 @@ function uuid(){
 };
 
 /**
- * Parse the String to a JSON list.
+ * Save a custom component.
+ * @param title Title of the component
+ * @param sizex Horizontal size of the component
+ * @param sizey Vertical size of the component
+ * @param cont Content of the component in html
  */
-function widgetsJson(jsonList) {
-	return JSON.parse(jsonList);
-}
-
 function saveComponent(title, sizex, sizey, cnt) {
     $(document).ready(function(){
 		$.ajaxSetup({
@@ -107,11 +118,10 @@ function saveComponent(title, sizex, sizey, cnt) {
                 console.error(data);
             },
             success: function(data) {
-            	var customcomponent = '<li role="presentation"><a id="' + JSON.stringify(data) + '" class="addable-element" data-x-size="' + sizex + '" data-y-size="' + sizey + '" data-content="' + cnt + '">' + title + '</a><span class="glyphicon glyphicon-add"></span></li>';
+            	var customcomponent = '<li role="presentation" class="list-group-item"><a>' + title + '</a><a id="' + JSON.stringify(data) + '" class="addable-element" data-x-size="' + sizex + '" data-y-size="' + sizey + '" data-content="' + cnt + '"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a><a class="edit-component"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a><a class="delete-component" onclick="deleteComponent(' + JSON.stringify(data) + ')"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></li></li>';
             	$("#custom-components").append(customcomponent);
             	$("#add-widget").modal('hide');
             	$('.addable-element').on('click', function() {
-            		alert("aqui entra o no compadre")
 					var widget_id = uuid();
 					var id = "editable_" + widget_id;
 					gridster.add_widget(
@@ -120,7 +130,9 @@ function saveComponent(title, sizex, sizey, cnt) {
 						gridster.remove_widget( $(this).parent());
 					});
 					CKEDITOR.disableAutoInline = true;
-					CKEDITOR.inline(id);
+					CKEDITOR.inline(id, {
+						removePlugins: 'toolbar'
+					});
 				});
             },
             type: 'POST'
@@ -128,6 +140,91 @@ function saveComponent(title, sizex, sizey, cnt) {
     });
 }
 
+/**
+ * Save a complete template, creating or editing it.
+ * @param id_template If is editing the template, can be null if is new
+ * @param title Title of the template
+ * @param description Description of the template
+ * @param component_instances List of widgets of the template
+ */
+function saveTemplate(id_template, title, description, component_instances) {
+    $(document).ready(function(){
+		$.ajaxSetup({
+			beforeSend: function(xhr, settings) {
+				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+				}
+			}
+		});
+        $.ajax({
+            url: '/invoices/templates/save/',
+            data: {
+                    title_template: title,
+                    description_template: description,
+                    id_template: id_template,
+                    instances_template: component_instances
+            },
+            dataType: "json",
+            error: function(data) {
+
+            },
+            success: function(data) {
+            	$("#saved").show();
+            	document.getElementById("id_template").value = JSON.stringify(data)
+            },
+            type: 'POST'
+        });
+    });
+}
+
+/**
+ * Delete the component.
+ * @param id_component id of the component to delete
+ */
+function deleteComponent(id_component) {
+    $(document).ready(function(){
+		$.ajaxSetup({
+			beforeSend: function(xhr, settings) {
+				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+				}
+			}
+		});
+        $.ajax({
+            url: '/invoices/templates/customcomponents/delete/',
+            data: {
+                    id_component: id_component
+            },
+            dataType: "json",
+            error: function(data) {
+             	if (data.responseText == "ok") {
+            	    $("#success-delete-component").show();
+            	    $("#error-delete-component").alert('close');
+            	    $("#" + id_component).parent().remove();
+            	} else {
+            	    $("#error-delete-component").show();
+            	    $("#success-delete-component").alert('close');
+            	}
+            },
+            success: function(data) {
+            	if (data.responseText == "ok") {
+            	    $("#success-delete-component").show();
+            	    $("#error-delete-component").alert('close');
+            	    $("#" + id_component).parent().remove();
+            	} else {
+            	    $("#error-delete-component").show();
+            	    $("#success-delete-component").alert('close');
+            	}
+            },
+            type: 'GET'
+        });
+    });
+}
+
+/**
+ * Get the cookie of the browser.
+ * @param name Name of the cookie to get
+ */
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -144,6 +241,73 @@ function getCookie(name) {
     return cookieValue;
 }
 
+/**
+ * Check the csrf safe method.
+ * @param method Method to check
+ */
 function csrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+/**
+ * Encryp the message.
+ * @paam toEncrypt String to encrypt
+ */
+function encrypt(toEncrypt) {
+	var Re = new RegExp('&quot;', "g");
+	var formated = toEncrypt.replace(Re, '"');
+	Re = new RegExp('\n', "g");
+	formated = formated.replace(Re, '__jump__');
+	Re = new RegExp("\t", "g");
+	formated = formated.replace(Re, '__tab__')
+	Re = new RegExp("\r", "g");
+	formated = formated.replace(Re, '__return__')
+	return formated;
+}
+
+/**
+ * Decrypt the message.
+ * @param toDecrypt String to decrypt
+ */
+function decrypt(toDecrypt) {
+	Re = new RegExp("__jump__", "g");
+	formated = toDecrypt.replace(Re, '\n')
+	Re = new RegExp("__tab__", "g");
+	formated = formated.replace(Re, '\t')
+	Re = new RegExp("__return__", "g");
+	formated = formated.replace(Re, '\r')
+	return formated;
+}
+
+/**
+ * Return the widget, removable or not.
+ * @param id Id of the element
+ * @param component component
+ * @param removable if is removable or not
+ */
+function getWidget(id, component, removable) {
+	var widget = '<li id="' + id + '" style="border: 2px solid red;" class="element" data-component="'
+	    + component +
+	    '"><span class="glyphicon glyphicon-move" aria-hidden="true"></span>';
+	if (removable) {
+		widget = widget + '<button type="button" class="btn btn-default remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></button>';
+	}
+	widget = widget + '<div id="editable_' + id + '" name="editable_' + id + '" class="editable" style="width:100%;height:100%"></div></li>';
+	return widget;
+}
+
+/**
+ * Prepare the csrf for
+ * ajax calls.
+ */
+function prepareAjax() {
+	$(document).ready(function(){
+		$.ajaxSetup({
+			beforeSend: function(xhr, settings) {
+				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+				}
+			}
+		});
+	});
 }

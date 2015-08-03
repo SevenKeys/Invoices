@@ -20,7 +20,7 @@
                     <td>{{template.description}}</td>
                     <td>{{template.active}}</td>
                     <td>{{template.company}}</td>
-                    <td>{% trans "Remove" %}</td>
+                    <td><a href="/invoices/templates/edit?id_template={{template.id}}">{% trans "Edit" %}</td>
                 </tr>
             {% endfor %}
         </table>

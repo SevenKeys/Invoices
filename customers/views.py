@@ -155,3 +155,7 @@ class DeleteCustomerDetail(DeleteView):
 	template_name = 'customers/delete_customer_detail.html'
 	pk_url_kwarg = 'detail_id'
 	success_url = '/customers/all/'
+
+
+# def searchAjax(self, request):
+	

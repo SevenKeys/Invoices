@@ -27,7 +27,7 @@ class NavMenuView(TemplateView, CompanyMixin):
 		context = super(NavMenuView, self).get_context_data(**kwargs)
 		try:
 			company = self.get_company()
-		except Company.DoesNotExist:
+		except (Company.DoesNotExist, AttributeError):
 			company = None
 		context['company'] = company
 		return context

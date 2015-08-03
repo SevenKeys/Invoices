@@ -3,6 +3,13 @@
 {% block content %}
     {% if company %}
         <h2>Clients of <strong>{{ company }}</strong> company.</h2>
+        <form method="POST" action="">{% csrf_token %}
+            <div class="input-group">
+                <input type="text" id="search" class="form-control" placeholder="Input search text" aria-describedby="sizing-addon2">
+            </div>
+        </form>
+        <ul id="search-results">
+        </ul>
         <ul>
             {% if customer_list.count > 0 %}
                 {% for customer in customer_list %}

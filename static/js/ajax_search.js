@@ -17,18 +17,22 @@ $(function(){
 var csrftoken = getCookie('csrftoken');
 
     $('#search').keyup(function(){
-    	$.ajax({
-    		type: 'POST',
-    		url: '/customers/search/',
-    		data: {
-    			'search_text':$('search').val(),
-    			'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]')
-    		},
-    		success: searchSuccess,
-    		dataType: 'html'
-    	});
+    	if ($('#search').val() != ''){
+	    	$.ajax({
+	    		type: 'POST',
+	    		url: '/customers/search/',
+	    		data: {
+	    			'search_text':$('#search').val(),
+	    			'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+	    		},
+	    		success: searchSuccess,
+	    		dataType: 'html'
+	    	});
+	    }else{
+	    	$('#search-results').html('');
+	    }
     });
-    
+
     function searchSuccess(data, textStatus, jqXHR){
     	$('#search-results').html(data);
     }

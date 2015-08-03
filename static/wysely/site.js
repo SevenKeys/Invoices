@@ -6,7 +6,7 @@ var gridster;
 $(function() {
 	$.fn.extend({
 		template: function(initialData) {
-
+			prepareAjax();
 			gridster = $(this).gridster({
 				widget_margins: [10, 10],
 				widget_base_dimensions: [140, 140],
@@ -114,13 +114,6 @@ function uuid(){
  */
 function saveComponent(title, sizex, sizey, cnt) {
     $(document).ready(function(){
-		$.ajaxSetup({
-			beforeSend: function(xhr, settings) {
-				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-				}
-			}
-		});
         $.ajax({
             url: '/invoices/templates/customcomponents/',
             data: {
@@ -167,13 +160,6 @@ function saveComponent(title, sizex, sizey, cnt) {
  */
 function updateComponent(id_component, title, content) {
     $(document).ready(function(){
-		$.ajaxSetup({
-			beforeSend: function(xhr, settings) {
-				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-				}
-			}
-		});
         $.ajax({
             url: '/invoices/templates/customcomponents/update/',
             data: {
@@ -204,13 +190,6 @@ function updateComponent(id_component, title, content) {
  */
 function saveTemplate(id_template, title, description, component_instances) {
     $(document).ready(function(){
-		$.ajaxSetup({
-			beforeSend: function(xhr, settings) {
-				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-				}
-			}
-		});
         $.ajax({
             url: '/invoices/templates/save/',
             data: {
@@ -238,13 +217,6 @@ function saveTemplate(id_template, title, description, component_instances) {
  */
 function deleteComponent(id_component) {
     $(document).ready(function(){
-		$.ajaxSetup({
-			beforeSend: function(xhr, settings) {
-				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-				}
-			}
-		});
         $.ajax({
             url: '/invoices/templates/customcomponents/delete/',
             data: {

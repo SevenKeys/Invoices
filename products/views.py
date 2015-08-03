@@ -1,4 +1,4 @@
-# from django.shortcuts import render
+from django.shortcuts import render
 # from django.template import loader, Context
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
@@ -110,3 +110,15 @@ class DeleteProductGroup(DeleteView):
     template_name = 'products/delete_product_group.html'
     pk_url_kwarg = 'group_id'
     success_url = '/products/all/'
+
+# AJAX search fucntion
+def searchProdAjax(request):
+    if request.method == 'POST':
+        search_text = request.POST['search_text']
+    else:
+        search_text = ''
+    products = Product.objects.filter(name__icontains=search_text)
+    context = {};
+    context['products'] = products
+
+    return render(request, 'products/search_products_results.html', context)

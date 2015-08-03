@@ -5,9 +5,9 @@
         <h2>Clients of <strong>{{ company }}</strong> company.</h2>
             {% csrf_token %}
             <div class="input-group">
-                <input type="text" id="search" class="form-control" placeholder="Input search text" aria-describedby="sizing-addon2">
+                <input type="text" id="search_customers" class="form-control" placeholder="Input search text" aria-describedby="sizing-addon2">
             </div>
-        <ul id="search-results">
+        <ul id="search_customers_results">
         </ul>
         <ul>
             {% if customer_list.count > 0 %}

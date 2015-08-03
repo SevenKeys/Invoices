@@ -3,7 +3,7 @@ from .views import CustomerList, CustomerDetail
 from .views import AddCustomer, DeleteCustomer, UpdateCustomer
 from .views import AddCustomerGroup, CustomerGroupDetail, DeleteCustomerGroup, UpdateCustomerGroup
 from .views import AddCustomerDetail, DeleteCustomerDetail, UpdateCustomerDetail
-from .views import searchAjax
+from .views import searchCustAjax
 urlpatterns = [
 	url(r'^all/$',CustomerList.as_view(),name='customers'),
 	url(r'^get/(?P<customer_id>\w+)/$',CustomerDetail.as_view(),name='customer_detail'),
@@ -17,5 +17,5 @@ urlpatterns = [
 	url(r'^get_group/(?P<group_id>\d+)/$', CustomerGroupDetail.as_view(),name='get_group'),
 	url(r'^edit_group/(?P<group_id>\d+)/$', UpdateCustomerGroup.as_view(),name='edit_group'),
 	url(r'^delete_group/(?P<group_id>\d+)/$', DeleteCustomerGroup.as_view(),name='delete_group'),
-	url(r'^search/$', searchAjax)
+	url(r'^search/$', searchCustAjax)
 ]

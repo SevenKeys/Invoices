@@ -16,25 +16,46 @@ $(function(){
 }
 var csrftoken = getCookie('csrftoken');
 
-    $('#search').keyup(function(){
-    	if ($('#search').val() != ''){
+    $('#search_customers').keyup(function(){
+    	if ($('#search_customers').val() != ''){
 	    	$.ajax({
 	    		type: 'POST',
 	    		url: '/customers/search/',
 	    		data: {
-	    			'search_text':$('#search').val(),
+	    			'search_text':$('#search_customers').val(),
 	    			'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
 	    		},
-	    		success: searchSuccess,
+	    		success: searchSuccessCust,
 	    		dataType: 'html'
 	    	});
 	    }else{
-	    	$('#search-results').html('');
+	    	$('#search_customers_results').html('');
 	    }
     });
 
-    function searchSuccess(data, textStatus, jqXHR){
-    	$('#search-results').html(data);
+    function searchSuccessCust(data, textStatus, jqXHR){
+    	$('#search_customers_results').html(data);
+    }
+
+    $('#search_products').keyup(function(){
+    	if ($('#search_products').val() != ''){
+	    	$.ajax({
+	    		type: 'POST',
+	    		url: '/products/search/',
+	    		data: {
+	    			'search_text':$('#search_products').val(),
+	    			'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+	    		},
+	    		success: searchSuccessProd,
+	    		dataType: 'html'
+	    	});
+	    }else{
+	    	$('#search_products_results').html('');
+	    }
+    });
+
+    function searchSuccessProd(data, textStatus, jqXHR){
+    	$('#search_products_results').html(data);
     }
 });
 	

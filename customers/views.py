@@ -157,14 +157,13 @@ class DeleteCustomerDetail(DeleteView):
 	success_url = '/customers/all/'
 
 
-def searchAjax(request):
+def searchCustAjax(request):
 	if request.method == 'POST':
 		search_text = request.POST['search_text']
 	else:
 		search_text = ''
-		print(search_text)
 	customers = Customer.objects.filter(name__icontains=search_text)
 	context = {};
 	context['customers'] = customers
 
-	return render(request, 'customers/search_results.html', context)
+	return render(request, 'customers/search_customers_results.html', context)

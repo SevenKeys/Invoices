@@ -6,7 +6,7 @@ from .forms import InvoiceForm
 from django.http import HttpResponse
 import json
 import logging
-from django.core import serializers
+
 
 def main(request):
     """Main listing."""
@@ -71,6 +71,11 @@ def add_custom_component(request):
     return HttpResponse(saved_component.id)
 
 
+def update_custom_component(request):
+    TemplateComponent.objects.filter(pk=request.POST['id_component']).update(title=request.POST['title'], content=request.POST['content'])
+    return HttpResponse(request.POST['id_component'])
+
+
 def delete_custom_component(request):
     if request.method == 'GET':
         component = TemplateComponent.objects.get(id=request.GET['id_component'])
@@ -85,8 +90,6 @@ def delete_custom_component(request):
 
 
 def save_template(request):
-    logger = logging.getLogger('challenges.viewset')
-    logger.error(request.POST['id_template'])
     if request.POST['id_template'] is "":
         template = InvoiceTemplate(title=request.POST['title_template'], description=request.POST['description_template'], company=request.user.userprofile.company)
         template.save()
@@ -94,7 +97,6 @@ def save_template(request):
         template = InvoiceTemplate.objects.get(id=request.POST['id_template'])
         TemplateComponentInstance.objects.filter(template=template).delete()
     instances = json.loads(request.POST['instances_template'])
-    logger.error(request.POST['instances_template'])
     for instance in instances:
         TemplateComponentInstance(template=template, reference=instance['reference'],
                                   position_x=instance['position_x'], position_y=instance['position_y'],

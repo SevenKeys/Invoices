@@ -40,10 +40,26 @@ $(function() {
 			}
 
 			CKEDITOR.replace("widget-content");
-			$("#add-element").on('click', function() {
+			$("#add-component").on('click', function() {
+			    document.getElementById("id_component").value = null
+			    $("#create-component").show();
+                $("#update-component").hide();
+			    document.getElementById("x-size").readOnly = false;
+                document.getElementById("y-size").readOnly = false;
 				$("#add-widget").modal();
 
 			});
+
+            $(".edit-component").on('click', function() {
+                document.getElementById("x-size").readOnly = true;
+                document.getElementById("y-size").readOnly = true;
+                $("#create-component").hide();
+                $("#update-component").show();
+                document.getElementById("title").value = $(this).prev().prev().text();
+                CKEDITOR.instances['widget-content'].setData($(this).prev().data("content"));
+                document.getElementById("id_component").value = $(this).prev().attr("id");
+                $("#add-widget").modal();
+            });
 
 			$('.addable-element').on('click', function() {
 				var widget_id = uuid();
@@ -106,7 +122,7 @@ function saveComponent(title, sizex, sizey, cnt) {
 			}
 		});
         $.ajax({
-            url: '/invoices/templates/customcomponents/new/',
+            url: '/invoices/templates/customcomponents/',
             data: {
                     title: title,
                     size_x: sizex,
@@ -134,6 +150,45 @@ function saveComponent(title, sizex, sizey, cnt) {
 						removePlugins: 'toolbar'
 					});
 				});
+            },
+            type: 'POST'
+        });
+    });
+}
+
+/**
+ * Update the custom component.
+ * Only allow edit the title and content,
+ * because the component can be used for other
+ * templates and can break the grids.
+ * @param id_component Id of the component to edit
+ * @param title Title of the component to edit
+ * @param content New content of the component
+ */
+function updateComponent(id_component, title, content) {
+    $(document).ready(function(){
+		$.ajaxSetup({
+			beforeSend: function(xhr, settings) {
+				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+				}
+			}
+		});
+        $.ajax({
+            url: '/invoices/templates/customcomponents/update/',
+            data: {
+                    id_component: id_component,
+                    title: title,
+                    content: content
+            },
+            dataType: "json",
+            error: function(data) {
+                console.error(data);
+            },
+            success: function(data) {
+                $('#' + id_component).prev().text(title);
+                $('#' + id_component).data("content", content);
+                $("#add-widget").modal('hide');
             },
             type: 'POST'
         });

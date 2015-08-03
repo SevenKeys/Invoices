@@ -110,4 +110,5 @@ footer{
 .addable-element, .edit-component, .delete-component {
     float: right;
     margin-left: 5px;
+    cursor: pointer;
 }

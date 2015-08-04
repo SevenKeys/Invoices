@@ -22,7 +22,7 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
     def get_queryset(self):
         try:
             company = self.get_company()
-            queryset = Product.objects.filter(company=company)
+            queryset = Product.objects.filter(company=company).order_by('name')
         except:
             queryset = False
         return queryset

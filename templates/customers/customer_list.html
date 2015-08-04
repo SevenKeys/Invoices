@@ -7,9 +7,10 @@
             <div class="input-group">
                 <input type="text" id="search_customers" class="form-control" placeholder="Input search text" aria-describedby="sizing-addon2">
             </div>
-        <ul id="search_customers_results">
-        </ul>
-        <ul>
+            <div class="dropdown">
+                <ul id="search_customers_results" class="dropdown-menu" >
+                </ul>
+            </div>
             {% if customer_list.count > 0 %}
                 {% for customer in customer_list %}
                     <li>Name: <a href="{% url 'customer_detail' customer.id %}">{{ customer.name }}</a>

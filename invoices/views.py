@@ -26,8 +26,8 @@ def main(request):
                                                 invoices_list=invoices.object_list))
 
 
-class AddInvoice(CreateView):
-    model = Invoice
-    form_class = InvoiceForm
-    template_name = 'invoices/create_invoice.html'
-    success_url = '/invoices/success.html'
+# class CreateInvoice(CreateView):
+#     model = Invoice
+#     form_class = InvoiceForm
+#     template_name = 'invoices/create_invoice.html'
+    # success_url = '/invoices/success.html'

@@ -19,7 +19,6 @@
                             <th>Name</th>
                             <th>Company</th>
                             <th>Created</th>
-                            <th>Contact</th>
                             <th>Group(s)</th>
                         </tr>
                     </thead>
@@ -30,7 +29,6 @@
                             </td>
                             <td>{{ customer.company }}</td>
                             <td>{{ customer.created }}</td>
-                            <td>{{ customer.contact }}</td>
                             <td>
                             {% if customer.customergroup_set %}
                         {% for group in customer.customergroup_set.all %}

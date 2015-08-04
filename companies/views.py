@@ -114,7 +114,7 @@ class UpdateCompany(UpdateView):
 	form_class = CompanyForm
 	template_name = 'companies/add_edit_company.html'
 	pk_url_kwarg = 'company_id'
-	success_url = '/companies/all/'
+	success_url = '/'
 
 	def get_form_kwargs(self, **kwargs):
 		kwargs = super(UpdateCompany, self).get_form_kwargs(**kwargs)
@@ -122,6 +122,11 @@ class UpdateCompany(UpdateView):
 			'user': self.request.user
 			})
 		return kwargs
+	# change header in form
+	def get_context_data(self, **kwargs):
+		context = super(UpdateCompany, self).get_context_data(**kwargs)
+		context['edit'] = True
+		return context
 
 
 class DeleteCompany(DeleteView):
@@ -129,4 +134,4 @@ class DeleteCompany(DeleteView):
 	form_class = CompanyForm
 	template_name = 'companies/delete_company.html'
 	pk_url_kwarg = 'company_id'
-	success_url = '/companies/all/'
+	success_url = ''

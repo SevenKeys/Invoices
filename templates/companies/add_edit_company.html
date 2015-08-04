@@ -2,7 +2,11 @@
 
 {% block content %}
 	<form class="form-horizontal" action="" method="POST">
-	    <legend><span  class="col-sm-offset-6">Add company</span></legend>
+		{% if edit %}
+		    <legend><span  class="col-sm-offset-6">Edit company data</span></legend>
+		{% else %}
+		    <legend><span  class="col-sm-offset-6">Add company</span></legend>
+		{% endif %}
 		{% csrf_token %} 
 		{% for hidden in form.hidden_fields %}
 			{{ hidden }}

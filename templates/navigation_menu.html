@@ -32,7 +32,7 @@
                 </li>
                 <li>
                 {% if company %}
-                    <a href="{% url 'company_details' company.id %}">{% trans "Edit company information" %}</a>
+                    <a href="{% url 'edit_company' company.id %}">{% trans "Edit company information" %}</a>
                 {% else %}
                     <a href="{% url 'add_company' %}">{% trans "Create company" %}</a>
                 {% endif %}

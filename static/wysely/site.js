@@ -27,15 +27,7 @@ $(function() {
 			if (initialData != undefined && initialData != null && "" != initialData) {
 				gridster.remove_all_widgets();
 				$.each(Gridster.sort_by_row_and_col_asc(JSON.parse(encrypt(initialData))), function() {
-					gridster.add_widget(getWidget(this.id, this.component, this.removable), this.size_x, this.size_y, this.position_y, this.position_x);
-					$(document).on('click', '.remove', function() {
-						gridster.remove_widget( $(this).parent());
-					});
-					CKEDITOR.disableAutoInline = true;
-					CKEDITOR.inline("editable_" + this.id, {
-						removePlugins: 'toolbar'
-					});
-					CKEDITOR.instances["editable_" + this.id].setData(decrypt(this.content));
+					addComponentInstance(this.id, this.component, decrypt(this.content), this.size_x, this.size_y, this.position_x, this.position_y, this.removable);
 				});
 			}
 
@@ -50,30 +42,8 @@ $(function() {
 
 			});
 
-            $(".edit-component").on('click', function() {
-                document.getElementById("x-size").readOnly = true;
-                document.getElementById("y-size").readOnly = true;
-                $("#create-component").hide();
-                $("#update-component").show();
-                document.getElementById("title").value = $(this).prev().prev().text();
-                CKEDITOR.instances['widget-content'].setData($(this).prev().data("content"));
-                document.getElementById("id_component").value = $(this).prev().attr("id");
-                $("#add-widget").modal();
-            });
-
-			$('.addable-element').on('click', function() {
-				var widget_id = uuid();
-				var id = "editable_" + widget_id;
-				gridster.add_widget(
-				'<li id="' + widget_id + '" style="border: 2px solid red;" class="element" data-component="' + $(this).attr("id") + '"><span class="glyphicon glyphicon-move" aria-hidden="true"></span><button type="button" class="btn btn-default remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></button><div id="' + id + '" name="' + id + '" class="editable" style="width:100%;height:100%">' + $(this).data("content") +  '</div></li>', $(this).data("x-size"), $(this).data("y-size"), 1, 1);
-				$(document).on('click', '.remove', function() {
-					gridster.remove_widget( $(this).parent());
-				});
-				CKEDITOR.disableAutoInline = true;
-				CKEDITOR.inline(id, {
-					removePlugins: 'toolbar'
-				} );
-			});
+			editableEvent(".edit-component");
+			addableEvent();
 
 			$('#save').on('click', function() {
 				if (CKEDITOR.instances['widget-content']) {
@@ -130,19 +100,8 @@ function saveComponent(title, sizex, sizey, cnt) {
             	var customcomponent = '<li role="presentation" class="list-group-item"><a>' + title + '</a><a id="' + JSON.stringify(data) + '" class="addable-element" data-x-size="' + sizex + '" data-y-size="' + sizey + '" data-content="' + cnt + '"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a><a class="edit-component"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a><a class="delete-component" onclick="deleteComponent(' + JSON.stringify(data) + ')"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></li></li>';
             	$("#custom-components").append(customcomponent);
             	$("#add-widget").modal('hide');
-            	$('.addable-element').on('click', function() {
-					var widget_id = uuid();
-					var id = "editable_" + widget_id;
-					gridster.add_widget(
-					'<li id="' + widget_id + '" style="border: 2px solid red;" class="element" data-component="' + $(this).attr("id") + '"><span class="glyphicon glyphicon-move" aria-hidden="true"></span><button type="button" class="btn btn-default remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></button><div id="' + id + '" name="' + id + '" class="editable" style="width:100%;height:100%">' + $(this).data("content") +  '</div></li>', $(this).data("x-size"), $(this).data("y-size"), 1, 1);
-					$(document).on('click', '.remove', function() {
-						gridster.remove_widget( $(this).parent());
-					});
-					CKEDITOR.disableAutoInline = true;
-					CKEDITOR.inline(id, {
-						removePlugins: 'toolbar'
-					});
-				});
+            	addableEvent();
+            	editableEvent(".edit-component");
             },
             type: 'POST'
         });
@@ -249,6 +208,34 @@ function deleteComponent(id_component) {
 }
 
 /**
+ * Add the "click" event to addables elements.
+ */
+function addableEvent() {
+	$(document).ready(function() {
+		$('.addable-element').on('click', function() {
+			addComponentInstance(uuid(), $(this).attr("id"), $(this).data("content"), $(this).data("x-size"), $(this).data("y-size"), 1, 1, true);
+		});
+	});
+}
+
+/**
+ * Add the editable functionality.
+ * @param element Element to make editable
+ */
+function editableEvent(element) {
+	$(element).on('click', function() {
+		document.getElementById("x-size").readOnly = true;
+		document.getElementById("y-size").readOnly = true;
+		$("#create-component").hide();
+		$("#update-component").show();
+		document.getElementById("title").value = $(this).prev().prev().text();
+		CKEDITOR.instances['widget-content'].setData($(this).prev().data("content"));
+		document.getElementById("id_component").value = $(this).prev().attr("id");
+		$("#add-widget").modal();
+	});
+}
+
+/**
  * Get the cookie of the browser.
  * @param name Name of the cookie to get
  */
@@ -337,4 +324,26 @@ function prepareAjax() {
 			}
 		});
 	});
+}
+
+/**
+ * Add a component to the template.
+ * @param component Id of the template component
+ * @param content Content of the widget
+ * @param x_size Horizontal size of the widget
+ * @param y_size Vertical size of the widget
+ * @param x_position Horizontal position
+ * @param y_position Vertical position
+ */
+function addComponentInstance(id, component, content, x_size, y_size, x_position, y_position, removable) {
+	var ck_id = "editable_" + id;
+	gridster.add_widget(getWidget(id, component, removable), x_size, y_size, y_position, x_position);
+	$(document).on('click', '.remove', function() {
+		gridster.remove_widget($(this).parent());
+	});
+	CKEDITOR.disableAutoInline = true;
+	CKEDITOR.inline(ck_id, {
+		removePlugins: 'toolbar'
+	});
+	CKEDITOR.instances[ck_id].setData(content);
 }

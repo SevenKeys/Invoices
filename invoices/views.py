@@ -5,6 +5,8 @@ from .models import *
 from .forms import InvoiceForm
 from django.http import HttpResponse
 import json
+from io import BytesIO
+from reportlab.pdfgen import canvas
 import logging
 
 
@@ -57,7 +59,7 @@ def edit_template(request):
             removablecomponents.append(item)
         else:
             unremovablecomponents.append(item)
-    return render_to_response("invoices/template_generator.html", {"user": request.user, "defaultcomponents": removablecomponents, "unremovablecomponents": unremovablecomponents, "customcomponents": customcomponents, "id_template": template.id})
+    return render_to_response("invoices/template_generator.html", {"user": request.user, "defaultcomponents": removablecomponents, "unremovablecomponents": unremovablecomponents, "customcomponents": customcomponents, "id_template": template.id, "title_template": template.title, "description_template": template.description})
 
 
 def get_template(request):
@@ -88,7 +90,7 @@ def delete_custom_component(request):
             return HttpResponse("ko")
         else:
             component.delete()
-            return HttpResponse("ok")
+            return HttpResponse("ok", content_type="application/json")
     else:
         return HttpResponse("ko")
 
@@ -100,6 +102,7 @@ def save_template(request):
     else:
         template = InvoiceTemplate.objects.get(id=request.POST['id_template'])
         TemplateComponentInstance.objects.filter(template=template).delete()
+        InvoiceTemplate.objects.filter(id=request.POST['id_template']).update(title=request.POST['title_template'], description=request.POST['description_template'])
     instances = json.loads(request.POST['instances_template'])
     for instance in instances:
         TemplateComponentInstance(template=template, reference=instance['reference'],
@@ -107,6 +110,20 @@ def save_template(request):
                                   component=TemplateComponent.objects.get(id=instance['id_component'])).save()
 
     return HttpResponse(template.id)
+
+
+def print_preview(request):
+    output = BytesIO()
+    pdf = canvas.Canvas(output)
+    pdf.drawString(0, 0, "Ajajaja")
+    pdf.showPage()
+    pdf.save()
+    pdf_output = output.getvalue()
+    output.close()
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+    response.write(pdf_output)
+    return response
 
 
 class AddInvoice(CreateView):

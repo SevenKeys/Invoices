@@ -54,6 +54,14 @@ $(function() {
 					document.getElementById('instances_template').value);
 				CKEDITOR.replace("widget-content");
 			});
+
+			$('#preview').on('click', function() {
+				if (CKEDITOR.instances['widget-content']) {
+					CKEDITOR.instances["widget-content"].destroy();
+				}
+				printPreview(JSON.stringify(gridster.serialize()));
+				CKEDITOR.replace("widget-content");
+			});
 		}
 	});
 });
@@ -209,7 +217,6 @@ function deleteComponent(id_component) {
  * @param id_component id of the component to delete
  */
 function loadTemplate(id_template) {
-	alert(id_template);
     $(document).ready(function(){
         $.ajax({
             url: '/invoices/templates/get/',
@@ -294,13 +301,13 @@ function csrfSafeMethod(method) {
  * @param removable if is removable or not
  */
 function getWidget(id, component, removable) {
-	var widget = '<li id="' + id + '" style="border: 2px solid red;" class="element" data-component="'
+	var widget = '<li id="' + id + '" class="element" data-component="'
 	    + component +
-	    '"><span class="glyphicon glyphicon-move" aria-hidden="true"></span>';
+	    '"><span class="move-component"> --- </span>';
 	if (removable) {
-		widget = widget + '<button type="button" class="btn btn-default remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></button>';
+		widget = widget + '<a class="remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></a>';
 	}
-	widget = widget + '<div id="editable_' + id + '" name="editable_' + id + '" class="editable" style="width:100%;height:100%"></div></li>';
+	widget = widget + '<div id="editable_' + id + '" name="editable_' + id + '" class="editable"></div></li>';
 	return widget;
 }
 

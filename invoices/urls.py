@@ -10,4 +10,5 @@ urlpatterns = patterns('',
                        url(r'^templates/customcomponents/delete/$', 'invoices.views.delete_custom_component'),
                        url(r'^templates/customcomponents/update/$', 'invoices.views.update_custom_component'),
                        url(r'^templates/get/$', 'invoices.views.get_template'),
+                       url(r'^templates/preview/$', 'invoices.views.print_preview'),
                        )

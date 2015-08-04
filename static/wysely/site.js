@@ -153,7 +153,7 @@ function updateComponent(id_component, title, content) {
  * @param component_instances List of widgets of the template
  */
 function saveTemplate(id_template, title, description, component_instances) {
-    $(document).ready(function(){
+    $(document).ready(function() {
         $.ajax({
             url: '/invoices/templates/save/',
             data: {
@@ -168,6 +168,7 @@ function saveTemplate(id_template, title, description, component_instances) {
             },
             success: function(data) {
             	$("#saved").show();
+            	alert(component_instances);
             	document.getElementById("id_template").value = JSON.stringify(data)
             },
             type: 'POST'
@@ -180,7 +181,7 @@ function saveTemplate(id_template, title, description, component_instances) {
  * @param id_component id of the component to delete
  */
 function deleteComponent(id_component) {
-    $(document).ready(function(){
+    $(document).ready(function() {
         $.ajax({
             url: '/invoices/templates/customcomponents/delete/',
             data: {
@@ -217,7 +218,7 @@ function deleteComponent(id_component) {
  * @param id_component id of the component to delete
  */
 function loadTemplate(id_template) {
-    $(document).ready(function(){
+    $(document).ready(function() {
         $.ajax({
             url: '/invoices/templates/get/',
             data: {
@@ -301,11 +302,9 @@ function csrfSafeMethod(method) {
  * @param removable if is removable or not
  */
 function getWidget(id, component, removable) {
-	var widget = '<li id="' + id + '" class="element" data-component="'
-	    + component +
-	    '"><span class="move-component"> --- </span>';
+	var widget = '<li id="' + id + '" class="element" data-component="' + component + '"><span class="move-component"> --- </span>';
 	if (removable) {
-		widget = widget + '<a class="remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></a>';
+		widget = widget + '<a class="remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></a>';
 	}
 	widget = widget + '<div id="editable_' + id + '" name="editable_' + id + '" class="editable"></div></li>';
 	return widget;

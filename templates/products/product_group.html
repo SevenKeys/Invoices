@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Product Group {{ object.name }} of company {{ object.company }}</h2>
+    <h2>Product Group <strong>{{ object.name }}</strong> of company <strong>{{ object.company }}</strong></h2>
     {% if object.products.count > 0 %}
-    <ul>
         <h3>Products</h3>
+        <ul class="list-group">
         {% for product in object.products.all %}
-            <li>
+            <li class="list-group-item">
                 {{ product.name }}
             </li>
         {% endfor %}

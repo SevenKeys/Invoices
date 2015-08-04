@@ -12,18 +12,25 @@
     <div class="alert alert-success collapse" role="alert" id="saved">
         <p>{% trans "Template saved" %}</p>
     </div>
-    <form class="form-inline">
-        <input type="hidden" id="instances_template" name="instances_template">
-        <input type="hidden" id="id_template" name="id_template" value="{{id_template}}">
-        <div class="form-group">
-            <label id="label-title_template" for="title_template">{% trans "Name" %}</label>
-            <input type="text" id="title_template" name="title_template" value="{{title_template}}" class="form-control">
-        </div>
-        <div class="form-group">
-            <label id="label-description_template" for="description_template">{% trans "Description" %}</label>
-            <input type="text" id="description_template" name="description_template" value="{{description_template}}" class="form-control">
-        </div>
-    </form>
+    <div>
+        <form class="form-inline" action="/invoices/templates/preview/" method="get">
+            <input type="hidden" id="instances_template" name="instances_template"/>
+            <input type="hidden" id="id_template" name="id_template" value="{{id_template}}"/>
+            <div class="form-group">
+                <label for="title_template">{% trans "Name" %}</label>
+                <input type="text" id="title_template" name="title_template" value="{{title_template}}" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="description_template">{% trans "Description" %}</label>
+                <input type="text" id="description_template" name="description_template" value="{{description_template}}" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <a id="save" class="btn btn-primary">{% trans "Save the template" %}</a>
+                <button type="submit" id="show-preview" class="btn btn-primary">{% trans "Preview" %}</button>
+            </div>
+        </form>
+    </div>
+
     <div class="row">
     	<div id="components" class="col-md-3">
             <h3>{% trans "Common components" %}</h3>
@@ -50,20 +57,12 @@
                 {% endfor %}
             </ul>
         </div>
-            <div class="gridster col-md-9" data-offset-top="60" data-offset-bottom="200">
-                <ul>
-                    {% for item in unremovablecomponents %}
-                        <li id="{{item.id}}" data-component="{{item.id}}" class="element" data-row="1" data-col="1" data-sizex="{{item.size_x}}" data-sizey="{{item.size_y}}"><span class="glyphicon glyphicon-move" aria-hidden="true"></span>{{item.content}}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-    </div>
-    <div class="row">
-        <div class="col-md-9 col-md-offset-3">
-            <button
-                type="submit"
-                id="save"
-                class="btn btn-primary">Save the template</button>
+        <div class="gridster col-md-9" data-offset-top="60" data-offset-bottom="200">
+            <ul>
+                {% for item in unremovablecomponents %}
+                    <li id="{{item.id}}" data-component="{{item.id}}" class="element" data-row="1" data-col="1" data-sizex="{{item.size_x}}" data-sizey="{{item.size_y}}"><span class="glyphicon glyphicon-move" aria-hidden="true"></span>{{item.content}}</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
     <div class="modal fade" id="add-widget" tabindex="-1" role="dialog" aria-labelledby="add-widget-label">

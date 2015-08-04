@@ -21,7 +21,7 @@ class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
 	def get_queryset(self):
 		try:
 			company = self.get_company()
-			queryset = Customer.objects.filter(company=company)
+			queryset = Customer.objects.filter(company=company).order_by('name')
 		except:
 			queryset = False
 		return queryset
@@ -77,6 +77,11 @@ class CustomerGroupDetail(DetailView):
 	template_name = 'customers/group_details.html'
 	pk_url_kwarg = 'group_id'
 
+	# def get_queryset(self):
+	# 	group = CustomerGroup.objects.get(pk=self.pk_url_kwarg)
+	# 	queryset = group.customers.order_by('name')
+	# 	return queryset
+
 
 
 class AddCustomerGroup(CreateView, CompanyMixin):
@@ -129,8 +134,8 @@ class AddCustomerDetail(CreateView):
 	success_url = '/customers/all/'
 	pk_url_kwarg = 'customer_id'
 
-	def form_invalid(self,form):
-		return HttpResponse('form is invalid')
+	# def form_invalid(self,form):
+	# 	return HttpResponse('form is invalid')
 
 	def form_valid(self, form):
 		customer_detail = form.save(commit=False)

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load add_class %}
 {% block content %}
 	<h2 style="text-align:center">Add or edit client</h2>
 	<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:30%">
@@ -8,18 +8,24 @@
 			{{ hidden }}
 		{% endfor %}
 		{% for field in form.visible_fields %}
+		<!-- add custom css classes -->
 		{% if field.errors %}
+		    <fieldset class="form-group {% add_css_class 'has-error' %}" >
 		    <ol>
 		    {% for error in field.errors %}
 		        <li><strong>{{ error|escape }}</strong></li>
 		    {% endfor %}
 		    </ol>
+		{% elif field.value %}
+		  <fieldset class="form-group {% add_css_class 'has-success' %}" >
+		{% else %}
+		  <fieldset class="form-group" >
 		{% endif %}
-		<fieldset class="form-group" >
 		  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
 		  {% if field.field.required %}
 			 <span class="special_class">*</span>
 	  	  {% endif %}
+
 	  	  </label>
 		      <input type="text" class="form-control"
 		        name="{{ field.name }}"

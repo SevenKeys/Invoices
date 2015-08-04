@@ -13,18 +13,41 @@
             </div>
             {% if customer_list.count > 0 %}
                 {% for customer in customer_list %}
-                    <li>Name: <a href="{% url 'customer_detail' customer.id %}">{{ customer.name }}</a>
-        		    <button type="button"><a href="{% url 'edit_customer' customer.id %}">Edit</a></button>
-        		    <button type="button"><a href="{% url 'delete_customer' customer.id %}">Delete</a></button>
-                    <p>Company: {{ customer.company }}</p>
-                    <p>Created: {{ customer.created }}</p>
-                    <p>Contact: {{ customer.contact }}</p>
-                    {% if customer.customergroup_set %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Company</th>
+                            <th>Created</th>
+                            <th>Contact</th>
+                            <th>Group(s)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                               <a href="{% url 'customer_detail' customer.id %}">{{ customer.name }}</a> 
+                            </td>
+                            <td>{{ customer.company }}</td>
+                            <td>{{ customer.created }}</td>
+                            <td>{{ customer.contact }}</td>
+                            <td>
+                            {% if customer.customergroup_set %}
                         {% for group in customer.customergroup_set.all %}
-                            <p>Group: <a href="{% url 'get_group' group.id %}">{{ group }}</a></p>
-                        {% endfor %}
-                    {% endif %}
-                    </li>
+                                <p><a href="{% url 'get_group' group.id %}">{{ group }}</a></p>
+                            {% endfor %}
+                        {% endif %}
+                            </td>
+                            <td>
+                                <button type="button"><a href="{% url 'edit_customer' customer.id %}">Edit</a></button>
+                            </td>
+                            <td>
+                                <button type="button"><a href="{% url 'delete_customer' customer.id %}">Delete</a></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                    
                 
                 {% endfor %}
             {% else %}

@@ -52,17 +52,21 @@ def edit_template(request):
     removablecomponents = []
     customcomponents = TemplateComponent.objects.filter(company=request.user.userprofile.company)
     template = InvoiceTemplate.objects.get(id=request.GET['id_template'])
-    component_instances = TemplateComponentInstance.objects.filter(template=template)
     for item in defaultcomponents:
         if item.removable:
             removablecomponents.append(item)
         else:
             unremovablecomponents.append(item)
+    return render_to_response("invoices/template_generator.html", {"user": request.user, "defaultcomponents": removablecomponents, "unremovablecomponents": unremovablecomponents, "customcomponents": customcomponents, "id_template": template.id})
+
+
+def get_template(request):
+    template = InvoiceTemplate.objects.get(id=request.GET['id_template'])
+    component_instances = TemplateComponentInstance.objects.filter(template=template)
     list = []
     for row in component_instances:
         list.append({'id': row.id, 'reference': row.reference, 'position_x': row.position_x, 'position_y': row.position_y, "size_x": row.component.size_x, "size_y": row.component.size_y, "component": row.component.id, "content": row.component.content, "removable": row.component.removable})
-    recipe_list_json = json.dumps(list)
-    return render_to_response("invoices/template_generator.html", {"user": request.user, "defaultcomponents": removablecomponents, "unremovablecomponents": unremovablecomponents, "customcomponents": customcomponents, "id_template": template.id, "template": recipe_list_json})
+    return HttpResponse(json.dumps(list), content_type="application/json")
 
 
 def add_custom_component(request):

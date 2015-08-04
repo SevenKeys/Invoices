@@ -5,7 +5,7 @@ var gridster;
  */
 $(function() {
 	$.fn.extend({
-		template: function(initialData) {
+		template: function(id_template) {
 			prepareAjax();
 			gridster = $(this).gridster({
 				widget_margins: [10, 10],
@@ -24,11 +24,8 @@ $(function() {
 				}
 			}).data("gridster");
 
-			if (initialData != undefined && initialData != null && "" != initialData) {
-				gridster.remove_all_widgets();
-				$.each(Gridster.sort_by_row_and_col_asc(JSON.parse(encrypt(initialData))), function() {
-					addComponentInstance(this.id, this.component, decrypt(this.content), this.size_x, this.size_y, this.position_x, this.position_y, this.removable);
-				});
+			if (id_template != undefined && id_template != null && "" != id_template) {
+				loadTemplate(id_template);
 			}
 
 			CKEDITOR.replace("widget-content");
@@ -208,6 +205,33 @@ function deleteComponent(id_component) {
 }
 
 /**
+ * Delete the component.
+ * @param id_component id of the component to delete
+ */
+function loadTemplate(id_template) {
+	alert(id_template);
+    $(document).ready(function(){
+        $.ajax({
+            url: '/invoices/templates/get/',
+            data: {
+                    id_template: id_template
+            },
+            dataType: "json",
+            error: function(data) {
+             	console.error(data);
+            },
+            success: function(data) {
+            	gridster.remove_all_widgets();
+            	$.each(Gridster.sort_by_row_and_col_asc(data), function() {
+					addComponentInstance(this.id, this.component, this.content, this.size_x, this.size_y, this.position_x, this.position_y, this.removable);
+				});
+            },
+            type: 'GET'
+        });
+    });
+}
+
+/**
  * Add the "click" event to addables elements.
  */
 function addableEvent() {
@@ -261,36 +285,6 @@ function getCookie(name) {
  */
 function csrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-
-/**
- * Encryp the message.
- * @paam toEncrypt String to encrypt
- */
-function encrypt(toEncrypt) {
-	var Re = new RegExp('&quot;', "g");
-	var formated = toEncrypt.replace(Re, '"');
-	Re = new RegExp('\n', "g");
-	formated = formated.replace(Re, '__jump__');
-	Re = new RegExp("\t", "g");
-	formated = formated.replace(Re, '__tab__')
-	Re = new RegExp("\r", "g");
-	formated = formated.replace(Re, '__return__')
-	return formated;
-}
-
-/**
- * Decrypt the message.
- * @param toDecrypt String to decrypt
- */
-function decrypt(toDecrypt) {
-	Re = new RegExp("__jump__", "g");
-	formated = toDecrypt.replace(Re, '\n')
-	Re = new RegExp("__tab__", "g");
-	formated = formated.replace(Re, '\t')
-	Re = new RegExp("__return__", "g");
-	formated = formated.replace(Re, '\r')
-	return formated;
 }
 
 /**

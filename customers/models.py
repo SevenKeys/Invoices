@@ -7,25 +7,42 @@ class Customer(models.Model):
     company = models.ForeignKey(Company)
     name = models.CharField(max_length=60)
     created = models.DateTimeField(auto_now=True)
-    contact = models.ForeignKey(Contact, null=True)
+    contact = models.ForeignKey(Contact,null=True)
 
     def __str__(self):
         return self.name
 
+languages = (
+    ('english','English'),
+    ('spanish','Spanish'),
+    ('russian','Russian'))
+types = (
+    ('retail','retail'),
+    ('wholesale','wholesale'),
+    ('dealer','dealer'))
 
 class CustomerDetails(models.Model):
     customer = models.ForeignKey(Customer)
-    field_name = models.CharField(max_length=100)
-    field_value = models.CharField(max_length=100)
+    status = models.NullBooleanField(blank=True,null=True)
+    language = models.CharField(max_length=25,choices=languages,blank=True,null=True)
+    comment = models.TextField(blank=True,null=True)
+    client_type = models.CharField(max_length=25,choices=types,blank=True,null=True)
+    discount_precent = models.FloatField(blank=True,null=True)
 
     def __str__(self):
-        return self.field_name
+        return self.pk
 
+categories = (
+    ('cat1','category1'),
+    ('cat2','category2'),
+    ('cat3','category3'))
 
 class CustomerGroup(models.Model):
     company = models.ForeignKey(Company)
     name = models.CharField(max_length=100)
     customers = models.ManyToManyField(Customer)
+    parent = models.ManyToManyField('self',symmetrical=False,blank=True,default='client_group')
+    category = models.CharField(max_length=100,choices=categories,blank=True,null=True)
 
     def __str__(self):
         return self.name

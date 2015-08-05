@@ -3,34 +3,37 @@ from companies.models import Company
 from contacts.models import Contact
 
 
+# class Customer(models.Model):
+#     company = models.ForeignKey(Company)
+#     name = models.CharField(max_length=60)
+#     created = models.DateTimeField(auto_now=True)
+#     contact = models.ForeignKey(Contact,null=True)
+
+    # def __str__(self):
+    #     return self.name
+
+# languages = (
+#     ('english','English'),
+#     ('spanish','Spanish'),
+#     ('russian','Russian'))
+# types = (
+#     ('retail','retail'),
+#     ('wholesale','wholesale'),
+#     ('dealer','dealer'))
+
 class Customer(models.Model):
     company = models.ForeignKey(Company)
     name = models.CharField(max_length=60)
     created = models.DateTimeField(auto_now=True)
     contact = models.ForeignKey(Contact,null=True)
+    status = models.NullBooleanField(blank=True,null=True)
+    language = models.CharField(max_length=25,blank=True,null=True)
+    comment = models.TextField(blank=True,null=True)
+    client_type = models.CharField(max_length=25,blank=True,null=True)
+    discount_percent = models.FloatField(blank=True,null=True)
 
     def __str__(self):
         return self.name
-
-languages = (
-    ('english','English'),
-    ('spanish','Spanish'),
-    ('russian','Russian'))
-types = (
-    ('retail','retail'),
-    ('wholesale','wholesale'),
-    ('dealer','dealer'))
-
-class CustomerDetails(models.Model):
-    customer = models.ForeignKey(Customer)
-    status = models.NullBooleanField(blank=True,null=True)
-    language = models.CharField(max_length=25,choices=languages,blank=True,null=True)
-    comment = models.TextField(blank=True,null=True)
-    client_type = models.CharField(max_length=25,choices=types,blank=True,null=True)
-    discount_precent = models.FloatField(blank=True,null=True)
-
-    def __str__(self):
-        return self.pk
 
 categories = (
     ('cat1','category1'),

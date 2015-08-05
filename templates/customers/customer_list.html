@@ -49,10 +49,10 @@
                 
                 {% endfor %}
             {% else %}
-                <h3>No customers was added yet.</h3>
+                <h3>No clients was added yet.</h3>
             {% endif %}
         </ul>
-        <button type="button"><a href="{% url 'add_customer' %}">Add customer</a></button>
+        <button type="button"><a href="{% url 'add_customer' %}">Add client</a></button>
         <button type="button"><a href="{% url 'add_group' %}">Add client group</a></button>
         <button type="button"><a href="{% url 'add_company' %}">Edit company</a></button>
     {% else %}

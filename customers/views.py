@@ -4,8 +4,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse_lazy
-from .models import Customer, CustomerDetails, CustomerGroup
-from .forms import CustomerForm, CustomerDetailForm, CustomerGroupForm
+from .models import Customer, CustomerGroup
+from .forms import CustomerForm, CustomerGroupForm
 # from contacts.models import Contact
 from users.models import UserProfile
 from users.permissions import LoginRequiredMixin
@@ -43,8 +43,6 @@ class AddCustomer(CreateView, CompanyMixin, ContactMixin):
 	template_name = 'customers/edit_customer.html'
 	success_url = '/customers/all/'
 
-	# def form_invalid(self,form):
-	# 	return HttpResponse('form is invalid')
 
 	def form_valid(self, form):
 		new_customer = form.save(commit=False)
@@ -127,39 +125,39 @@ class CustomerDetail(DetailView):
 	pk_url_kwarg = 'customer_id'
 
 
-class AddCustomerDetail(CreateView):
-	model = Customer
-	form_class = CustomerDetailForm
-	template_name = 'customers/edit_customer_detail.html'
-	success_url = '/customers/all/'
-	pk_url_kwarg = 'customer_id'
+# class AddCustomerDetail(CreateView):
+# 	model = Customer
+# 	form_class = CustomerDetailForm
+# 	template_name = 'customers/edit_customer.html'
+# 	success_url = '/customers/all/'
+# 	pk_url_kwarg = 'customer_id'
 
-	# def form_invalid(self,form):
-	# 	return HttpResponse('form is invalid')
+# 	# def form_invalid(self,form):
+# 	# 	return HttpResponse('form is invalid')
 
-	def form_valid(self, form):
-		customer_detail = form.save(commit=False)
-		customer = get_object_or_404(Customer,pk=self.kwargs[self.pk_url_kwarg])
-		customer_detail.customer = customer
-		customer_detail.save()
-		return super(AddCustomerDetail,self).form_valid(form)
-
-
-class UpdateCustomerDetail(UpdateView):
-	model = CustomerDetails
-	form_class = CustomerDetailForm
-	template_name = 'customers/edit_customer_detail.html'
-	pk_url_kwarg = 'detail_id'
-	success_url = '/customers/all/'
+# 	def form_valid(self, form):
+# 		customer_detail = form.save(commit=False)
+# 		customer = get_object_or_404(Customer,pk=self.kwargs[self.pk_url_kwarg])
+# 		customer_detail.customer = customer
+# 		customer_detail.save()
+# 		return super(AddCustomerDetail,self).form_valid(form)
 
 
+# class UpdateCustomerDetail(UpdateView):
+# 	model = CustomerDetails
+# 	form_class = CustomerDetailForm
+# 	template_name = 'customers/edit_customer_detail.html'
+# 	pk_url_kwarg = 'detail_id'
+# 	success_url = '/customers/all/'
 
-class DeleteCustomerDetail(DeleteView):
-	model = CustomerDetails
-	form_class = CustomerDetailForm
-	template_name = 'customers/delete_customer_detail.html'
-	pk_url_kwarg = 'detail_id'
-	success_url = '/customers/all/'
+
+
+# class DeleteCustomerDetail(DeleteView):
+# 	model = CustomerDetails
+# 	form_class = CustomerDetailForm
+# 	template_name = 'customers/delete_customer_detail.html'
+# 	pk_url_kwarg = 'detail_id'
+# 	success_url = '/customers/all/'
 
 
 def searchCustAjax(request):

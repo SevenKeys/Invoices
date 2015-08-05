@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 {% load extra_customers %}
 {% block content %}
-	<h2 style="text-align:center">Add client</h2>
-	<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:30%">
+	{% if edit %}
+		<h2 style="text-align:center">Edit client profile</h2>
+	{% else %}
+		<h2 style="text-align:center">Add client</h2>
+	{% endif %}
+	<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:70%">
 		{% csrf_token %} 
 		{% for hidden in form.hidden_fields %}
 			{{ hidden }}

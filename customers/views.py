@@ -40,7 +40,7 @@ class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
 class AddCustomer(CreateView, CompanyMixin, ContactMixin):
 	model = Customer
 	form_class = CustomerForm
-	template_name = 'customers/edit_customer.html'
+	template_name = 'customers/add_edit_customer.html'
 	success_url = '/customers/all/'
 
 
@@ -52,12 +52,29 @@ class AddCustomer(CreateView, CompanyMixin, ContactMixin):
 		return super(AddCustomer, self).form_valid(form)
 
 
+class CustomerDetail(DetailView):
+	model = Customer
+	template_name = 'customers/customer_details.html'
+	pk_url_kwarg = 'customer_id'
+
+	def get_context_data(self,**kwargs):
+		context = super(CustomerDetail, self).get_context_data(**kwargs)
+		user = self.request.user.userprofile.name
+		context['user'] = user
+		return context
+
+
 class UpdateCustomer(UpdateView):
 	model = Customer
 	form_class = CustomerForm
-	template_name = 'customers/edit_customer.html'
+	template_name = 'customers/add_edit_customer.html'
 	pk_url_kwarg = 'customer_id'
 	success_url = '/customers/all/'
+
+	def get_context_data(self,**kwargs):
+		context = super(UpdateCustomer, self).get_context_data(**kwargs)
+		context['edit'] = True
+		return context
 
 
 class DeleteCustomer(DeleteView):
@@ -117,12 +134,6 @@ class DeleteCustomerGroup(DeleteView):
 	pk_url_kwarg = 'group_id'
 	success_url = reverse_lazy('customers')
 
-
-# CRUD for CustomerDetails
-class CustomerDetail(DetailView):
-	model = Customer
-	template_name = 'customers/customer_details.html'
-	pk_url_kwarg = 'customer_id'
 
 
 # class AddCustomerDetail(CreateView):

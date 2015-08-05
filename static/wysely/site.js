@@ -10,16 +10,19 @@ $(function() {
 			gridster = $(this).gridster({
 				widget_margins: [10, 10],
 				widget_base_dimensions: [140, 140],
-				max_cols: 6,
+				max_cols: 10,
 				draggable: {
 					handle: 'span'
 				},
 				serialize_params: function($w, wgd) {
 					return {
 						reference: $($w).attr('id'),
-						position_y: wgd.col,
-						position_x: wgd.row,
-						id_component: $($w).data('component')
+						position_y: wgd.row,
+						position_x: wgd.col,
+						size_x: wgd.size_x,
+						size_y: wgd.size_y,
+						id_component: $($w).data('component'),
+						content: $($w).data('content')
 					};
 				}
 			}).data("gridster");
@@ -55,11 +58,11 @@ $(function() {
 				CKEDITOR.replace("widget-content");
 			});
 
-			$('#preview').on('click', function() {
+			$('#show-preview').on('click', function() {
 				if (CKEDITOR.instances['widget-content']) {
 					CKEDITOR.instances["widget-content"].destroy();
 				}
-				printPreview(JSON.stringify(gridster.serialize()));
+				document.getElementById("instances_template").value = JSON.stringify(gridster.serialize());
 				CKEDITOR.replace("widget-content");
 			});
 		}
@@ -168,7 +171,6 @@ function saveTemplate(id_template, title, description, component_instances) {
             },
             success: function(data) {
             	$("#saved").show();
-            	alert(component_instances);
             	document.getElementById("id_template").value = JSON.stringify(data)
             },
             type: 'POST'
@@ -337,7 +339,7 @@ function prepareAjax() {
  */
 function addComponentInstance(id, component, content, x_size, y_size, x_position, y_position, removable) {
 	var ck_id = "editable_" + id;
-	gridster.add_widget(getWidget(id, component, removable), x_size, y_size, y_position, x_position);
+	gridster.add_widget(getWidget(id, component, removable), x_size, y_size, x_position, y_position);
 	$(document).on('click', '.remove', function() {
 		gridster.remove_widget($(this).parent());
 	});

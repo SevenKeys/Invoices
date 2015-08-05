@@ -6,8 +6,14 @@ from .forms import InvoiceForm
 from django.http import HttpResponse
 import json
 from io import BytesIO
-from reportlab.pdfgen import canvas
+from reportlab.platypus import Paragraph, Frame, BaseDocTemplate, PageTemplate
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import A4
 import logging
+
+size = A4
+styles = getSampleStyleSheet()
 
 
 def main(request):
@@ -113,17 +119,69 @@ def save_template(request):
 
 
 def print_preview(request):
+    components = json.loads(request.GET['instances_template'])
+    logger = logging.getLogger("eoeoeoe")
+    header_list = header_content(components)
+    footer_list = footer_content(components)
+
+    def footer_repeat(canvas, doc):
+        canvas.saveState()
+        for item in header_list:
+            Frame(item['position_x']*inch, size[1] - item['position_y']*inch, item['size_x']*inch, item['size_y']*inch).\
+                addFromList([Paragraph(TemplateComponent.objects.get(id=item['id_component']).content, styles['Normal'])], canvas)
+        for footer_item in footer_list:
+            Frame(footer_item['position_x']*inch, size[1] - footer_item['position_y']*inch, footer_item['size_x']*inch, footer_item['size_y']*inch).\
+                addFromList([Paragraph(TemplateComponent.objects.get(id=footer_item['id_component']).content, styles['Normal'])], canvas)
+        canvas.restoreState()
     output = BytesIO()
-    pdf = canvas.Canvas(output)
-    pdf.drawString(0, 0, "Ajajaja")
-    pdf.showPage()
-    pdf.save()
+    doc = BaseDocTemplate(output, pagesize=size)
+    limit_header = 0
+    size_header = 0
+    limit_footer = 100000
+    for element in header_list:
+        if element['position_y'] > limit_header:
+            limit_header = element['position_y']
+            size_header = element['size_x']
+    for element in footer_list:
+        if element['position_y'] < limit_footer:
+            limit_footer = element['position_y']
+    doc.addPageTemplates([PageTemplate(id="test", frames=Frame(doc.leftMargin, size[1] - (limit_header + size_header)*inch, doc.width, 1*inch), onPage=footer_repeat)])
+    story = []
+    for i in range(100):
+        story.append(Paragraph("<font color='blue'> Ey you</font><br/>Youtoo", styles['Normal']))
+    doc.build(story)
     pdf_output = output.getvalue()
     output.close()
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
     response.write(pdf_output)
     return response
+
+
+def header_content(components):
+    header = []
+    center_element = 1
+    for entity in components:
+        if entity['id_component'] == 1:
+            center_element = entity['position_y']
+
+    for entity in components:
+        if entity['position_y'] < center_element:
+            header.append(entity)
+    return header
+
+
+def footer_content(components):
+    footer = []
+    center_element = 1
+    for entity in components:
+        if entity['id_component'] == 1:
+            center_element = entity['position_y']
+
+    for entity in components:
+        if entity['position_y'] > center_element:
+            footer.append(entity)
+    return footer
 
 
 class AddInvoice(CreateView):

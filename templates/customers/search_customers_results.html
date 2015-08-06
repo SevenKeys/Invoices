@@ -1,0 +1,12 @@
+{% if customers.count > 0 %}
+	{% load staticfiles%}
+
+	{% for customer in customers %}
+		<li><a href="{% url 'customer_detail' customer.id %}">{{ customer.name }}</a></li>
+	{% endfor %}
+
+{% else %}
+
+    <p>None to show!</p>
+
+{% endif %}

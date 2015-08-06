@@ -6,12 +6,8 @@
         <li>
             <a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span>{% trans "Home" %}</a>
         </li>
-        <li class="dropdown">
-           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-list-alt"></span>{% trans "Invoices" %}</a>
-            <ul class="dropdown-menu">
-                <li><a href="{% url 'invoices.views.main' %}"><span class="glyphicon glyphicon-list-alt"></span>{% trans "Invoices" %}</a></li>
-                <li><a href="{% url 'invoices.views.templates_list' %}"><span class="glyphicon glyphicon-tasks"></span>{% trans "Templates" %}</a></li>
-          </ul>
+        <li>
+            <a href="{% url 'create_invoice' %}"><span class="glyphicon glyphicon-list-alt"></span>{% trans "Invoices" %}</a>
         </li>
         <li>
             <a href="{% url 'customers' %}"><span class="glyphicon glyphicon-user"></span>{% trans "Clients" %}</a>
@@ -36,7 +32,7 @@
                 </li>
                 <li>
                 {% if company %}
-                    <a href="{% url 'company_details' company.id %}">{% trans "Edit company information" %}</a>
+                    <a href="{% url 'edit_company' company.id %}">{% trans "Edit company information" %}</a>
                 {% else %}
                     <a href="{% url 'add_company' %}">{% trans "Create company" %}</a>
                 {% endif %}

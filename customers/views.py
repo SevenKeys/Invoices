@@ -1,11 +1,11 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse_lazy
-from .models import Customer, CustomerDetails, CustomerGroup
-from .forms import CustomerForm, CustomerDetailForm, CustomerGroupForm
+from .models import Customer, CustomerGroup
+from .forms import CustomerForm, CustomerGroupForm
 # from contacts.models import Contact
 from users.models import UserProfile
 from users.permissions import LoginRequiredMixin
@@ -21,7 +21,7 @@ class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
 	def get_queryset(self):
 		try:
 			company = self.get_company()
-			queryset = Customer.objects.filter(company=company)
+			queryset = Customer.objects.filter(company=company).order_by('name')
 		except:
 			queryset = False
 		return queryset
@@ -40,11 +40,9 @@ class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
 class AddCustomer(CreateView, CompanyMixin, ContactMixin):
 	model = Customer
 	form_class = CustomerForm
-	template_name = 'customers/edit_customer.html'
+	template_name = 'customers/add_edit_customer.html'
 	success_url = '/customers/all/'
 
-	# def form_invalid(self,form):
-	# 	return HttpResponse('form is invalid')
 
 	def form_valid(self, form):
 		new_customer = form.save(commit=False)
@@ -54,12 +52,29 @@ class AddCustomer(CreateView, CompanyMixin, ContactMixin):
 		return super(AddCustomer, self).form_valid(form)
 
 
+class CustomerDetail(DetailView):
+	model = Customer
+	template_name = 'customers/customer_details.html'
+	pk_url_kwarg = 'customer_id'
+
+	def get_context_data(self,**kwargs):
+		context = super(CustomerDetail, self).get_context_data(**kwargs)
+		user = self.request.user.userprofile.name
+		context['user'] = user
+		return context
+
+
 class UpdateCustomer(UpdateView):
 	model = Customer
 	form_class = CustomerForm
-	template_name = 'customers/edit_customer.html'
+	template_name = 'customers/add_edit_customer.html'
 	pk_url_kwarg = 'customer_id'
 	success_url = '/customers/all/'
+
+	def get_context_data(self,**kwargs):
+		context = super(UpdateCustomer, self).get_context_data(**kwargs)
+		context['edit'] = True
+		return context
 
 
 class DeleteCustomer(DeleteView):
@@ -77,12 +92,17 @@ class CustomerGroupDetail(DetailView):
 	template_name = 'customers/group_details.html'
 	pk_url_kwarg = 'group_id'
 
+	# def get_queryset(self):
+	# 	group = CustomerGroup.objects.get(pk=self.pk_url_kwarg)
+	# 	queryset = group.customers.order_by('name')
+	# 	return queryset
+
 
 
 class AddCustomerGroup(CreateView, CompanyMixin):
 	model = CustomerGroup
 	form_class = CustomerGroupForm
-	template_name = 'customers/edit_customer_group.html'
+	template_name = 'customers/add_edit_customer_group.html'
 	success_url = '/customers/all/'
 
 	# def form_invalid(self,form):
@@ -100,12 +120,18 @@ class AddCustomerGroup(CreateView, CompanyMixin):
 		return super(AddCustomerGroup,self).form_valid(form)
 
 
-class UpdateCustomerGroup(UpdateView):
+class UpdateCustomerGroup(UpdateView, CompanyMixin):
 	model = CustomerGroup
 	form_class = CustomerGroupForm
-	template_name = 'customers/edit_customer_group.html'
+	template_name = 'customers/add_edit_customer_group.html'
 	pk_url_kwarg = 'group_id'
 	success_url = '/customers/all/'
+
+	def get_context_data(self,**kwargs):
+		context = super(UpdateCustomerGroup, self).get_context_data(**kwargs)
+		context['edit'] = True
+		context['company'] = self.get_company()
+		return context
 
 
 class DeleteCustomerGroup(DeleteView):
@@ -115,43 +141,49 @@ class DeleteCustomerGroup(DeleteView):
 	success_url = reverse_lazy('customers')
 
 
-# CRUD for CustomerDetails
-class CustomerDetail(DetailView):
-	model = Customer
-	template_name = 'customers/customer_details.html'
-	pk_url_kwarg = 'customer_id'
+
+# class AddCustomerDetail(CreateView):
+# 	model = Customer
+# 	form_class = CustomerDetailForm
+# 	template_name = 'customers/edit_customer.html'
+# 	success_url = '/customers/all/'
+# 	pk_url_kwarg = 'customer_id'
+
+# 	# def form_invalid(self,form):
+# 	# 	return HttpResponse('form is invalid')
+
+# 	def form_valid(self, form):
+# 		customer_detail = form.save(commit=False)
+# 		customer = get_object_or_404(Customer,pk=self.kwargs[self.pk_url_kwarg])
+# 		customer_detail.customer = customer
+# 		customer_detail.save()
+# 		return super(AddCustomerDetail,self).form_valid(form)
 
 
-class AddCustomerDetail(CreateView):
-	model = Customer
-	form_class = CustomerDetailForm
-	template_name = 'customers/edit_customer_detail.html'
-	success_url = '/customers/all/'
-	pk_url_kwarg = 'customer_id'
-
-	def form_invalid(self,form):
-		return HttpResponse('form is invalid')
-
-	def form_valid(self, form):
-		customer_detail = form.save(commit=False)
-		customer = get_object_or_404(Customer,pk=self.kwargs[self.pk_url_kwarg])
-		customer_detail.customer = customer
-		customer_detail.save()
-		return super(AddCustomerDetail,self).form_valid(form)
-
-
-class UpdateCustomerDetail(UpdateView):
-	model = CustomerDetails
-	form_class = CustomerDetailForm
-	template_name = 'customers/edit_customer_detail.html'
-	pk_url_kwarg = 'detail_id'
-	success_url = '/customers/all/'
+# class UpdateCustomerDetail(UpdateView):
+# 	model = CustomerDetails
+# 	form_class = CustomerDetailForm
+# 	template_name = 'customers/edit_customer_detail.html'
+# 	pk_url_kwarg = 'detail_id'
+# 	success_url = '/customers/all/'
 
 
 
-class DeleteCustomerDetail(DeleteView):
-	model = CustomerDetails
-	form_class = CustomerDetailForm
-	template_name = 'customers/delete_customer_detail.html'
-	pk_url_kwarg = 'detail_id'
-	success_url = '/customers/all/'
+# class DeleteCustomerDetail(DeleteView):
+# 	model = CustomerDetails
+# 	form_class = CustomerDetailForm
+# 	template_name = 'customers/delete_customer_detail.html'
+# 	pk_url_kwarg = 'detail_id'
+# 	success_url = '/customers/all/'
+
+
+def searchCustAjax(request):
+	if request.method == 'POST':
+		search_text = request.POST['search_text']
+	else:
+		search_text = ''
+	customers = Customer.objects.filter(name__icontains=search_text)
+	context = {};
+	context['customers'] = customers
+
+	return render(request, 'customers/search_customers_results.html', context)

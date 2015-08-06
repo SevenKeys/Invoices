@@ -3,6 +3,12 @@
 {% block content %}
     {% if company %}
         <h2>Products of <strong>{{ company }}</strong> company.</h2>
+        {% csrf_token %}
+            <div class="input-group">
+                <input type="text" id="search_products" class="form-control" placeholder="Input search text" aria-describedby="sizing-addon2">
+            </div>
+        <ul id="search_products_results">
+        </ul>
         <ul>
             {% if product_list.count > 0 %}
                 {% for product in product_list %}

@@ -1,0 +1,12 @@
+{% if products.count > 0 %}
+	{% load staticfiles%}
+	
+	{% for product in products %}
+		<li>{{ product.name }}</li>
+	{% endfor %}
+
+{% else %}
+
+    <p>None to show!</p>
+
+{% endif %}

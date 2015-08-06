@@ -3,10 +3,10 @@
 {% block content %}
     <h2>Group {{ object.name }} of company {{ object.company }}</h2>
     {% if object.customers.count > 0 %}
-    <ul>
         <h3>Customers</h3>
+        <ul class="list-group">
         {% for customer in object.customers.all %}
-            <li>
+            <li class="list-group-item">
                 {{ customer.name }}
             </li>
         {% endfor %}

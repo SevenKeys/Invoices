@@ -102,7 +102,7 @@ class CustomerGroupDetail(DetailView):
 class AddCustomerGroup(CreateView, CompanyMixin):
 	model = CustomerGroup
 	form_class = CustomerGroupForm
-	template_name = 'customers/edit_customer_group.html'
+	template_name = 'customers/add_edit_customer_group.html'
 	success_url = '/customers/all/'
 
 	# def form_invalid(self,form):
@@ -120,12 +120,18 @@ class AddCustomerGroup(CreateView, CompanyMixin):
 		return super(AddCustomerGroup,self).form_valid(form)
 
 
-class UpdateCustomerGroup(UpdateView):
+class UpdateCustomerGroup(UpdateView, CompanyMixin):
 	model = CustomerGroup
 	form_class = CustomerGroupForm
-	template_name = 'customers/edit_customer_group.html'
+	template_name = 'customers/add_edit_customer_group.html'
 	pk_url_kwarg = 'group_id'
 	success_url = '/customers/all/'
+
+	def get_context_data(self,**kwargs):
+		context = super(UpdateCustomerGroup, self).get_context_data(**kwargs)
+		context['edit'] = True
+		context['company'] = self.get_company()
+		return context
 
 
 class DeleteCustomerGroup(DeleteView):

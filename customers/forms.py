@@ -29,7 +29,7 @@ class CustomerGroupForm(forms.ModelForm):
 
 	class Meta:
 		model = CustomerGroup
-		fields = ['name','customers']
+		fields = ['name','customers','parent','category']
 
 # class CustomerDetailForm(forms.ModelForm):
 

@@ -34,6 +34,7 @@ var csrftoken = getCookie('csrftoken');
     });
 
     function searchSuccessCust(data, textStatus, jqXHR){
+    	$('#search_customers_results').attr('display','block !important');
     	$('#search_customers_results').html(data);
     }
 
@@ -55,7 +56,8 @@ var csrftoken = getCookie('csrftoken');
     });
 
     function searchSuccessProd(data, textStatus, jqXHR){
+    	$('#search_products_results').attr('display','block');
     	$('#search_products_results').html(data);
-    }
+    };
 });
 	

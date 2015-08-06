@@ -164,6 +164,7 @@ PIPELINE_JS = {
             'bower_components/gridster/dist/jquery.gridster.min.js',
             # components
             'wysely/components/sortable_list.js',
+            'js/ajax_search.js',
         ),
         # Compress all passed files into `js/libs.min.js`.
         'output_filename': 'js/libs.min.js',

@@ -40,7 +40,7 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
 class AddProduct(CreateView, CompanyMixin):
     model = Product
     form_class = ProductForm
-    template_name = 'products/edit_product.html'
+    template_name = 'products/add_edit_product.html'
     success_url = '/products/all/'
 
     def form_valid(self, form):
@@ -49,9 +49,6 @@ class AddProduct(CreateView, CompanyMixin):
         new_product.save()
         return super(AddProduct,self).form_valid(form)
 
-
-    # def form_invalid(self,form):
-    #     return HttpResponse('form is invalid')
 
 
 class UpdateProduct(UpdateView):

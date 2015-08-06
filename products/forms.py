@@ -18,25 +18,28 @@ class ProductForm(forms.ModelForm):
 		(2,'2'),
 		(4,'4'),
 		(6,'6'))
-	groups = ProductGroup.objects.all()
+	# groups = ProductGroup.objects.all()
 	name = forms.CharField(label='Product name')
 	currency = forms.ChoiceField(choices=cur)
 	category = forms.ChoiceField(choices=categories)
 	units_of_measure = forms.ChoiceField(choices=units)
 	tax = forms.ChoiceField(choices=taxes)
-	# group = forms.ChoiceField(choices=groups)
+	# group = forms.ChoiceField(choices=groups,required=False)
 
 	class Meta:
 		model = Product
 		fields = ['name','code','price','description','currency',
-		'category','stock','units_of_measure','tax','price_with_tax']
+		'category','stock','group','units_of_measure','tax','price_with_tax']
 
 
 class ProductGroupForm(forms.ModelForm):
-
+	categs = (
+		('categ1','category1'),
+		('categ2','category2'),
+		('categ3','category3'))
 	class Meta:
 		model = ProductGroup
-		fields = ['name','products']
+		fields = ['name']
 
 	
 	

@@ -15,15 +15,7 @@
                     <li>Name: {{ product.name }}
         		    <button type="button"><a href="{% url 'edit_product' product.id %}">Edit</a></button>
         		    <button type="button"><a href="{% url 'delete_product' product.id %}">Delete</a></button>
-                    {% if product.productgroup_set.count > 0 %}
-                        <p>Groups: 
-                        <ul>
-                            {% for group in product.productgroup_set.all %}
-                                <li><a href="{% url 'product_group' group.id %}">{{ group }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    </p>
+                    
                     </li>
                 {% endfor %}
             {% else %}

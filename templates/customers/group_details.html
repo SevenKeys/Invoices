@@ -8,7 +8,7 @@
         <h3>Customers</h3>
         <ul class="list-group">
         {% for customer in object.customers.all %}
-            <li class="list-group-item">
+            <li class="list-group-item list-group-item-info">
                 {{ customer.name }}
             </li>
         {% endfor %}

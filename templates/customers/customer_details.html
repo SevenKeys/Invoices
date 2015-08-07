@@ -4,25 +4,25 @@
     <h2>Client <strong>{{ object.name }}</strong> profile.</h2>
 
     <ul class="list-group">
-        <li class="list-group-item"><strong>Client name:</strong> {{ object.name }}</li>
-        <li class="list-group-item"><strong>Status:</strong> {{ object.status }}</li>
-        <li class="list-group-item"><strong>Date Added:</strong> {{ object.created }}</li>
-        <li class="list-group-item"><strong>Company Name:</strong> {{ object.company }}</li>
-        <li class="list-group-item"><strong>Contact Person:</strong> {{ user }}</li>
-        <li class="list-group-item"><strong>Language:</strong> {{ object.language }}</li>
-        <li class="list-group-item"><strong>Phone number:</strong> {{ object.contact.phone_number }}</li>
-        <li class="list-group-item"><strong>Webpage:</strong> {{ object.contact.webpage }}</li>
-        <li class="list-group-item"><strong>E-mail:</strong> {{ object.contact.email }}</li>
-        <li class="list-group-item"><strong>Country:</strong> {{ object.contact.country }}</li>
-        <li class="list-group-item"><strong>Register Number:</strong> {{ object.company.reg_code }}</li>
-        <li class="list-group-item"><strong>Segment:</strong> </li>
-        <li class="list-group-item"><strong>Comment:</strong> {{ object.comment }}</li>
-        <li class="list-group-item"><strong>Type Of Client:</strong> {{ object.client_type }}</li>
-        <li class="list-group-item"><strong>Company Address:</strong> {{ object.company.address }}</li>
-        <li class="list-group-item"><strong>Discount Percent:</strong> {{ object.discount_percent }}</li>
-        <li class="list-group-item"><strong>Credit Status:</strong> </li>
-        <li class="list-group-item"><strong>Office Number:</strong> </li>
-        <li class="list-group-item"><strong>Parent Group:</strong> {{ object.customergroup }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Client name:</strong> {{ object.name }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Status:</strong> {{ object.status }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Date Added:</strong> {{ object.created }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Company Name:</strong> {{ object.company }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Contact Person:</strong> {{ user }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Language:</strong> {{ object.language }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Phone number:</strong> {{ object.contact.phone_number }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Webpage:</strong> {{ object.contact.webpage }}</li>
+        <li class="list-group-item list-group-item-info"><strong>E-mail:</strong> {{ object.contact.email }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Country:</strong> {{ object.contact.country }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Register Number:</strong> {{ object.company.reg_code }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Segment:</strong> </li>
+        <li class="list-group-item list-group-item-info"><strong>Comment:</strong> {{ object.comment }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Type Of Client:</strong> {{ object.client_type }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Company Address:</strong> {{ object.company.address }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Discount Percent:</strong> {{ object.discount_percent }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Credit Status:</strong> </li>
+        <li class="list-group-item list-group-item-info"><strong>Office Number:</strong> </li>
+        <li class="list-group-item list-group-item-info"><strong>Parent Group:</strong> {{ object.customergroup }}</li>
     </ul>
     
     <button type="button"><a href="{% url 'edit_customer' object.id %}">Edit client profile</a></button>

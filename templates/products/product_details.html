@@ -4,18 +4,18 @@
     <h2>Product <strong>{{ object.name }}</strong> info.</h2>
 
     <ul class="list-group">
-        <li class="list-group-item"><strong>Product Name:</strong> {{ object.name }}</li>
-        <li class="list-group-item"><strong>Product Code:</strong> {{ object.code }}</li>
-        <li class="list-group-item"><strong>Product Price:</strong> {{ object.price }}</li>
-        <li class="list-group-item"><strong>Description:</strong> {{ object.description }}</li>
-        <li class="list-group-item"><strong>Group:</strong> {{ object.group }}</li>
-        <li class="list-group-item"><strong>Currency:</strong> {{ object.currency }}</li>
-        <li class="list-group-item"><strong>Stock:</strong> {{ object.stock }}</li>
-        <li class="list-group-item"><strong>Category:</strong> {{ object.category }}</li>
-        <li class="list-group-item"><strong>Units Of Measure:</strong> {{ object.units_of_measure }}</li>
-        <li class="list-group-item"><strong>ID Code:</strong> {{ object.id }}</li>
-        <li class="list-group-item"><strong>Tax:</strong> {{ object.tax }}</li>
-        <li class="list-group-item"><strong>Price With Tax:</strong> {{ object.price_with_tax }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Product Name:</strong> {{ object.name }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Product Code:</strong> {{ object.code }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Product Price:</strong> {{ object.price }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Description:</strong> {{ object.description }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Group:</strong> {{ object.group }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Currency:</strong> {{ object.currency }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Stock:</strong> {{ object.stock }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Category:</strong> {{ object.category }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Units Of Measure:</strong> {{ object.units_of_measure }}</li>
+        <li class="list-group-item list-group-item-info"><strong>ID Code:</strong> {{ object.id }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Tax:</strong> {{ object.tax }}</li>
+        <li class="list-group-item list-group-item-info"><strong>Price With Tax:</strong> {{ object.price_with_tax }}</li>
     </ul>
     
     <button type="button"><a href="{% url 'edit_product' object.id %}">Edit product data</a></button>

@@ -57,11 +57,11 @@ class CustomerDetail(DetailView):
 	template_name = 'customers/customer_details.html'
 	pk_url_kwarg = 'customer_id'
 
-	def get_context_data(self,**kwargs):
-		context = super(CustomerDetail, self).get_context_data(**kwargs)
-		user = self.request.user.userprofile.name
-		context['user'] = user
-		return context
+	# def get_context_data(self,**kwargs):
+	# 	context = super(CustomerDetail, self).get_context_data(**kwargs)
+	# 	user = self.request.user.userprofile.name
+	# 	context['user_name'] = user
+	# 	return context
 
 
 class UpdateCustomer(UpdateView):

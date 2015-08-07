@@ -12,7 +12,7 @@
                 </ul>
             </div>
             {% if customer_list.count > 0 %}
-                <table class="table">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -23,7 +23,7 @@
                     </thead>
                     <tbody>
                     {% for customer in customer_list %}
-                        <tr>
+                        <tr class="info">
                             <td>
                                <a href="{% url 'customer_detail' customer.id %}">{{ customer.name }}</a> 
                             </td>

@@ -18,19 +18,29 @@ class CompanyMixin(object):
         user = self.request.user
         company = user.userprofile.company
         return company
+        
+    def get_context_data(self,**kwargs):
+    	context = super(CompanyMixin,self).get_context_data(**kwargs)
+    	try:
+    		user = self.request.user
+    		company = user.userprofile.company
+    	except (UserProfile.DoesNotExist, Company.DoesNotExist):
+    		company = False
+    	context['company'] = company
+    	return context
 
 
 # add company id to navigation menu
 class NavMenuView(TemplateView, CompanyMixin):
 
-	def get_context_data(self,**kwargs):
-		context = super(NavMenuView, self).get_context_data(**kwargs)
-		try:
-			company = self.get_company()
-		except (Company.DoesNotExist, AttributeError):
-			company = None
-		context['company'] = company
-		return context
+	# def get_context_data(self,**kwargs):
+	# 	context = super(NavMenuView, self).get_context_data(**kwargs)
+	# 	try:
+	# 		company = self.get_company()
+	# 	except (Company.DoesNotExist, AttributeError):
+	# 		company = None
+	# 	context['company'] = company
+	# 	return context
 
 	def get_template_names(self):
 		return [

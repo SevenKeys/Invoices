@@ -2,6 +2,8 @@
 
 {% block content %}
     <h2>Group {{ object.name }} of company {{ object.company }}</h2>
+    <h4><strong>Parent group:</strong> {{ object.parent.name| default_if_none:"" }}</h4>
+    <h4><strong>Category:</strong> {{ object.category }}</h4>
     {% if object.customers.count > 0 %}
         <h3>Customers</h3>
         <ul class="list-group">
@@ -12,7 +14,7 @@
         {% endfor %}
     </ul>
     {% else %}
-        <h3>No customers was added yet.</h3>
+        <h3>No clients was added yet.</h3>
     {% endif %}
     <button type="button"><a href="{% url 'edit_group' object.id %}">Update group</a></button>
     <button type="button"><a href="{% url 'delete_group' object.id %}">Delete group</a></button>

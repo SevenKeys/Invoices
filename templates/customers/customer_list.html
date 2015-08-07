@@ -12,7 +12,6 @@
                 </ul>
             </div>
             {% if customer_list.count > 0 %}
-                {% for customer in customer_list %}
                 <table class="table">
                     <thead>
                         <tr>
@@ -23,6 +22,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                    {% for customer in customer_list %}
                         <tr>
                             <td>
                                <a href="{% url 'customer_detail' customer.id %}">{{ customer.name }}</a> 
@@ -43,11 +43,10 @@
                                 <button type="button"><a href="{% url 'delete_customer' customer.id %}">Delete</a></button>
                             </td>
                         </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
-                    
-                
-                {% endfor %}
+                                    
             {% else %}
                 <h3>No clients was added yet.</h3>
             {% endif %}

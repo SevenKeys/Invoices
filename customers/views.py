@@ -26,14 +26,14 @@ class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
 			queryset = False
 		return queryset
 
-	def get_context_data(self):
-		context = super(CustomerList, self).get_context_data()
-		try:
-			company = self.get_company()
-		except UserProfile.DoesNotExist:
-			company = False
-		context['company'] = company
-		return context
+	# def get_context_data(self):
+	# 	context = super(CustomerList, self).get_context_data()
+	# 	try:
+	# 		company = self.get_company()
+	# 	except UserProfile.DoesNotExist:
+	# 		company = False
+	# 	context['company'] = company
+	# 	return context
 
 
 
@@ -47,7 +47,7 @@ class AddCustomer(CreateView, CompanyMixin, ContactMixin):
 	def form_valid(self, form):
 		new_customer = form.save(commit=False)
 		new_customer.company = self.get_company()
-		new_customer.contact = self.get_contact()
+		group = self.request.POST['group']
 		new_customer.save()
 		return super(AddCustomer, self).form_valid(form)
 
@@ -75,6 +75,15 @@ class UpdateCustomer(UpdateView):
 		context = super(UpdateCustomer, self).get_context_data(**kwargs)
 		context['edit'] = True
 		return context
+
+	def form_valid(self, form):
+		new_customer = form.save(commit=False)
+		name_group = self.request.POST['group']
+		group = CustomerGroup.objects.get(name=name_group)
+		group.customers.add(new_customer)
+		group.save()
+		new_customer.save()
+		return super(UpdateCustomer, self).form_valid(form)
 
 
 class DeleteCustomer(DeleteView):

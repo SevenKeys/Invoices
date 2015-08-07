@@ -27,14 +27,14 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
             queryset = False
         return queryset
 
-    def get_context_data(self):
-        context = super(ProductList, self).get_context_data()
-        try:
-            company = self.get_company()
-        except UserProfile.DoesNotExist:
-            company = False
-        context['company'] = company
-        return context
+    # def get_context_data(self):
+    #     context = super(ProductList, self).get_context_data()
+    #     try:
+    #         company = self.get_company()
+    #     except UserProfile.DoesNotExist:
+    #         company = False
+    #     context['company'] = company
+    #     return context
 
 
 class ProductDetails(DetailView):

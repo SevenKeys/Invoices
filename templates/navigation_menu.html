@@ -15,6 +15,9 @@
         <li>
             <a href="{% url 'products' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>
         </li>
+        <li>
+            <a href="{% url 'get_company' company.id %}"><span class="glyphicon glyphicon-thumbs-up"></span>{% trans "My Company" %}</a>
+        </li>
     {% endif %}
 </ul>
 

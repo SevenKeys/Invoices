@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.core.urlresolvers import reverse_lazy
 from .models import Customer, CustomerGroup
 from .forms import CustomerForm, CustomerGroupForm
-# from contacts.models import Contact
+from companies.models import Company
 from users.models import UserProfile
 from users.permissions import LoginRequiredMixin
 from companies.views import CompanyMixin
@@ -52,16 +52,19 @@ class AddCustomer(CreateView, CompanyMixin, ContactMixin):
 		return super(AddCustomer, self).form_valid(form)
 
 
-class CustomerDetail(DetailView):
+class CustomerDetail(DetailView,CompanyMixin):
 	model = Customer
 	template_name = 'customers/customer_details.html'
 	pk_url_kwarg = 'customer_id'
 
-	# def get_context_data(self,**kwargs):
-	# 	context = super(CustomerDetail, self).get_context_data(**kwargs)
-	# 	user = self.request.user.userprofile.name
-	# 	context['user_name'] = user
-	# 	return context
+	def get_context_data(self,**kwargs):
+		context = super(CustomerDetail, self).get_context_data(**kwargs)
+		try:
+			company = self.get_company()
+		except (Company.DoesNotExist, UserProfile.DoesNotExist):
+			company = False
+		context['company'] = company
+		return context
 
 
 class UpdateCustomer(UpdateView):

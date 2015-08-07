@@ -37,10 +37,19 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
     #     return context
 
 
-class ProductDetails(DetailView):
+class ProductDetails(DetailView, CompanyMixin):
     model = Product
     template_name = 'products/product_details.html'
     pk_url_kwarg = 'product_id'
+
+    def get_context_data(self,**kwargs):
+        context = super(ProductDetails, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
 
 
 

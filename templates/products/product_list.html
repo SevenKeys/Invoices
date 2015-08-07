@@ -4,11 +4,13 @@
     {% if company %}
         <h2>Products of <strong>{{ company }}</strong> company.</h2>
         {% csrf_token %}
-            <div class="input-group">
-                <input type="text" id="search_products" class="form-control" placeholder="Input search text" aria-describedby="sizing-addon2">
-            </div>
-        <ul id="search_products_results">
-        </ul>
+        <div class="input-group">
+            <input type="text" id="search_products" class="form-control" placeholder="Input search text" aria-describedby="sizing-addon2">
+        </div>
+        <div class="dropdown">
+            <ul id="search_products_results" class="custom_dropdown">
+            </ul>
+        </div>
         <ul>
             {% if product_list.count > 0 %}
                 {% for product in product_list %}
@@ -17,7 +19,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Company</th>
-                            <th>Created</th>
+                            <th>Price</th>
                             <th>Group(s)</th>
                         </tr>
                     </thead>
@@ -27,7 +29,7 @@
                                <a href="{% url 'product_details' product.id %}">{{ product.name }}</a> 
                             </td>
                             <td>{{ product.company }}</td>
-                            <td>{{ product.created }}</td>
+                            <td>{{ product.price_with_tax }}</td>
                             <td>
                             {% if product.productgroup_set %}
                         {% for group in product.productgroup_set.all %}

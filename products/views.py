@@ -37,6 +37,13 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
         return context
 
 
+class ProductDetails(DetailView):
+    model = Product
+    template_name = 'products/product_details.html'
+    pk_url_kwarg = 'product_id'
+    
+
+
 class AddProduct(CreateView, CompanyMixin):
     model = Product
     form_class = ProductForm

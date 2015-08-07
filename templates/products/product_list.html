@@ -13,29 +13,27 @@
         </div>
         <ul>
             {% if product_list.count > 0 %}
-                {% for product in product_list %}
                 <table class="table">
                     <thead>
                         <tr>
                             <th>Name</th>
                             <th>Company</th>
                             <th>Price</th>
-                            <th>Group(s)</th>
+                            <th>Group</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for product in product_list %}
                         <tr>
                             <td>
                                <a href="{% url 'product_details' product.id %}">{{ product.name }}</a> 
                             </td>
                             <td>{{ product.company }}</td>
-                            <td>{{ product.price_with_tax }}</td>
+                            <td>{{ product.price }}</td>
                             <td>
-                            {% if product.productgroup_set %}
-                        {% for group in product.productgroup_set.all %}
-                                <p><a href="{% url 'get_group' group.id %}">{{ group }}</a></p>
-                            {% endfor %}
-                        {% endif %}
+                                {% if product.group %}
+                                <a href="{% url 'product_group' product.group.id %}">{{ product.group }}</a>
+                                {% endif %}
                             </td>
                             <td>
                                 <button type="button"><a href="{% url 'edit_product' product.id %}">Edit</a></button>
@@ -44,11 +42,10 @@
                                 <button type="button"><a href="{% url 'delete_product' product.id %}">Delete</a></button>
                             </td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
-                    
-                
-                {% endfor %}
+                                    
             {% else %}
                 <h3>No products was added yet.</h3>
             {% endif %}

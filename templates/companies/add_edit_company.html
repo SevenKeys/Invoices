@@ -29,13 +29,8 @@
 			 <span class="special_class">*</span>
 	  	  {% endif %}
 		  	</label>
-            <div class="col-lg-8 ">
-		      <input type="text" class="form-control"
-		        name="{{ field.name }}"
-		        id="id_{{ field.name }}"
-		        value="{{ field.value|default_if_none:"" }}">
+		        {{ field | addcss:'form-control' }}
 		        <p class="help-text">{{ field.help_text }} </p>
-            </div>
 		</fieldset>
 		{% endfor %}
 

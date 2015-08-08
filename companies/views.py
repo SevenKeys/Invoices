@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.http import HttpResponse
+from django.core.urlresolvers import reverse
 from .models import Company
 from .forms import CompanyForm
 from contacts.models import Contact
@@ -33,14 +34,14 @@ class CompanyMixin(object):
 # add company id to navigation menu
 class NavMenuView(TemplateView, CompanyMixin):
 
-	# def get_context_data(self,**kwargs):
-	# 	context = super(NavMenuView, self).get_context_data(**kwargs)
-	# 	try:
-	# 		company = self.get_company()
-	# 	except (Company.DoesNotExist, AttributeError):
-	# 		company = None
-	# 	context['company'] = company
-	# 	return context
+	def get_context_data(self,**kwargs):
+		context = super(NavMenuView, self).get_context_data(**kwargs)
+		try:
+			company = self.get_company()
+		except (Company.DoesNotExist, UserProfile.DoesNotExist):
+			company = None
+		context['company'] = company
+		return context
 
 	def get_template_names(self):
 		return [
@@ -124,7 +125,7 @@ class UpdateCompany(UpdateView):
 	form_class = CompanyForm
 	template_name = 'companies/add_edit_company.html'
 	pk_url_kwarg = 'company_id'
-	success_url = '/'
+	# success_url = '/'
 
 	def get_form_kwargs(self, **kwargs):
 		kwargs = super(UpdateCompany, self).get_form_kwargs(**kwargs)
@@ -137,6 +138,9 @@ class UpdateCompany(UpdateView):
 		context = super(UpdateCompany, self).get_context_data(**kwargs)
 		context['edit'] = True
 		return context
+
+	def get_success_url(self):
+		return reverse('get_company',kwargs={'company_id':self.object.pk})
 
 
 class DeleteCompany(DeleteView):

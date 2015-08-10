@@ -9,7 +9,7 @@ from .forms import CustomerForm, CustomerGroupForm
 from companies.models import Company
 from users.models import UserProfile
 from users.permissions import LoginRequiredMixin
-from companies.views import CompanyMixin
+from companies.views import CompanyMixin, NavMenuView
 from contacts.views import ContactMixin
 
 
@@ -37,7 +37,7 @@ class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
 
 
 
-class AddCustomer(CreateView, CompanyMixin, ContactMixin):
+class AddCustomer(CreateView, CompanyMixin):
 	model = Customer
 	form_class = CustomerForm
 	template_name = 'customers/add_edit_customer.html'
@@ -50,6 +50,15 @@ class AddCustomer(CreateView, CompanyMixin, ContactMixin):
 		group = self.request.POST['group']
 		new_customer.save()
 		return super(AddCustomer, self).form_valid(form)
+
+	def get_context_data(self,**kwargs):
+		context = super(AddCustomer, self).get_context_data(**kwargs)
+		try:
+			company = self.get_company()
+		except (UserProfile.DoesNotExist, Company.DoesNotExist):
+			company = False
+		context['company'] = company
+		return context
 
 
 class CustomerDetail(DetailView,CompanyMixin):

@@ -16,3 +16,6 @@ class Company(models.Model):
 class CompanySegment(models.Model):
 	company = models.ForeignKey(Company)
 	name = models.CharField(max_length=60)
+
+	def __str__(self):
+		return self.name

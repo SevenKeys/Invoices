@@ -15,7 +15,7 @@
         <li class="list-group-item list-group-item-info"><strong>E-mail:</strong> {{ object.contact.email }}</li>
         <li class="list-group-item list-group-item-info"><strong>Country:</strong> {{ object.contact.country }}</li>
         <li class="list-group-item list-group-item-info"><strong>Register Number:</strong> {{ object.company.reg_code }}</li>
-        <li class="list-group-item list-group-item-info"><strong>Segment:</strong> </li>
+        <li class="list-group-item list-group-item-info"><strong>Segment:</strong> {{object.company_segment }}</li>
         <li class="list-group-item list-group-item-info"><strong>Comment:</strong> {{ object.comment }}</li>
         <li class="list-group-item list-group-item-info"><strong>Type Of Client:</strong> {{ object.client_type }}</li>
         <li class="list-group-item list-group-item-info"><strong>Company Address:</strong> {{ object.company.address }}</li>
@@ -25,6 +25,6 @@
         <li class="list-group-item list-group-item-info"><strong>Parent Group:</strong> {{ object.customergroup }}</li>
     </ul>
     
-    <button type="button"><a href="{% url 'edit_customer' object.id %}">Edit client profile</a></button>
+    <button type="button" class="btn btn-warning tm_style_2"><a href="{% url 'edit_customer' object.id %}">Edit client profile</a></button>
 
 {% endblock %}

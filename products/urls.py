@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from .views import ProductList, AddProduct, UpdateProduct, DeleteProduct
 from .views import ProductGroupDetail, AddProductGroup, UpdateProductGroup, DeleteProductGroup
-from .views import searchProdAjax
+from .views import searchProdAjax, ProductListJson
 
 urlpatterns = [
     url(r'^all/$', ProductList.as_view(), name='products'),
@@ -12,6 +12,6 @@ urlpatterns = [
     url(r'^add_group/$', AddProductGroup.as_view(), name='add_product_group'),
     url(r'^edit_group/(?P<group_id>\d+)/$', UpdateProductGroup.as_view(), name='edit_product_group'),
     url(r'^delete_group/(?P<group_id>\d+)/$', DeleteProductGroup.as_view(), name='delete_product_group'),
-    url(r'^search/$', searchProdAjax)
-
+    url(r'^search/$', searchProdAjax),
+    url(r'^list/', ProductListJson.GetProductsJson)
 ]

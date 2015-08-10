@@ -1,3 +1,6 @@
+from django.core import serializers
+from django.core.paginator import Paginator
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -112,3 +115,28 @@ def searchProdAjax(request):
     context = {'products': products}
 
     return render(request, 'products/search_products_results.html', context)
+
+
+class ProductListJson(LoginRequiredMixin, CompanyMixin, ListView):
+    def GetProductsJson(self):
+        try:
+            user = self.user
+            company = user.userprofile.company
+            currency_filter = self.GET.get('currency')
+            price_filter = self.GET.get('price')
+            code_filter = self.GET.get('code')
+            name_filter = self.GET.get('name')
+            queryset = Product.objects.filter(company=company)
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+            if code_filter:
+                queryset = queryset.filter(code__contains=code_filter)
+            if currency_filter:
+                queryset = queryset.filter(currency__contains=currency_filter)
+            if price_filter and price_filter != '0':
+                queryset = queryset.filter(price__contains=price_filter)
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')

@@ -37,10 +37,10 @@
                         {% endif %}
                             </td>
                             <td>
-                                <button type="button"><a href="{% url 'edit_customer' customer.id %}">Edit</a></button>
+                                <button type="button" class="btn btn-warning tm_style_2"><a href="{% url 'edit_customer' customer.id %}">Edit</a></button>
                             </td>
                             <td>
-                                <button type="button"><a href="{% url 'delete_customer' customer.id %}">Delete</a></button>
+                                <button type="button" class="btn btn-danger tm_style_2"><a href="{% url 'delete_customer' customer.id %}">Delete</a></button>
                             </td>
                         </tr>
                     {% endfor %}
@@ -51,11 +51,11 @@
                 <h3>No clients was added yet.</h3>
             {% endif %}
         </ul>
-        <button type="button"><a href="{% url 'add_customer' %}">Add client</a></button>
-        <button type="button"><a href="{% url 'add_group' %}">Add client group</a></button>
-        <button type="button"><a href="{% url 'add_company' %}">Edit company</a></button>
+        <button type="button" class="btn btn-info tm_style_2"><a href="{% url 'add_customer' %}">Add client</a></button>
+        <button type="button" class="btn btn-info tm_style_2"><a href="{% url 'add_group' %}">Add client group</a></button>
+        <button type="button" class="btn btn-warning tm_style_2"><a href="{% url 'add_company' %}">Edit company</a></button>
     {% else %}
         <h3>You have not registered a company yet.</h3>
-        <button type="button"><a href="{% url 'add_company' %}">Create company</a></button>
+        <button type="button" class="btn btn-info tm_style_2"><a href="{% url 'add_company' %}">Create company</a></button>
     {% endif %}
 {% endblock %}

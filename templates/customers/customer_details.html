@@ -16,7 +16,20 @@
         <li class="list-group-item list-group-item-info"><strong>Country:</strong> {{ object.contact.country }}</li>
         <li class="list-group-item list-group-item-info"><strong>Register Number:</strong> {{ object.company.reg_code }}</li>
         <li class="list-group-item list-group-item-info"><strong>Segment:</strong> {{object.company_segment }}</li>
-        <li class="list-group-item list-group-item-info"><strong>Comment:</strong> {{ object.comment }}</li>
+        <li class="list-group-item list-group-item-info">
+        <div class="accordion" id="accordion1">
+            <div class="accordion-heading">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne">
+                <strong>Comments</strong>
+              </a>
+            </div>
+            <div id="collapseOne" class="accordion-body collapse out">
+              <div class="accordion-inner">
+                {{ object.comment }}
+              </div>
+            </div> 
+        </div>
+        </li>
         <li class="list-group-item list-group-item-info"><strong>Type Of Client:</strong> {{ object.client_type }}</li>
         <li class="list-group-item list-group-item-info"><strong>Company Address:</strong> {{ object.company.address }}</li>
         <li class="list-group-item list-group-item-info"><strong>Discount Percent:</strong> {{ object.discount_percent }}</li>

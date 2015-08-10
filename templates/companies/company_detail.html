@@ -4,14 +4,25 @@
     <h2>Company <strong>{{ object.name}}</strong></h2>
     <ul class="list-group">
         <!-- {% if company %} -->
-            <li class="list-group-item list-group-item-info"><strong>Segments:</strong>
-            {% if object.companysegment_set.all.count > 0 %}
-                <ul>
-                {% for segment in object.companysegment_set.all %}
-                    <li>{{ segment.name }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
+            <li class="list-group-item list-group-item-info">
+            <div class="accordion" id="accordion1">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne">
+                    <strong>SEGMENTS</strong>
+                  </a>
+                </div>
+                <div id="collapseOne" class="accordion-body collapse out">
+                  <div class="accordion-inner">
+                    {% if object.companysegment_set.all.count > 0 %}
+                        <ul>
+                        {% for segment in object.companysegment_set.all %}
+                            <li>{{ segment.name }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                  </div>
+                </div> 
+            </div>
             </li>
             <li class="list-group-item list-group-item-info"><strong>Created:</strong> {{ object.created }}</li>
             <li class="list-group-item list-group-item-info"><strong>Contact:</strong> {{ object.contact }}</li>

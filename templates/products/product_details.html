@@ -7,7 +7,20 @@
         <li class="list-group-item list-group-item-info"><strong>Product Name:</strong> {{ object.name }}</li>
         <li class="list-group-item list-group-item-info"><strong>Product Code:</strong> {{ object.code }}</li>
         <li class="list-group-item list-group-item-info"><strong>Product Price:</strong> {{ object.price }}</li>
-        <li class="list-group-item list-group-item-info"><strong>Description:</strong> {{ object.description }}</li>
+        <li class="list-group-item list-group-item-info">
+        <div class="accordion" id="accordion1">
+            <div class="accordion-heading">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne">
+                <strong>DESCRIPTION</strong>
+              </a>
+            </div>
+            <div id="collapseOne" class="accordion-body collapse out">
+              <div class="accordion-inner">
+                {{ object.description }}
+              </div>
+            </div> 
+        </div>
+        </li>
         <li class="list-group-item list-group-item-info"><strong>Group:</strong> {{ object.group }}</li>
         <li class="list-group-item list-group-item-info"><strong>Currency:</strong> {{ object.currency }}</li>
         <li class="list-group-item list-group-item-info"><strong>Stock:</strong> {{ object.stock }}</li>
@@ -18,6 +31,6 @@
         <li class="list-group-item list-group-item-info"><strong>Price With Tax:</strong> {{ object.price_with_tax }}</li>
     </ul>
     
-    <button type="button"><a href="{% url 'edit_product' object.id %}">Edit product data</a></button>
+    <button type="button" class="btn btn-warning tm_style_2"><a href="{% url 'edit_product' object.id %}">Edit product data</a></button>
 
 {% endblock %}

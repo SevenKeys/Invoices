@@ -17,7 +17,7 @@ size = A4
 styles = getSampleStyleSheet()
 TYPE_COMPONENT = 'type'
 IMAGE = "image_1"
-IMAGE_1 = "../static/images/image_1.png"
+IMAGE_1 = "http://localhost:8000/static/images/image_1.png"
 
 
 def main(request):

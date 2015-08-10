@@ -1,5 +1,5 @@
 from django import forms
-from .models import Company
+from .models import Company, CompanySegment
 from users.models import UserProfile
 
 class CompanyForm(forms.ModelForm):
@@ -55,3 +55,12 @@ class CompanyForm(forms.ModelForm):
         except (UserProfile.DoesNotExist, AttributeError):
             contact=False
             super(CompanyForm, self).__init__(*args,**kwargs)
+
+
+class SegmentForm(forms.ModelForm):
+    name = forms.CharField(label='Segment name')
+    
+    class Meta:
+        model = CompanySegment
+        fields = ['name']
+

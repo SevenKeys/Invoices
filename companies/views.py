@@ -5,8 +5,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
-from .models import Company
-from .forms import CompanyForm
+from .models import Company, CompanySegment
+from .forms import CompanyForm, SegmentForm
 from contacts.models import Contact
 from contacts.views import ContactMixin
 from users.models import UserProfile
@@ -55,21 +55,6 @@ class CompanyDetail(DetailView, LoginRequiredMixin, CompanyMixin):
 	template_name = 'companies/company_detail.html'
 	pk_url_kwarg = 'company_id'
 	model = Company
-
-	# To check access to update and delete company
-	# def get_context_data(self,**kwargs):
-	# 	context = super(CompanyDetail, self).get_context_data(**kwargs)
-	# 	# user = self.request.user
-	# 	# company = self.get_company()
-	# 	try:
-	# 		company = self.get_company()
-	# 		# user_company = user.userprofile.company
-	# 	except UserProfile.DoesNotExist:
-	# 		company = None
-	# 	# if company == user_company:
-	# 	context['company'] = company
-	# 	print(self.request.user)
-	# 	return context
 
 	
 class AddCompany(CreateView, ContactMixin):
@@ -149,3 +134,33 @@ class DeleteCompany(DeleteView):
 	template_name = 'companies/delete_company.html'
 	pk_url_kwarg = 'company_id'
 	success_url = ''
+
+
+class AddCompanySegment(CreateView,CompanyMixin):
+	model = Company
+	form_class = SegmentForm
+	template_name = 'companies/add_segment.html'
+	pk_url_kwarg = 'company_id'
+
+	def get_success_url(self):
+		self.object = self.get_object()
+		return reverse('get_company',kwargs={'company_id':self.object.pk})
+
+	def form_valid(self,form):
+		new_segment = form.save(commit=False)
+		self.object = self.get_object()
+		self.object.companysegment_set.add(new_segment)
+		new_segment.save()
+		return super(AddCompanySegment,self).form_valid(form)
+
+	def get_context_data(self,**kwargs):
+		self.object = self.get_object()
+		context = super(AddCompanySegment, self).get_context_data(**kwargs)
+		try:
+			company = self.get_company()
+		except (Company.DoesNotExist, UserProfile.DoesNotExist):
+			company = None
+		context['company'] = company
+		return context
+
+

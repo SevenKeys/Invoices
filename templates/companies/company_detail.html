@@ -4,20 +4,32 @@
     <h2>Company <strong>{{ object.name}}</strong></h2>
     <ul class="list-group">
         <!-- {% if company %} -->
-            <li class="list-group-item"><strong>Created:</strong> {{ object.created }}</li>
-            <li class="list-group-item"><strong>Contact:</strong> {{ object.contact }}</li>
-            <li class="list-group-item"><strong>Register Code:</strong> {{ object.reg_code }}</li>
-            <li class="list-group-item"><strong>Credit Status:</strong> {{ object.credit_status }}</li>
-            <li class="list-group-item"><strong>Office Number:</strong> {{ object.office_number }}</li>
-            <li class="list-group-item"><strong>Phone Number:</strong> {{ object.contact.phone_number }}</li>
-            <li class="list-group-item"><strong>Email:</strong> {{ object.contact.email }}</li>
-            <li class="list-group-item"><strong>Website:</strong> {{ object.contact.website }}</li>
-            <li class="list-group-item"><strong>Postcode:</strong> {{ object.contact.postcode }}</li>
-            <li class="list-group-item"><strong>Country:</strong> {{ object.contact.country }}</li>
-            <li class="list-group-item"><strong>Street:</strong> {{ object.contact.street }}</li>
+            <li class="list-group-item list-group-item-info"><strong>Segments:</strong>
+            {% if object.companysegment_set.all.count > 0 %}
+                <ul>
+                {% for segment in object.companysegment_set.all %}
+                    <li>{{ segment.name }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            </li>
+            <li class="list-group-item list-group-item-info"><strong>Created:</strong> {{ object.created }}</li>
+            <li class="list-group-item list-group-item-info"><strong>Contact:</strong> {{ object.contact }}</li>
+            <li class="list-group-item list-group-item-info"><strong>Register Code:</strong> {{ object.reg_code }}</li>
+            <li class="list-group-item list-group-item-info"><strong>Credit Status:</strong> {{ object.credit_status }}</li>
+            <li class="list-group-item list-group-item-info"><strong>Office Number:</strong> {{ object.office_number }}</li>
+            <li class="list-group-item list-group-item-info"><strong>Phone Number:</strong> {{ object.contact.phone_number }}</li>
+            <li class="list-group-item list-group-item-info"><strong>Email:</strong> {{ object.contact.email }}</li>
+            <li class="list-group-item list-group-item-info"><strong>Website:</strong> {{ object.contact.website }}</li>
+            <li class="list-group-item list-group-item-info"><strong>Postcode:</strong> {{ object.contact.postcode }}</li>
+            <li class="list-group-item list-group-item-info"><strong>Country:</strong> {{ object.contact.country }}</li>
+            <li class="list-group-item list-group-item-info"><strong>Street:</strong> {{ object.contact.street }}</li>
         <!-- {% endif %} -->
     </ul>
-    <button type="button"><a href="{% url 'edit_company' object.id %}">Edit</a></button>
-    <button type="button"><a href="{% url 'delete_company' object.id %}">Delete</a></button>
+    <button type="button" class="btn btn-warning tm_style_2"><a href="{% url 'edit_company' object.id %}">Edit company</a></button>
+    <button type="button" class="btn btn-danger tm_style_2"><a href="{% url 'delete_company' object.id %}">Delete company</a></button>
+    <button type="button" class="btn btn-info tm_style_2"><a href="{% url 'add_segment' object.id %}">Add segment</a></button>
+
+{% block segment %}{% endblock %}
 
 {% endblock %}

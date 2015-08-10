@@ -1,0 +1,41 @@
+{% extends "companies/company_detail.html" %}
+{% load add_class %}
+{% block segment %}
+	<form class="form-horizontal" action="" method="POST"style="margin-right:auto; margin-left:auto; width:70%">
+	    <legend><span  class="col-sm-offset-6">Add company segment</span></legend>
+		{% csrf_token %}
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+		{% for field in form.visible_fields %}
+		{% if field.errors %}
+		<fieldset class="form-group {% add_css_class 'has-error' %}" >
+		    <ol>
+		    {% for error in field.errors %}
+		        <li><strong>{{ error|escape }}</strong></li>
+		    {% endfor %}
+		    </ol>
+		{% elif field.value %}
+		  <fieldset class="form-group {% add_css_class 'has-success' %}" >
+		{% else %}
+		  <fieldset class="form-group" >
+		{% endif %}
+		  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+		  {% if field.field.required %}
+			 <span class="special_class">*</span>
+	  	  {% endif %}
+	  	  </label>
+		        {{ field | addcss:'form-control' }}
+		        <p class="help-text">{{ field.help_text }} </p>
+
+		</fieldset>
+		{% endfor %}
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-6">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  &nbsp;<button type="reset" class="btn">Cancel</button>
+            </div>
+        </div>
+	</form>
+
+{% endblock %}

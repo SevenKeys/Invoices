@@ -26,15 +26,6 @@ class UserList(LoginRequiredMixin, ListView):
 	template_name = 'users/user_list.html'
 	model = User
 
-	# def get_queryset(self):
-	# 	reg_users = User.objects.all()
-	# 	prof_users = UserProfile.objects.all()
-	# 	for reg_user in reg_users:
-	# 		try:
-	# 			reg_user.userprofile
-	# 		except UserProfile.DoesNotExist:
-	# 			UserProfile.objects.create(user=reg_user)
-	# 	return reg_users
 
 			
 

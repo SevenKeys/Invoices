@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load add_class %}
+{% block content %}
+	<form class="form-horizontal" action="" method="POST">
+		{% if edit %}
+		    <legend><span  class="col-sm-offset-6">Edit company data</span></legend>
+		{% else %}
+		    <legend><span  class="col-sm-offset-6">Add company</span></legend>
+		{% endif %}
+		{% csrf_token %} 
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+		{% for field in form.visible_fields %}
+		{% if field.errors %}
+		<fieldset class="form-group {% add_css_class 'has-error' %}" >
+		    <ol>
+		    {% for error in field.errors %}
+		        <li><strong>{{ error|escape }}</strong></li>
+		    {% endfor %}
+		    </ol>
+		{% elif field.value %}
+		  <fieldset class="form-group {% add_css_class 'has-success' %}" >
+		{% else %}
+		  <fieldset class="form-group" >
+		{% endif %}
+		  <label class="col-lg-3 control-label" for="id_{{ field.name }}">{{ field.label }}
+		  {% if field.field.required %}
+			 <span class="special_class">*</span>
+	  	  {% endif %}
+		  	</label>
+            <div class="col-lg-8 ">
+		      <input type="text" class="form-control"
+		        name="{{ field.name }}"
+		        id="id_{{ field.name }}"
+		        value="{{ field.value|default_if_none:"" }}">
+		        <p class="help-text">{{ field.help_text }} </p>
+            </div>
+		</fieldset>
+		{% endfor %}
+
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-6">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  &nbsp;<button type="reset" class="btn">Cancel</button>
+            </div>
+        </div>
+	</form>
+
+{% endblock %}

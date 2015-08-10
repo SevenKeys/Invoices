@@ -1,22 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Client {{ object.name }}</h2>
-    {% if object.customerdetails_set.count > 0 %}
-    <ul>
-        <h3>Details</h3>
-        {% for detail in object.customerdetails_set.all %}
-            <li>
-            <p>Field name: {{ detail.field_name }}</p>
-            <p>Field value: {{ detail.field_value }}</p>
-            <button type="button"><a href="{% url 'edit_detail' detail.id %}">Update detail</a></button>
-            <button type="button"><a href="{% url 'delete_detail' detail.id %}">Delete detail</a></button>
-            </li>
-        {% endfor %}
+    <h2>Client <strong>{{ object.name }}</strong> profile.</h2>
+
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Client name:</strong> {{ object.name }}</li>
+        <li class="list-group-item"><strong>Status:</strong> {{ object.status }}</li>
+        <li class="list-group-item"><strong>Date Added:</strong> {{ object.created }}</li>
+        <li class="list-group-item"><strong>Company Name:</strong> {{ object.company }}</li>
+        <li class="list-group-item"><strong>Contact Person:</strong> {{ user }}</li>
+        <li class="list-group-item"><strong>Language:</strong> {{ object.language }}</li>
+        <li class="list-group-item"><strong>Phone number:</strong> {{ object.contact.phone_number }}</li>
+        <li class="list-group-item"><strong>Webpage:</strong> {{ object.contact.webpage }}</li>
+        <li class="list-group-item"><strong>E-mail:</strong> {{ object.contact.email }}</li>
+        <li class="list-group-item"><strong>Country:</strong> {{ object.contact.country }}</li>
+        <li class="list-group-item"><strong>Register Number:</strong> {{ object.company.reg_code }}</li>
+        <li class="list-group-item"><strong>Segment:</strong> </li>
+        <li class="list-group-item"><strong>Comment:</strong> {{ object.comment }}</li>
+        <li class="list-group-item"><strong>Type Of Client:</strong> {{ object.client_type }}</li>
+        <li class="list-group-item"><strong>Company Address:</strong> {{ object.company.address }}</li>
+        <li class="list-group-item"><strong>Discount Percent:</strong> {{ object.discount_percent }}</li>
+        <li class="list-group-item"><strong>Credit Status:</strong> </li>
+        <li class="list-group-item"><strong>Office Number:</strong> </li>
+        <li class="list-group-item"><strong>Parent Group:</strong> {{ object.customergroup }}</li>
     </ul>
-    {% else %}
-        <h3>No details was added yet.</h3>
-    {% endif %}
-    <button type="button"><a href="{% url 'add_detail' object.id %}">Add detail</a></button>
+    
+    <button type="button"><a href="{% url 'edit_customer' object.id %}">Edit client profile</a></button>
 
 {% endblock %}

@@ -10,7 +10,7 @@
   {% csrf_token %}
 
   <input type="submit" value="Yes, delete." />
-  <a href="{% url 'customer_detail' customerdetails.customer.id %}">No, cancel.</a>
+  <a href="{% url 'add_edit_customer' %}">No, cancel.</a>
 </form>
 
 {% endblock %}

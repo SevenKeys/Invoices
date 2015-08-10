@@ -1,10 +1,7 @@
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+
 from .models import *
-from .forms import InvoiceForm
-from companies.views import CompanyMixin
 
 
 def main(request):
@@ -24,10 +21,3 @@ def main(request):
 
     return render_to_response("invoices/list.html", dict(invoices=invoices, user=request.user,
                                                 invoices_list=invoices.object_list))
-
-
-# class CreateInvoice(CreateView):
-#     model = Invoice
-#     form_class = InvoiceForm
-#     template_name = 'invoices/create_invoice.html'
-    # success_url = '/invoices/success.html'

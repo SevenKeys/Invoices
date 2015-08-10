@@ -11,3 +11,4 @@ django-toolbelt==0.0.1
 Markdown==2.5.2
 Pillow==2.7.0
 pytz==2014.10
+reportlab==3.2.0

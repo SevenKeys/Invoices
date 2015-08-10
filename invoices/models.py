@@ -56,6 +56,7 @@ class TemplateComponent(models.Model):
     title = models.CharField(max_length=40)
     size_x = models.IntegerField()
     size_y = models.IntegerField()
+    type = models.CharField(max_length=10, default="custom")
     content = models.CharField(max_length=1000, default="")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)

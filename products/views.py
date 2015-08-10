@@ -1,4 +1,4 @@
-# from django.shortcuts import render
+from django.shortcuts import render
 # from django.template import loader, Context
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
@@ -22,7 +22,7 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
     def get_queryset(self):
         try:
             company = self.get_company()
-            queryset = Product.objects.filter(company=company)
+            queryset = Product.objects.filter(company=company).order_by('name')
         except:
             queryset = False
         return queryset
@@ -37,10 +37,17 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
         return context
 
 
+class ProductDetails(DetailView):
+    model = Product
+    template_name = 'products/product_details.html'
+    pk_url_kwarg = 'product_id'
+
+
+
 class AddProduct(CreateView, CompanyMixin):
     model = Product
     form_class = ProductForm
-    template_name = 'products/edit_product.html'
+    template_name = 'products/add_edit_product.html'
     success_url = '/products/all/'
 
     def form_valid(self, form):
@@ -50,14 +57,11 @@ class AddProduct(CreateView, CompanyMixin):
         return super(AddProduct,self).form_valid(form)
 
 
-    def form_invalid(self,form):
-        return HttpResponse('form is invalid')
-
 
 class UpdateProduct(UpdateView):
     model = Product
     form_class = ProductForm
-    template_name = 'products/edit_product.html'
+    template_name = 'products/add_edit_product.html'
     pk_url_kwarg = 'product_id'
     success_url = '/products/all/'
 
@@ -69,6 +73,7 @@ class DeleteProduct(DeleteView):
     pk_url_kwarg = 'product_id'
     success_url = '/products/all/'
 
+
 # CRUD for ProductGroup
 class ProductGroupDetail(DetailView):
     model = ProductGroup
@@ -77,31 +82,33 @@ class ProductGroupDetail(DetailView):
 
 
 
-class AddProductGroup(CreateView):
+class AddProductGroup(CreateView, CompanyMixin):
     model = ProductGroup
     form_class = ProductGroupForm
-    template_name = 'products/edit_product_group.html'
+    template_name = 'products/add_edit_product_group.html'
     success_url = '/products/all/'
 
     def form_valid(self, form):
         new_group = form.save(commit=False)
-        user = self.request.user
-        company = user.userprofile.company
-        new_group.company = company
+        # user = self.request.user
+        # company = user.userprofile.company
+        new_group.company = self.get_company()
         new_group.save()
         return super(AddProductGroup,self).form_valid(form)
 
-
-    def form_invalid(self,form):
-        return HttpResponse('form is invalid')
 
 
 class UpdateProductGroup(UpdateView):
     model = ProductGroup
     form_class = ProductGroupForm
-    template_name = 'products/edit_product_group.html'
+    template_name = 'products/add_edit_product_group.html'
     pk_url_kwarg = 'group_id'
     success_url = '/products/all/'
+
+    def get_context_data(self,**kwargs):
+        context = super(UpdateProductGroup,self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
 
 class DeleteProductGroup(DeleteView):
@@ -110,3 +117,15 @@ class DeleteProductGroup(DeleteView):
     template_name = 'products/delete_product_group.html'
     pk_url_kwarg = 'group_id'
     success_url = '/products/all/'
+
+# AJAX search function
+def searchProdAjax(request):
+    if request.method == 'POST':
+        search_text = request.POST['search_text']
+    else:
+        search_text = ''
+    products = Product.objects.filter(name__icontains=search_text)
+    context = {};
+    context['products'] = products
+
+    return render(request, 'products/search_products_results.html', context)

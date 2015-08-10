@@ -5,59 +5,45 @@ var gridster;
  */
 $(function() {
 	$.fn.extend({
-		template: function(initialData) {
-
+		template: function(id_template) {
+			prepareAjax();
 			gridster = $(this).gridster({
 				widget_margins: [10, 10],
 				widget_base_dimensions: [140, 140],
-				max_cols: 6,
+				max_cols: 10,
 				draggable: {
 					handle: 'span'
 				},
 				serialize_params: function($w, wgd) {
 					return {
 						reference: $($w).attr('id'),
-						position_y: wgd.col,
-						position_x: wgd.row,
-						id_component: $($w).data('component')
+						position_y: wgd.row,
+						position_x: wgd.col,
+						size_x: wgd.size_x,
+						size_y: wgd.size_y,
+						id_component: $($w).data('component'),
+						content: $($w).data('content')
 					};
 				}
 			}).data("gridster");
 
-			if (initialData != undefined && initialData != null && "" != initialData) {
-				gridster.remove_all_widgets();
-				$.each(Gridster.sort_by_row_and_col_asc(JSON.parse(encrypt(initialData))), function() {
-					gridster.add_widget(getWidget(this.id, this.component, this.removable), this.size_x, this.size_y, this.position_y, this.position_x);
-					$(document).on('click', '.remove', function() {
-						gridster.remove_widget( $(this).parent());
-					});
-					CKEDITOR.disableAutoInline = true;
-					CKEDITOR.inline("editable_" + this.id, {
-						removePlugins: 'toolbar'
-					});
-					CKEDITOR.instances["editable_" + this.id].setData(decrypt(this.content));
-				});
+			if (id_template != undefined && id_template != null && "" != id_template) {
+				loadTemplate(id_template);
 			}
 
 			CKEDITOR.replace("widget-content");
-			$("#add-element").on('click', function() {
+			$("#add-component").on('click', function() {
+			    document.getElementById("id_component").value = null
+			    $("#create-component").show();
+                $("#update-component").hide();
+			    document.getElementById("x-size").readOnly = false;
+                document.getElementById("y-size").readOnly = false;
 				$("#add-widget").modal();
 
 			});
 
-			$('.addable-element').on('click', function() {
-				var widget_id = uuid();
-				var id = "editable_" + widget_id;
-				gridster.add_widget(
-				'<li id="' + widget_id + '" style="border: 2px solid red;" class="element" data-component="' + $(this).attr("id") + '"><span class="glyphicon glyphicon-move" aria-hidden="true"></span><button type="button" class="btn btn-default remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></button><div id="' + id + '" name="' + id + '" class="editable" style="width:100%;height:100%">' + $(this).data("content") +  '</div></li>', $(this).data("x-size"), $(this).data("y-size"), 1, 1);
-				$(document).on('click', '.remove', function() {
-					gridster.remove_widget( $(this).parent());
-				});
-				CKEDITOR.disableAutoInline = true;
-				CKEDITOR.inline(id, {
-					removePlugins: 'toolbar'
-				} );
-			});
+			editableEvent(".edit-component");
+			addableEvent();
 
 			$('#save').on('click', function() {
 				if (CKEDITOR.instances['widget-content']) {
@@ -69,6 +55,14 @@ $(function() {
 					document.getElementById('title_template').value,
 					document.getElementById('description_template').value,
 					document.getElementById('instances_template').value);
+				CKEDITOR.replace("widget-content");
+			});
+
+			$('#show-preview').on('click', function() {
+				if (CKEDITOR.instances['widget-content']) {
+					CKEDITOR.instances["widget-content"].destroy();
+				}
+				document.getElementById("instances_template").value = JSON.stringify(gridster.serialize());
 				CKEDITOR.replace("widget-content");
 			});
 		}
@@ -98,15 +92,8 @@ function uuid(){
  */
 function saveComponent(title, sizex, sizey, cnt) {
     $(document).ready(function(){
-		$.ajaxSetup({
-			beforeSend: function(xhr, settings) {
-				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-				}
-			}
-		});
         $.ajax({
-            url: '/invoices/templates/customcomponents/new/',
+            url: '/invoices/templates/customcomponents/',
             data: {
                     title: title,
                     size_x: sizex,
@@ -121,19 +108,40 @@ function saveComponent(title, sizex, sizey, cnt) {
             	var customcomponent = '<li role="presentation" class="list-group-item"><a>' + title + '</a><a id="' + JSON.stringify(data) + '" class="addable-element" data-x-size="' + sizex + '" data-y-size="' + sizey + '" data-content="' + cnt + '"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a><a class="edit-component"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a><a class="delete-component" onclick="deleteComponent(' + JSON.stringify(data) + ')"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></li></li>';
             	$("#custom-components").append(customcomponent);
             	$("#add-widget").modal('hide');
-            	$('.addable-element').on('click', function() {
-					var widget_id = uuid();
-					var id = "editable_" + widget_id;
-					gridster.add_widget(
-					'<li id="' + widget_id + '" style="border: 2px solid red;" class="element" data-component="' + $(this).attr("id") + '"><span class="glyphicon glyphicon-move" aria-hidden="true"></span><button type="button" class="btn btn-default remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></button><div id="' + id + '" name="' + id + '" class="editable" style="width:100%;height:100%">' + $(this).data("content") +  '</div></li>', $(this).data("x-size"), $(this).data("y-size"), 1, 1);
-					$(document).on('click', '.remove', function() {
-						gridster.remove_widget( $(this).parent());
-					});
-					CKEDITOR.disableAutoInline = true;
-					CKEDITOR.inline(id, {
-						removePlugins: 'toolbar'
-					});
-				});
+            	addableEvent();
+            	editableEvent(".edit-component");
+            },
+            type: 'POST'
+        });
+    });
+}
+
+/**
+ * Update the custom component.
+ * Only allow edit the title and content,
+ * because the component can be used for other
+ * templates and can break the grids.
+ * @param id_component Id of the component to edit
+ * @param title Title of the component to edit
+ * @param content New content of the component
+ */
+function updateComponent(id_component, title, content) {
+    $(document).ready(function(){
+        $.ajax({
+            url: '/invoices/templates/customcomponents/update/',
+            data: {
+                    id_component: id_component,
+                    title: title,
+                    content: content
+            },
+            dataType: "json",
+            error: function(data) {
+                console.error(data);
+            },
+            success: function(data) {
+                $('#' + id_component).prev().text(title);
+                $('#' + id_component).data("content", content);
+                $("#add-widget").modal('hide');
             },
             type: 'POST'
         });
@@ -148,14 +156,7 @@ function saveComponent(title, sizex, sizey, cnt) {
  * @param component_instances List of widgets of the template
  */
 function saveTemplate(id_template, title, description, component_instances) {
-    $(document).ready(function(){
-		$.ajaxSetup({
-			beforeSend: function(xhr, settings) {
-				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-				}
-			}
-		});
+    $(document).ready(function() {
         $.ajax({
             url: '/invoices/templates/save/',
             data: {
@@ -182,14 +183,7 @@ function saveTemplate(id_template, title, description, component_instances) {
  * @param id_component id of the component to delete
  */
 function deleteComponent(id_component) {
-    $(document).ready(function(){
-		$.ajaxSetup({
-			beforeSend: function(xhr, settings) {
-				if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-					xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-				}
-			}
-		});
+    $(document).ready(function() {
         $.ajax({
             url: '/invoices/templates/customcomponents/delete/',
             data: {
@@ -222,6 +216,60 @@ function deleteComponent(id_component) {
 }
 
 /**
+ * Delete the component.
+ * @param id_component id of the component to delete
+ */
+function loadTemplate(id_template) {
+    $(document).ready(function() {
+        $.ajax({
+            url: '/invoices/templates/get/',
+            data: {
+                    id_template: id_template
+            },
+            dataType: "json",
+            error: function(data) {
+             	console.error(data);
+            },
+            success: function(data) {
+            	gridster.remove_all_widgets();
+            	$.each(Gridster.sort_by_row_and_col_asc(data), function() {
+					addComponentInstance(this.id, this.component, this.content, this.size_x, this.size_y, this.position_x, this.position_y, this.removable);
+				});
+            },
+            type: 'GET'
+        });
+    });
+}
+
+/**
+ * Add the "click" event to addables elements.
+ */
+function addableEvent() {
+	$(document).ready(function() {
+		$('.addable-element').on('click', function() {
+			addComponentInstance(uuid(), $(this).attr("id"), $(this).data("content"), $(this).data("x-size"), $(this).data("y-size"), 1, 1, true);
+		});
+	});
+}
+
+/**
+ * Add the editable functionality.
+ * @param element Element to make editable
+ */
+function editableEvent(element) {
+	$(element).on('click', function() {
+		document.getElementById("x-size").readOnly = true;
+		document.getElementById("y-size").readOnly = true;
+		$("#create-component").hide();
+		$("#update-component").show();
+		document.getElementById("title").value = $(this).prev().prev().text();
+		CKEDITOR.instances['widget-content'].setData($(this).prev().data("content"));
+		document.getElementById("id_component").value = $(this).prev().attr("id");
+		$("#add-widget").modal();
+	});
+}
+
+/**
  * Get the cookie of the browser.
  * @param name Name of the cookie to get
  */
@@ -250,49 +298,17 @@ function csrfSafeMethod(method) {
 }
 
 /**
- * Encryp the message.
- * @paam toEncrypt String to encrypt
- */
-function encrypt(toEncrypt) {
-	var Re = new RegExp('&quot;', "g");
-	var formated = toEncrypt.replace(Re, '"');
-	Re = new RegExp('\n', "g");
-	formated = formated.replace(Re, '__jump__');
-	Re = new RegExp("\t", "g");
-	formated = formated.replace(Re, '__tab__')
-	Re = new RegExp("\r", "g");
-	formated = formated.replace(Re, '__return__')
-	return formated;
-}
-
-/**
- * Decrypt the message.
- * @param toDecrypt String to decrypt
- */
-function decrypt(toDecrypt) {
-	Re = new RegExp("__jump__", "g");
-	formated = toDecrypt.replace(Re, '\n')
-	Re = new RegExp("__tab__", "g");
-	formated = formated.replace(Re, '\t')
-	Re = new RegExp("__return__", "g");
-	formated = formated.replace(Re, '\r')
-	return formated;
-}
-
-/**
  * Return the widget, removable or not.
  * @param id Id of the element
  * @param component component
  * @param removable if is removable or not
  */
 function getWidget(id, component, removable) {
-	var widget = '<li id="' + id + '" style="border: 2px solid red;" class="element" data-component="'
-	    + component +
-	    '"><span class="glyphicon glyphicon-move" aria-hidden="true"></span>';
+	var widget = '<li id="' + id + '" class="element" data-component="' + component + '"><span class="move-component"> --- </span>';
 	if (removable) {
-		widget = widget + '<button type="button" class="btn btn-default remove" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></button>';
+		widget = widget + '<a class="remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></a>';
 	}
-	widget = widget + '<div id="editable_' + id + '" name="editable_' + id + '" class="editable" style="width:100%;height:100%"></div></li>';
+	widget = widget + '<div id="editable_' + id + '" name="editable_' + id + '" class="editable"></div></li>';
 	return widget;
 }
 
@@ -310,4 +326,26 @@ function prepareAjax() {
 			}
 		});
 	});
+}
+
+/**
+ * Add a component to the template.
+ * @param component Id of the template component
+ * @param content Content of the widget
+ * @param x_size Horizontal size of the widget
+ * @param y_size Vertical size of the widget
+ * @param x_position Horizontal position
+ * @param y_position Vertical position
+ */
+function addComponentInstance(id, component, content, x_size, y_size, x_position, y_position, removable) {
+	var ck_id = "editable_" + id;
+	gridster.add_widget(getWidget(id, component, removable), x_size, y_size, x_position, y_position);
+	$(document).on('click', '.remove', function() {
+		gridster.remove_widget($(this).parent());
+	});
+	CKEDITOR.disableAutoInline = true;
+	CKEDITOR.inline(ck_id, {
+		removePlugins: 'toolbar'
+	});
+	CKEDITOR.instances[ck_id].setData(content);
 }

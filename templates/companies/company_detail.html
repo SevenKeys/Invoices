@@ -1,15 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2>Company Details</h2>
-    <ul>
-        <li>Name: {{ object.name }}
-            {% if match %}
-                <button type="button"><a href="{% url 'edit_company' object.id %}">Edit</a></button>
-                <button type="button"><a href="{% url 'delete_company' object.id %}">Delete</a></button>
-            {% endif %}
-        </li>
-        <li>Created: {{ object.created }}</li>
-        <li>Contact: {{ object.contact }}</li>
-        <li>Register code: {{ object.reg_code }}</li>
+    <h2>Company <strong>{{ object.name}}</strong></h2>
+    <ul class="list-group">
+        <!-- {% if company %} -->
+            <li class="list-group-item"><strong>Created:</strong> {{ object.created }}</li>
+            <li class="list-group-item"><strong>Contact:</strong> {{ object.contact }}</li>
+            <li class="list-group-item"><strong>Register code:</strong> {{ object.reg_code }}</li>
+        <!-- {% endif %} -->
     </ul>
+    <button type="button"><a href="{% url 'edit_company' object.id %}">Edit</a></button>
+    <button type="button"><a href="{% url 'delete_company' object.id %}">Delete</a></button>
 {% endblock %}

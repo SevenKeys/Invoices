@@ -1,21 +1,29 @@
 {% extends "base.html" %}
-
+{% load add_class %}
 {% block content %}
 	<form class="form-horizontal" action="" method="POST">
-	    <legend><span  class="col-sm-offset-6">Add company</span></legend>
+		{% if edit %}
+		    <legend><span  class="col-sm-offset-6">Edit company data</span></legend>
+		{% else %}
+		    <legend><span  class="col-sm-offset-6">Add company</span></legend>
+		{% endif %}
 		{% csrf_token %} 
 		{% for hidden in form.hidden_fields %}
 			{{ hidden }}
 		{% endfor %}
 		{% for field in form.visible_fields %}
 		{% if field.errors %}
+		<fieldset class="form-group {% add_css_class 'has-error' %}" >
 		    <ol>
 		    {% for error in field.errors %}
 		        <li><strong>{{ error|escape }}</strong></li>
 		    {% endfor %}
 		    </ol>
+		{% elif field.value %}
+		  <fieldset class="form-group {% add_css_class 'has-success' %}" >
+		{% else %}
+		  <fieldset class="form-group" >
 		{% endif %}
-		<fieldset class="form-group" >
 		  <label class="col-lg-3 control-label" for="id_{{ field.name }}">{{ field.label }}
 		  {% if field.field.required %}
 			 <span class="special_class">*</span>

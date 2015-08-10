@@ -26,7 +26,7 @@
                         {% for product in product_list %}
                         <tr>
                             <td>
-                               <a href="{% url 'product_details' product.id %}">{{ product.name }}</a> 
+                               {{ product.name }}
                             </td>
                             <td>{{ product.company }}</td>
                             <td>{{ product.price }}</td>
@@ -52,7 +52,6 @@
         </ul>
         <button type="button"><a href="{% url 'add_product' %}">Add Product</a></button>
         <button type="button"><a href="{% url 'add_product_group' %}">Add Product Group</a></button>
-        <button type="button"><a href="{% url 'add_company' %}">Edit company</a></button>
     {% else %}
         <h3>You have not registered a company yet.</h3>
         <button type="button"><a href="{% url 'add_company' %}">Create company</a></button>

@@ -25,7 +25,7 @@
                     <tbody>
                         <tr>
                             <td>
-                               <a href="{% url 'customer_detail' customer.id %}">{{ customer.name }}</a> 
+                               {{ customer.name }}
                             </td>
                             <td>{{ customer.company }}</td>
                             <td>{{ customer.created }}</td>
@@ -54,7 +54,6 @@
         </ul>
         <button type="button"><a href="{% url 'add_customer' %}">Add client</a></button>
         <button type="button"><a href="{% url 'add_group' %}">Add client group</a></button>
-        <button type="button"><a href="{% url 'add_company' %}">Edit company</a></button>
     {% else %}
         <h3>You have not registered a company yet.</h3>
         <button type="button"><a href="{% url 'add_company' %}">Create company</a></button>

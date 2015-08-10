@@ -16,8 +16,9 @@ from companies.views import CompanyMixin
 
 # CRUD for Product app
 class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
-    context_oject_name = 'product_list'
+    context_object_name = 'product_list'
     template_name = 'products/product_list.html'
+    paginate_by = '10'
 
     def get_queryset(self):
         try:

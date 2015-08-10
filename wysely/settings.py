@@ -143,6 +143,8 @@ PIPELINE_CSS = {
             'css/custom-bootstrap.css',
             'css/main.css',
             'bower_components/gridster/dist/jquery.gridster.min.css',
+            'bower_components/js-grid/dist/jsgrid.min.css',
+            'bower_components/js-grid/dist/jsgrid-theme.min.css',
             # components
             'css/components/sortable_list.css'
         ),
@@ -162,6 +164,7 @@ PIPELINE_JS = {
             'bower_components/ckeditor/ckeditor.js',
             'wysely/site.js',
             'bower_components/gridster/dist/jquery.gridster.min.js',
+            'bower_components/js-grid/dist/jsgrid.min.js',
             # components
             'wysely/components/sortable_list.js',
             'js/ajax_search.js',

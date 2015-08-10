@@ -5,10 +5,6 @@
         <h1>Products of <strong>{{ company }}</strong> company.</h1>
         <br/>
         {% csrf_token %}
-        {% block head %}
-            <link href="http://js-grid.com/css/jsgrid.min.css" rel="stylesheet" />
-            <link href="http://js-grid.com/css/jsgrid-theme.min.css" rel="stylesheet" />
-        {% endblock %}
         <a class="btn btn-primary" href="{% url 'add_product' %}">Add Product</a>
         <a class="btn btn-primary" href="{% url 'add_product_group' %}">Add Product Group</a>
         <div id="jsGrid" style="min-height: 250px;"></div>
@@ -19,7 +15,6 @@
 
 {% endblock %}
 {% block scripts %}
-        <script src="http://js-grid.com/js/jsgrid.min.js"></script>
         <script>
             $(function() {
                 $("#jsGrid").jsGrid({

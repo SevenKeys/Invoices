@@ -65,14 +65,32 @@ class AddProduct(CreateView, CompanyMixin):
         new_product.save()
         return super(AddProduct,self).form_valid(form)
 
+    def get_context_data(self,**kwargs):
+        context = super(AddProduct, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
 
 
-class UpdateProduct(UpdateView):
+
+class UpdateProduct(UpdateView, CompanyMixin):
     model = Product
     form_class = ProductForm
     template_name = 'products/add_edit_product.html'
     pk_url_kwarg = 'product_id'
     success_url = '/products/all/'
+
+    def get_context_data(self,**kwargs):
+        context = super(UpdateProduct, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
 
 
 class DeleteProduct(DeleteView):
@@ -104,6 +122,15 @@ class AddProductGroup(CreateView, CompanyMixin):
         new_group.company = self.get_company()
         new_group.save()
         return super(AddProductGroup,self).form_valid(form)
+
+    def get_context_data(self,**kwargs):
+        context = super(AddProductGroup, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
 
 
 

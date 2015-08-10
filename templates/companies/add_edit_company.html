@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load add_class %}
 {% block content %}
-	<form class="form-horizontal" action="" method="POST">
-		{% if edit %}
-		    <legend><span  class="col-sm-offset-6">Edit company data</span></legend>
-		{% else %}
-		    <legend><span  class="col-sm-offset-6">Add company</span></legend>
-		{% endif %}
+	{% if edit %}
+	    <h2><span  class="col-sm-offset-6">Edit company data</span></h2>
+	{% else %}
+	    <h2><span  class="col-sm-offset-6">Add company</span></h2>
+	{% endif %}
+	<form class="form-horizontal" action="" method="POST" style="width:60%;margin-right:auto; margin-left:auto">
 		{% csrf_token %} 
 		{% for hidden in form.hidden_fields %}
 			{{ hidden }}
@@ -24,7 +24,7 @@
 		{% else %}
 		  <fieldset class="form-group" >
 		{% endif %}
-		  <label class="col-lg-3 control-label" for="id_{{ field.name }}">{{ field.label }}
+		  <label class="col-lg-2 control-label" for="id_{{ field.name }}" style="width:50%">{{ field.label }}:
 		  {% if field.field.required %}
 			 <span class="special_class">*</span>
 	  	  {% endif %}

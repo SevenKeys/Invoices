@@ -2,15 +2,15 @@
 
 {% block content %}
 
-<h1>Delete Customer</h1>
+<h1>Delete Company</h1>
 
-<p>Are you sure you want to delete the customer {{ customer }}?</p>
+<p>Are you sure you want to delete the company <strong>{{ company }}</strong>?</p>
 
 <form action="" method="POST">
   {% csrf_token %}
 
-  <input type="submit" value="Yes, delete." />
-  <a href="{% url "customers" %}">No, cancel.</a>
+  <input type="submit" value="Yes, delete."  class="btn btn-danger tm_style_2"/>
+  <a href="{% url 'get_company' company.id %}">No, cancel.</a>
 </form>
 
 {% endblock %}

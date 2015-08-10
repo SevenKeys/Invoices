@@ -108,15 +108,19 @@ class DeleteCustomer(DeleteView):
 
 
 # CRUD for CustomerGroup
-class CustomerGroupDetail(DetailView):
+class CustomerGroupDetail(DetailView, CompanyMixin):
 	model = CustomerGroup
 	template_name = 'customers/group_details.html'
 	pk_url_kwarg = 'group_id'
 
-	# def get_queryset(self):
-	# 	group = CustomerGroup.objects.get(pk=self.pk_url_kwarg)
-	# 	queryset = group.customers.order_by('name')
-	# 	return queryset
+	def get_context_data(self,**kwargs):
+		context = super(CustomerGroupDetail, self).get_context_data(**kwargs)
+		try:
+			company = self.get_company()
+		except (Company.DoesNotExist, UserProfile.DoesNotExist):
+			company = False
+		context['company'] = company
+		return context
 
 
 

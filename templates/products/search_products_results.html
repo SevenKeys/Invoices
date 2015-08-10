@@ -2,7 +2,8 @@
 	{% load staticfiles%}
 	
 	{% for product in products %}
-		<li>{{ product.name }}</li>
+
+		<li><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></li>
 	{% endfor %}
 
 {% else %}

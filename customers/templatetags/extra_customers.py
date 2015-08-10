@@ -14,3 +14,7 @@ def add_css_class(css_class):
 @register.filter(name='addcss')
 def addcss(field, css):
    return field.as_widget(attrs={"class":css})
+
+@register.filter(name='addattr')
+def addattr(field, attr):
+   return field.as_widget(attrs={"style":attr})

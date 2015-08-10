@@ -4,28 +4,48 @@
     {% if company %}
         <h2>Products of <strong>{{ company }}</strong> company.</h2>
         {% csrf_token %}
-            <div class="input-group">
-                <input type="text" id="search_products" class="form-control" placeholder="Input search text" aria-describedby="sizing-addon2">
-            </div>
-        <ul id="search_products_results">
-        </ul>
+        <div class="input-group">
+            <input type="text" id="search_products" class="form-control" placeholder="Input search text" aria-describedby="sizing-addon2">
+        </div>
+        <div class="dropdown">
+            <ul id="search_products_results" class="custom_dropdown">
+            </ul>
+        </div>
         <ul>
             {% if product_list.count > 0 %}
-                {% for product in product_list %}
-                    <li>Name: {{ product.name }}
-        		    <button type="button"><a href="{% url 'edit_product' product.id %}">Edit</a></button>
-        		    <button type="button"><a href="{% url 'delete_product' product.id %}">Delete</a></button>
-                    {% if product.productgroup_set.count > 0 %}
-                        <p>Groups: 
-                        <ul>
-                            {% for group in product.productgroup_set.all %}
-                                <li><a href="{% url 'product_group' group.id %}">{{ group }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    </p>
-                    </li>
-                {% endfor %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Company</th>
+                            <th>Price</th>
+                            <th>Group</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in product_list %}
+                        <tr>
+                            <td>
+                               <a href="{% url 'product_details' product.id %}">{{ product.name }}</a> 
+                            </td>
+                            <td>{{ product.company }}</td>
+                            <td>{{ product.price }}</td>
+                            <td>
+                                {% if product.group %}
+                                <a href="{% url 'product_group' product.group.id %}">{{ product.group }}</a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button type="button"><a href="{% url 'edit_product' product.id %}">Edit</a></button>
+                            </td>
+                            <td>
+                                <button type="button"><a href="{% url 'delete_product' product.id %}">Delete</a></button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                                    
             {% else %}
                 <h3>No products was added yet.</h3>
             {% endif %}

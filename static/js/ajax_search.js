@@ -16,6 +16,7 @@ $(function(){
 }
 var csrftoken = getCookie('csrftoken');
 
+	$('.custom_dropdown').hide();
     $('#search_customers').keyup(function(){
     	if ($('#search_customers').val() != ''){
 	    	$.ajax({
@@ -29,11 +30,12 @@ var csrftoken = getCookie('csrftoken');
 	    		dataType: 'html'
 	    	});
 	    }else{
-	    	$('#search_customers_results').html('');
+	    	$('#search_customers_results').html('').hide();
 	    }
     });
 
     function searchSuccessCust(data, textStatus, jqXHR){
+    	$('#search_customers_results').show();
     	$('#search_customers_results').html(data);
     }
 
@@ -50,12 +52,13 @@ var csrftoken = getCookie('csrftoken');
 	    		dataType: 'html'
 	    	});
 	    }else{
-	    	$('#search_products_results').html('');
+	    	$('#search_products_results').html('').hide();
 	    }
     });
 
     function searchSuccessProd(data, textStatus, jqXHR){
+    	$('#search_products_results').show();
     	$('#search_products_results').html(data);
-    }
+    };
 });
 	

@@ -37,10 +37,17 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
         return context
 
 
+class ProductDetails(DetailView):
+    model = Product
+    template_name = 'products/product_details.html'
+    pk_url_kwarg = 'product_id'
+
+
+
 class AddProduct(CreateView, CompanyMixin):
     model = Product
     form_class = ProductForm
-    template_name = 'products/edit_product.html'
+    template_name = 'products/add_edit_product.html'
     success_url = '/products/all/'
 
     def form_valid(self, form):
@@ -50,14 +57,11 @@ class AddProduct(CreateView, CompanyMixin):
         return super(AddProduct,self).form_valid(form)
 
 
-    # def form_invalid(self,form):
-    #     return HttpResponse('form is invalid')
-
 
 class UpdateProduct(UpdateView):
     model = Product
     form_class = ProductForm
-    template_name = 'products/edit_product.html'
+    template_name = 'products/add_edit_product.html'
     pk_url_kwarg = 'product_id'
     success_url = '/products/all/'
 
@@ -68,6 +72,7 @@ class DeleteProduct(DeleteView):
     template_name = 'products/delete_product.html'
     pk_url_kwarg = 'product_id'
     success_url = '/products/all/'
+
 
 # CRUD for ProductGroup
 class ProductGroupDetail(DetailView):
@@ -80,7 +85,7 @@ class ProductGroupDetail(DetailView):
 class AddProductGroup(CreateView, CompanyMixin):
     model = ProductGroup
     form_class = ProductGroupForm
-    template_name = 'products/edit_product_group.html'
+    template_name = 'products/add_edit_product_group.html'
     success_url = '/products/all/'
 
     def form_valid(self, form):
@@ -92,16 +97,18 @@ class AddProductGroup(CreateView, CompanyMixin):
         return super(AddProductGroup,self).form_valid(form)
 
 
-    # def form_invalid(self,form):
-    #     return HttpResponse('form is invalid')
-
 
 class UpdateProductGroup(UpdateView):
     model = ProductGroup
     form_class = ProductGroupForm
-    template_name = 'products/edit_product_group.html'
+    template_name = 'products/add_edit_product_group.html'
     pk_url_kwarg = 'group_id'
     success_url = '/products/all/'
+
+    def get_context_data(self,**kwargs):
+        context = super(UpdateProductGroup,self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
 
 class DeleteProductGroup(DeleteView):
@@ -111,7 +118,7 @@ class DeleteProductGroup(DeleteView):
     pk_url_kwarg = 'group_id'
     success_url = '/products/all/'
 
-# AJAX search fucntion
+# AJAX search function
 def searchProdAjax(request):
     if request.method == 'POST':
         search_text = request.POST['search_text']

@@ -1,15 +1,19 @@
 {% extends "base.html" %}
-
 {% load extra_products %}
 {% block content %}
-	<h2>Add or edit Product Group</h2>
-		<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:30%">
+	
+	{% if edit %}
+		<h2>Edit product</h2>
+	{% else %}
+		<h2>Add product</h2>
+	{% endif %}
+		<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:70%">
 			{% csrf_token %} 
 			{% for hidden in form.hidden_fields %}
 				{{ hidden }}
 			{% endfor %}
 			{% for field in form.visible_fields %}
-			
+
 			{% if field.errors %}
 			    <fieldset class="form-group {% add_css_class 'has-error' %}" >
 			    <ol>
@@ -22,29 +26,18 @@
 			{% else %}
 			  <fieldset class="form-group" >
 			{% endif %}
-
-			{% if field.field|fieldtype != 'ModelMultipleChoiceField' %}
+			
 			  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
 			  {% if field.field.required %}
 				 <span class="special_class">*</span>
 		  	  {% endif %}
 			  </label>
-			      <input type="text" class="form-control"
-			        name="{{ field.name }}"
-			        id="id_{{ field.name }}"
-			        value="{{ field.value|default_if_none:"" }}">
-			        <p class="help-text">{{ field.help_text }} </p>
-			{% else %}
-				<strong>{{ field.label }}:
-					{% if field.field.required %}
-						<span class="special_class">*</span>
-					{% endif %}
-				</strong>
-				{{ field }}
-			{% endif %}
+			      
+		        {{ field | addcss:'form-control' }}
+		        <p class="help-text">{{ field.help_text }}</p>
+		        
 			</fieldset>
 			{% endfor %}
 			   <input type="submit" value="Submit"  class="btn btn-primary">
 		</form>
-
 {% endblock %}

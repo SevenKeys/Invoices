@@ -10,10 +10,14 @@ from reportlab.platypus import Paragraph, Frame, BaseDocTemplate, PageTemplate, 
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import A4
+from reportlab.platypus.flowables import Image
 import logging
 
 size = A4
 styles = getSampleStyleSheet()
+TYPE_COMPONENT = 'type'
+IMAGE = "image_1"
+IMAGE_1 = "../static/images/image_1.png"
 
 
 def main(request):
@@ -73,7 +77,7 @@ def get_template(request):
     component_instances = TemplateComponentInstance.objects.filter(template=template)
     list = []
     for row in component_instances:
-        list.append({'id': row.id, 'reference': row.reference, 'position_x': row.position_x, 'position_y': row.position_y, "size_x": row.component.size_x, "size_y": row.component.size_y, "component": row.component.id, "content": row.component.content, "removable": row.component.removable})
+        list.append({'id': row.id, 'reference': row.reference, 'position_x': row.position_x, 'position_y': row.position_y, "size_x": row.component.size_x, "size_y": row.component.size_y, "component": row.component.id, "content": row.component.content, "removable": row.component.removable, "type": row.component.type})
     return HttpResponse(json.dumps(list), content_type="application/json")
 
 
@@ -128,9 +132,9 @@ def print_preview(request):
     def page_frame(canvas, doc):
         canvas.saveState()
         for item in pdf.header:
-            Frame(pdf.x_position(item), pdf.header_y_position(item), pdf.x_size(item), pdf.y_size(item), showBoundary=1).addFromList([Paragraph(item['content'], styles['Normal'])], canvas)
+            pdf.paint_header_component(item, canvas)
         for item in pdf.footer:
-            Frame(pdf.x_position(item), pdf.footer_y_position(item), pdf.x_size(item), pdf.y_size(item), showBoundary=1).addFromList([Paragraph(item['content'], styles['Normal'])], canvas)
+            pdf.paint_footer_component(item, canvas)
         canvas.restoreState()
     doc.addPageTemplates([PageTemplate(id="test", frames=Frame(doc.leftMargin, pdf.content_y_position(), doc.width, pdf.content_y_size()), onPage=page_frame)])
     story = []
@@ -202,6 +206,20 @@ class Pdf(object):
 
     def content_y_size(self):
         return self.size_y_base - (self.space_header_y + self.space_footer_y)*self.unit
+
+    def paint_header_component(self, component, canvas):
+        if component[TYPE_COMPONENT] == IMAGE:
+            widget = Image(IMAGE_1, width=self.unit, height=self.unit)
+        else:
+            widget = Paragraph(component['content'], styles['Normal'])
+        Frame(self.x_position(component), self.header_y_position(component), self.x_size(component), self.y_size(component), showBoundary=1).addFromList([widget], canvas)
+
+    def paint_footer_component(self, component, canvas):
+        if component[TYPE_COMPONENT] == IMAGE:
+            widget = Image(IMAGE_1)
+        else:
+            widget = Paragraph(component['content'], styles['Normal'])
+        Frame(self.x_position(component), self.footer_y_position(component), self.x_size(component), self.y_size(component), showBoundary=1).addFromList([widget], canvas)
 
 
 class AddInvoice(CreateView):

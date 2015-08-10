@@ -24,7 +24,8 @@ $(function() {
 						size_x: wgd.size_x,
 						size_y: wgd.size_y,
 						id_component: $($w).data('component'),
-						content: CKEDITOR.instances['editable_' + $($w).attr('id')].getData()
+						content: CKEDITOR.instances['editable_' + $($w).attr('id')].getData(),
+						type: $($w).data('type')
 					};
 				}
 			}).data("gridster");
@@ -64,6 +65,7 @@ $(function() {
 				if (CKEDITOR.instances['widget-content']) {
 					CKEDITOR.instances["widget-content"].destroy();
 				}
+				alert(JSON.stringify(gridster.serialize()));
 				document.getElementById("instances_template").value = JSON.stringify(gridster.serialize());
 				CKEDITOR.replace("widget-content");
 			});
@@ -235,7 +237,7 @@ function loadTemplate(id_template) {
             success: function(data) {
             	gridster.remove_all_widgets();
             	$.each(Gridster.sort_by_row_and_col_asc(data), function() {
-					addComponentInstance(this.id, this.component, this.content, this.size_x, this.size_y, this.position_x, this.position_y, this.removable);
+					addComponentInstance(this.id, this.component, this.content, this.size_x, this.size_y, this.position_x, this.position_y, this.removable, this.type);
 				});
             },
             type: 'GET'
@@ -249,7 +251,7 @@ function loadTemplate(id_template) {
 function addableEvent() {
 	$(document).ready(function() {
 		$('.addable-element').on('click', function() {
-			addComponentInstance(uuid(), $(this).attr("id"), $(this).data("content"), $(this).data("x-size"), $(this).data("y-size"), 1, 1, true);
+			addComponentInstance(uuid(), $(this).attr("id"), $(this).data("content"), $(this).data("x-size"), $(this).data("y-size"), 1, 1, true, $(this).data("type"));
 		});
 	});
 }
@@ -303,10 +305,12 @@ function csrfSafeMethod(method) {
  * Return the widget, removable or not.
  * @param id Id of the element
  * @param component component
- * @param removable if is removable or not
+ * @param removable if is removable or
+ * @param type Type of the widget
  */
-function getWidget(id, component, removable) {
-	var widget = '<li id="' + id + '" class="element" data-component="' + component + '"><span class="move-component"> --- </span>';
+function getWidget(id, component, removable, type) {
+	alert(type)
+	var widget = '<li id="' + id + '" class="element" data-component="' + component + '" data-type="' + type + '"><span class="move-component"> --- </span>';
 	if (removable) {
 		widget = widget + '<a class="remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></a>';
 	}
@@ -338,10 +342,11 @@ function prepareAjax() {
  * @param y_size Vertical size of the widget
  * @param x_position Horizontal position
  * @param y_position Vertical position
+ * @param type Type of the component
  */
-function addComponentInstance(id, component, content, x_size, y_size, x_position, y_position, removable) {
+function addComponentInstance(id, component, content, x_size, y_size, x_position, y_position, removable, type) {
 	var ck_id = "editable_" + id;
-	gridster.add_widget(getWidget(id, component, removable), x_size, y_size, x_position, y_position);
+	gridster.add_widget(getWidget(id, component, removable, type), x_size, y_size, x_position, y_position);
 	$(document).on('click', '.remove', function() {
 		gridster.remove_widget($(this).parent());
 	});

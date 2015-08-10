@@ -24,7 +24,7 @@ $(function() {
 						size_x: wgd.size_x,
 						size_y: wgd.size_y,
 						id_component: $($w).data('component'),
-						content: CKEDITOR.instances['editable_' + $($w).attr('id')].getData(),
+						content: $('#editable_' + $($w).attr('id')).html(),
 						type: $($w).data('type')
 					};
 				}
@@ -65,7 +65,6 @@ $(function() {
 				if (CKEDITOR.instances['widget-content']) {
 					CKEDITOR.instances["widget-content"].destroy();
 				}
-				alert(JSON.stringify(gridster.serialize()));
 				document.getElementById("instances_template").value = JSON.stringify(gridster.serialize());
 				CKEDITOR.replace("widget-content");
 			});
@@ -309,7 +308,6 @@ function csrfSafeMethod(method) {
  * @param type Type of the widget
  */
 function getWidget(id, component, removable, type) {
-	alert(type)
 	var widget = '<li id="' + id + '" class="element" data-component="' + component + '" data-type="' + type + '"><span class="move-component"> --- </span>';
 	if (removable) {
 		widget = widget + '<a class="remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"</span></a>';
@@ -350,9 +348,15 @@ function addComponentInstance(id, component, content, x_size, y_size, x_position
 	$(document).on('click', '.remove', function() {
 		gridster.remove_widget($(this).parent());
 	});
-	CKEDITOR.disableAutoInline = true;
-	CKEDITOR.inline(ck_id, {
-		removePlugins: 'toolbar'
-	});
-	CKEDITOR.instances[ck_id].setData(content);
+	inlineEdition(ck_id, content)
+}
+
+/**
+ * Activate the inline editor.
+ * @param id Id
+ * @param content Content to set
+ */
+function inlineEdition(id, content) {
+
+	$('#' + id).html(content);
 }

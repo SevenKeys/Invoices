@@ -12,31 +12,15 @@ from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus.flowables import Image
 import logging
+import os
+from os.path import join
+import re
 
 size = A4
 styles = getSampleStyleSheet()
 TYPE_COMPONENT = 'type'
 IMAGE = "image_1"
-IMAGE_1 = "http://localhost:8000/static/images/image_1.png"
-
-
-def main(request):
-    """Main listing."""
-    invoices = Invoice.objects.all().order_by("-created")
-    paginator = Paginator(invoices, 2)
-
-    try:
-        page = int(request.GET.get("page", '1'))
-    except ValueError:
-        page = 1
-
-    try:
-        invoices = paginator.page(page)
-    except (InvalidPage, EmptyPage):
-        invoices = paginator.page(paginator.num_pages)
-
-    return render_to_response("invoices/list.html", dict(invoices=invoices, user=request.user,
-                                                invoices_list=invoices.object_list))
+IMAGE_1 = "./static/images/image_1.png"
 
 
 def templates_list(request):
@@ -209,17 +193,48 @@ class Pdf(object):
 
     def paint_header_component(self, component, canvas):
         if component[TYPE_COMPONENT] == IMAGE:
-            widget = Image(IMAGE_1, width=self.unit, height=self.unit)
+            canvas.drawImage(join(os.getcwd(), "static/images", "image_1.png"), self.x_position(component), self.header_y_position(component), self.x_size(component), self.y_size(component))
         else:
-            widget = Paragraph(component['content'], styles['Normal'])
-        Frame(self.x_position(component), self.header_y_position(component), self.x_size(component), self.y_size(component), showBoundary=1).addFromList([widget], canvas)
+            widget = Paragraph(self.translate_string(component['content']), styles['Normal'])
+            Frame(self.x_position(component), self.header_y_position(component), self.x_size(component), self.y_size(component), showBoundary=1).addFromList(self.get_widgets(component['content']), canvas)
 
     def paint_footer_component(self, component, canvas):
         if component[TYPE_COMPONENT] == IMAGE:
-            widget = Image(IMAGE_1)
+            canvas.drawImage(join(os.getcwd(), "static/images", "wysely.jpg"), self.x_position(component), self.footer_y_position(component), self.x_size(component), self.y_size(component))
         else:
-            widget = Paragraph(component['content'], styles['Normal'])
-        Frame(self.x_position(component), self.footer_y_position(component), self.x_size(component), self.y_size(component), showBoundary=1).addFromList([widget], canvas)
+            widget = Paragraph(self.translate_string(component['content']), styles['Normal'])
+            Frame(self.x_position(component), self.footer_y_position(component), self.x_size(component), self.y_size(component), showBoundary=1).addFromList([widget], canvas)
+
+    def get_widgets(self, convert_to_paragraph):
+        logger = logging.getLogger("ajajajaja")
+        convert_to_paragraph = self.translate_string(convert_to_paragraph)
+        paragraphs = []
+        regex = re.compile('<h1>' + '(.*?)' + '</h1>')
+        result = regex.search(convert_to_paragraph)
+        if result:
+            paragraphs.append(Paragraph(self.translate_string(result.groups(1)[0]), styles['Heading1']))
+        regex = re.compile('<h2>' + '(.*?)' + '</h2>')
+        result = regex.search(convert_to_paragraph)
+        if result:
+            paragraphs.append(Paragraph(self.translate_string(result.groups(1)[0]), styles['Heading2']))
+        regex = re.compile('<p>' + '(.*?)' + '</p>')
+        result = regex.search(convert_to_paragraph)
+        if result:
+            logger.error(result.groups(3))
+            paragraphs.append(Paragraph(self.translate_string(result.groups(0)[0]), styles['Normal']))
+        return paragraphs
+
+    def get_widget(self, to_paragraph, start_string, end_string, style):
+        paragraphs = []
+        regex = re.compile(start_string + '(.*?)' + end_string)
+        result = regex.search(to_paragraph)
+        if result:
+            paragraphs.append(Paragraph(self.translate_string(result.groups(0)[0]), styles[style]))
+
+        return paragraphs
+
+    def translate_string(self, string_to_translate):
+        return string_to_translate.replace("<br>", "<br/>").replace("<strong>", "<b>").replace("</strong>", "</b>")
 
 
 class AddInvoice(CreateView):

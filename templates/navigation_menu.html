@@ -7,7 +7,10 @@
             <a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span>{% trans "Home" %}</a>
         </li>
         <li>
-            <a href="{% url 'create_invoice' %}"><span class="glyphicon glyphicon-list-alt"></span>{% trans "Invoices" %}</a>
+            <a href="#"><span class="glyphicon glyphicon-list-alt"></span>{% trans "Invoices" %}</a>
+        </li>
+     <li>
+            <a href="/invoices/templates/"><span class="glyphicon glyphicon-list-alt"></span>{% trans "Templates" %}</a>
         </li>
         <li>
             <a href="{% url 'customers' %}"><span class="glyphicon glyphicon-user"></span>{% trans "Clients" %}</a>

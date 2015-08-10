@@ -16,11 +16,16 @@ import os
 from os.path import join
 import re
 
+logger = logging.getLogger("main.views.templates")
 size = A4
 styles = getSampleStyleSheet()
 TYPE_COMPONENT = 'type'
+LOGO = "logo"
 IMAGE = "image_1"
-IMAGE_1 = "./static/images/image_1.png"
+PRINCIPAL = "principal"
+IMAGES_BASE = "static/images"
+IMAGE_1 = "invoice.jpg"
+LOGO_EXAMPLE = "kairos_logo.jpg"
 
 
 def templates_list(request):
@@ -35,6 +40,10 @@ def new_template(request):
     removablecomponents = []
     customcomponents = TemplateComponent.objects.filter(company=request.user.userprofile.company)
     for item in defaultcomponents:
+        if item.type == IMAGE:
+            item.content = item.content.replace("[url]", "/" + IMAGES_BASE + "/" + IMAGE_1)
+        elif item.type == LOGO:
+            item.content = item.content.replace("[url]", "/" + IMAGES_BASE + "/" + LOGO_EXAMPLE)
         if item.removable:
             removablecomponents.append(item)
         else:
@@ -49,6 +58,10 @@ def edit_template(request):
     customcomponents = TemplateComponent.objects.filter(company=request.user.userprofile.company)
     template = InvoiceTemplate.objects.get(id=request.GET['id_template'])
     for item in defaultcomponents:
+        if item.type == IMAGE:
+            item.content = item.content.replace("[url]", IMAGES_BASE + "/" + IMAGE_1)
+        elif item.type == LOGO:
+            item.content = item.content.replace("[url]", IMAGES_BASE + "/" + LOGO_EXAMPLE)
         if item.removable:
             removablecomponents.append(item)
         else:
@@ -61,6 +74,10 @@ def get_template(request):
     component_instances = TemplateComponentInstance.objects.filter(template=template)
     list = []
     for row in component_instances:
+        if row.component.type == IMAGE:
+            row.component.content = row.component.content.replace("[url]", IMAGES_BASE + "/" + IMAGE_1)
+        elif row.component.type == LOGO:
+            row.component.content = row.component.content.replace("[url]", IMAGES_BASE + "/" + LOGO_EXAMPLE)
         list.append({'id': row.id, 'reference': row.reference, 'position_x': row.position_x, 'position_y': row.position_y, "size_x": row.component.size_x, "size_y": row.component.size_y, "component": row.component.id, "content": row.component.content, "removable": row.component.removable, "type": row.component.type})
     return HttpResponse(json.dumps(list), content_type="application/json")
 
@@ -108,7 +125,6 @@ def save_template(request):
 
 def print_preview(request):
     components = json.loads(request.GET['instances_template'])
-    logger = logging.getLogger("eoeoeoe")
     output = BytesIO()
     doc = BaseDocTemplate(output, pagesize=size)
     pdf = Pdf(components, size[1], inch, .50)
@@ -152,7 +168,7 @@ class Pdf(object):
         self.unit = unit
         self.margin = margin
         for entity in elements:
-            if entity['id_component'] == 1:
+            if entity['type'] == PRINCIPAL:
                 self.center_element = entity['position_y']
         for element in elements:
             if element['position_y'] > self.center_element:
@@ -192,21 +208,20 @@ class Pdf(object):
         return self.size_y_base - (self.space_header_y + self.space_footer_y)*self.unit
 
     def paint_header_component(self, component, canvas):
-        if component[TYPE_COMPONENT] == IMAGE:
-            canvas.drawImage(join(os.getcwd(), "static/images", "image_1.png"), self.x_position(component), self.header_y_position(component), self.x_size(component), self.y_size(component))
+        if component[TYPE_COMPONENT] == IMAGE or component[TYPE_COMPONENT] == LOGO:
+            image = component['content'].split("/")
+            canvas.drawImage(join(os.getcwd(), IMAGES_BASE, image[5].split('">')[0]), self.x_position(component), self.header_y_position(component), self.x_size(component), self.y_size(component))
         else:
-            widget = Paragraph(self.translate_string(component['content']), styles['Normal'])
-            Frame(self.x_position(component), self.header_y_position(component), self.x_size(component), self.y_size(component), showBoundary=1).addFromList(self.get_widgets(component['content']), canvas)
+            Frame(self.x_position(component), self.header_y_position(component), self.x_size(component), self.y_size(component)).addFromList(self.get_widgets(component['content']), canvas)
 
     def paint_footer_component(self, component, canvas):
-        if component[TYPE_COMPONENT] == IMAGE:
-            canvas.drawImage(join(os.getcwd(), "static/images", "wysely.jpg"), self.x_position(component), self.footer_y_position(component), self.x_size(component), self.y_size(component))
+        if component[TYPE_COMPONENT] == IMAGE or component[TYPE_COMPONENT] == LOGO:
+            image = component['content'].split("/")
+            canvas.drawImage(join(os.getcwd(), "static/images", image[5].split('">')[0]), self.x_position(component), self.footer_y_position(component), self.x_size(component), self.y_size(component))
         else:
-            widget = Paragraph(self.translate_string(component['content']), styles['Normal'])
-            Frame(self.x_position(component), self.footer_y_position(component), self.x_size(component), self.y_size(component), showBoundary=1).addFromList([widget], canvas)
+            Frame(self.x_position(component), self.footer_y_position(component), self.x_size(component), self.y_size(component)).addFromList(self.get_widgets(component['content']), canvas)
 
     def get_widgets(self, convert_to_paragraph):
-        logger = logging.getLogger("ajajajaja")
         convert_to_paragraph = self.translate_string(convert_to_paragraph)
         paragraphs = []
         regex = re.compile('<h1>' + '(.*?)' + '</h1>')
@@ -220,7 +235,10 @@ class Pdf(object):
         regex = re.compile('<p>' + '(.*?)' + '</p>')
         result = regex.search(convert_to_paragraph)
         if result:
-            logger.error(result.groups(3))
+            paragraphs.append(Paragraph(self.translate_string(result.groups(0)[0]), styles['Normal']))
+        regex = re.compile('<address>' + '(.*?)' + '</address>')
+        result = regex.search(convert_to_paragraph)
+        if result:
             paragraphs.append(Paragraph(self.translate_string(result.groups(0)[0]), styles['Normal']))
         return paragraphs
 

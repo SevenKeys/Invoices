@@ -9,4 +9,4 @@ class Company(models.Model):
     reg_code = models.CharField(max_length=30)
 
     def __str__(self):
-    	return self.name
+        return self.name

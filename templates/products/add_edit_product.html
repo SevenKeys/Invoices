@@ -1,26 +1,23 @@
 {% extends "base.html" %}
 {% load extra_products %}
 {% block content %}
-	
-	{% if edit %}
-		<h2>Edit product</h2>
-	{% else %}
-		<h2>Add product</h2>
-	{% endif %}
-		<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:70%">
-			{% csrf_token %} 
-			{% for hidden in form.hidden_fields %}
-				{{ hidden }}
-			{% endfor %}
-			{% for field in form.visible_fields %}
+		<form class="form-contact col-md-offset-2 col-md-8" action="" method="POST">
+
+        <div class="row">
+        {% if edit %}
+            <h2 class="col-md-10 col-md-offset-4">Edit product</h2>
+        {% else %}
+            <h2 class="col-md-10 col-md-offset-4">Add product</h2>
+        {% endif %}
+       </div>
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        {% for field in form.visible_fields %}
 
 			{% if field.errors %}
 			    <fieldset class="form-group {% add_css_class 'has-error' %}" >
-			    <ol>
-			    {% for error in field.errors %}
-			        <li><strong>{{ error|escape }}</strong></li>
-			    {% endfor %}
-			    </ol>
 			{% elif field.value %}
 			  <fieldset class="form-group {% add_css_class 'has-success' %}" >
 			{% else %}
@@ -28,16 +25,19 @@
 			{% endif %}
 			
 			  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
-			  {% if field.field.required %}
-				 <span class="special_class">*</span>
+			  {% if not field.field.required %}
+				 <span class="special_class">(optional)</span>
 		  	  {% endif %}
+                {% for error in field.errors %}
+                    <strong>{{ error|escape }}</strong>
+                {% endfor %}
 			  </label>
 			      
 		        {{ field | addcss:'form-control' }}
 		        <p class="help-text">{{ field.help_text }}</p>
 		        
 			</fieldset>
-			{% endfor %}
+        {% endfor %}
 			   <input type="submit" value="Submit"  class="btn btn-primary">
 		</form>
 {% endblock %}

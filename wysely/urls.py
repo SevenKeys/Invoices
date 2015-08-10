@@ -17,24 +17,16 @@ from django.contrib import admin
 from django.conf.urls import include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import TemplateView
-# from invoices import urls as invoice_urls
 from companies.views import NavMenuView
 
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.simple.urls')),
-    # url(r'^invoices/', include(invoice_urls)),
     url(r'^accounts/profile/', TemplateView.as_view(template_name='registration/profile.html'), name='profile'),
-    # url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
     url(r'^$', NavMenuView.as_view(), name='index'),
     url(r'^about-us/', TemplateView.as_view(template_name='aboutus.html'), name='aboutus'),
-    # url(r'^invoices/', TemplateView.as_view(template_name='main_logged_in/invoices.html'), name='invoices'),
     url(r'^home/', TemplateView.as_view(template_name='main_logged_in/home.html'), name='home'),
-    # url(r'^clients/', TemplateView.as_view(template_name='main_logged_in/clients.html'), name='clients'),
-    # url(r'^products/', prod_views.ProductView.as_view(), name='products'),
-    # url(r'^product_groups/', prod_views.ProductListView.as_view(), name='product_list'),
-    # url(r'^client_groups/', prod_views.ClientListView.as_view(), name='client_list'),
     url(r'^customers/',include('customers.urls')),
     url(r'^users/',include('users.urls')),
     url(r'^products/',include('products.urls')),

@@ -1,17 +1,12 @@
 from django.shortcuts import render
-# from django.template import loader, Context
-from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from products.models import Product, ProductGroup
 from users.models import UserProfile
-# from json import dumps
 from .forms import ProductForm, ProductGroupForm
-# from common.components.sortable_list import SortableListView
 from users.permissions import LoginRequiredMixin
 from companies.views import CompanyMixin
-# from django.views.generic import TemplateView
 
 
 # CRUD for Product app
@@ -37,13 +32,6 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
         return context
 
 
-class ProductDetails(DetailView):
-    model = Product
-    template_name = 'products/product_details.html'
-    pk_url_kwarg = 'product_id'
-
-
-
 class AddProduct(CreateView, CompanyMixin):
     model = Product
     form_class = ProductForm
@@ -54,8 +42,7 @@ class AddProduct(CreateView, CompanyMixin):
         new_product = form.save(commit=False)
         new_product.company = self.get_company()
         new_product.save()
-        return super(AddProduct,self).form_valid(form)
-
+        return super(AddProduct, self).form_valid(form)
 
 
 class UpdateProduct(UpdateView):
@@ -81,7 +68,6 @@ class ProductGroupDetail(DetailView):
     pk_url_kwarg = 'group_id'
 
 
-
 class AddProductGroup(CreateView, CompanyMixin):
     model = ProductGroup
     form_class = ProductGroupForm
@@ -90,12 +76,9 @@ class AddProductGroup(CreateView, CompanyMixin):
 
     def form_valid(self, form):
         new_group = form.save(commit=False)
-        # user = self.request.user
-        # company = user.userprofile.company
         new_group.company = self.get_company()
         new_group.save()
-        return super(AddProductGroup,self).form_valid(form)
-
+        return super(AddProductGroup, self).form_valid(form)
 
 
 class UpdateProductGroup(UpdateView):
@@ -105,8 +88,8 @@ class UpdateProductGroup(UpdateView):
     pk_url_kwarg = 'group_id'
     success_url = '/products/all/'
 
-    def get_context_data(self,**kwargs):
-        context = super(UpdateProductGroup,self).get_context_data(**kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(UpdateProductGroup, self).get_context_data(**kwargs)
         context['edit'] = True
         return context
 
@@ -118,6 +101,7 @@ class DeleteProductGroup(DeleteView):
     pk_url_kwarg = 'group_id'
     success_url = '/products/all/'
 
+
 # AJAX search function
 def searchProdAjax(request):
     if request.method == 'POST':
@@ -125,7 +109,6 @@ def searchProdAjax(request):
     else:
         search_text = ''
     products = Product.objects.filter(name__icontains=search_text)
-    context = {};
-    context['products'] = products
+    context = {'products': products}
 
     return render(request, 'products/search_products_results.html', context)

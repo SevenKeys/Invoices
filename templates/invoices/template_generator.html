@@ -32,7 +32,7 @@
     </div>
 
     <div class="row">
-    	<div id="components" class="col-md-3">
+    	<div id="components" class="col-md-2">
             <h3>{% trans "Common components" %}</h3>
             <ul class="list-group">
                 {% for component in defaultcomponents %}
@@ -57,7 +57,7 @@
                 {% endfor %}
             </ul>
         </div>
-        <div class="gridster col-md-9" data-offset-top="60" data-offset-bottom="200">
+        <div class="gridster col-md-10" data-offset-top="60" data-offset-bottom="200">
             <ul>
                 {% for item in unremovablecomponents %}
                     <li id="{{item.id}}" data-component="{{item.id}}" class="element" data-row="1" data-col="1" data-sizex="{{item.size_x}}" data-sizey="{{item.size_y}}"><span class="glyphicon glyphicon-move" aria-hidden="true"></span>{{item.content}}</li>

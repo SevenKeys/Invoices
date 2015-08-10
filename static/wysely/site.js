@@ -9,8 +9,10 @@ $(function() {
 			prepareAjax();
 			gridster = $(this).gridster({
 				widget_margins: [10, 10],
-				widget_base_dimensions: [140, 140],
-				max_cols: 10,
+				widget_base_dimensions: [130, 130],
+				max_cols: 6,
+				min_cols: 6,
+				min_rows: 10,
 				draggable: {
 					handle: 'span'
 				},
@@ -22,7 +24,7 @@ $(function() {
 						size_x: wgd.size_x,
 						size_y: wgd.size_y,
 						id_component: $($w).data('component'),
-						content: $($w).data('content')
+						content: CKEDITOR.instances['editable_' + $($w).attr('id')].getData()
 					};
 				}
 			}).data("gridster");

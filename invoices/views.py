@@ -6,7 +6,7 @@ from .forms import InvoiceForm
 from django.http import HttpResponse
 import json
 from io import BytesIO
-from reportlab.platypus import Paragraph, Frame, BaseDocTemplate, PageTemplate
+from reportlab.platypus import Paragraph, Frame, BaseDocTemplate, PageTemplate, Table
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import A4
@@ -121,34 +121,23 @@ def save_template(request):
 def print_preview(request):
     components = json.loads(request.GET['instances_template'])
     logger = logging.getLogger("eoeoeoe")
-    header_list = header_content(components)
-    footer_list = footer_content(components)
-
-    def footer_repeat(canvas, doc):
-        canvas.saveState()
-        for item in header_list:
-            Frame(item['position_x']*inch, size[1] - item['position_y']*inch, item['size_x']*inch, item['size_y']*inch).\
-                addFromList([Paragraph(TemplateComponent.objects.get(id=item['id_component']).content, styles['Normal'])], canvas)
-        for footer_item in footer_list:
-            Frame(footer_item['position_x']*inch, size[1] - footer_item['position_y']*inch, footer_item['size_x']*inch, footer_item['size_y']*inch).\
-                addFromList([Paragraph(TemplateComponent.objects.get(id=footer_item['id_component']).content, styles['Normal'])], canvas)
-        canvas.restoreState()
     output = BytesIO()
     doc = BaseDocTemplate(output, pagesize=size)
-    limit_header = 0
-    size_header = 0
-    limit_footer = 100000
-    for element in header_list:
-        if element['position_y'] > limit_header:
-            limit_header = element['position_y']
-            size_header = element['size_x']
-    for element in footer_list:
-        if element['position_y'] < limit_footer:
-            limit_footer = element['position_y']
-    doc.addPageTemplates([PageTemplate(id="test", frames=Frame(doc.leftMargin, size[1] - (limit_header + size_header)*inch, doc.width, 1*inch), onPage=footer_repeat)])
+    pdf = Pdf(components, size[1], inch, .50)
+
+    def page_frame(canvas, doc):
+        canvas.saveState()
+        for item in pdf.header:
+            Frame(pdf.x_position(item), pdf.header_y_position(item), pdf.x_size(item), pdf.y_size(item), showBoundary=1).addFromList([Paragraph(item['content'], styles['Normal'])], canvas)
+        for item in pdf.footer:
+            Frame(pdf.x_position(item), pdf.footer_y_position(item), pdf.x_size(item), pdf.y_size(item), showBoundary=1).addFromList([Paragraph(item['content'], styles['Normal'])], canvas)
+        canvas.restoreState()
+    doc.addPageTemplates([PageTemplate(id="test", frames=Frame(doc.leftMargin, pdf.content_y_position(), doc.width, pdf.content_y_size()), onPage=page_frame)])
     story = []
-    for i in range(100):
-        story.append(Paragraph("<font color='blue'> Ey you</font><br/>Youtoo", styles['Normal']))
+    products = [['Description', 'Category', 'Unit prize', 'Units', 'Tax', 'Amount']]
+    for i in range(40):
+        products.append(['Product %s' % i, 'Category %s' % i, i, i, i, i])
+    story.append(Table(products))
     doc.build(story)
     pdf_output = output.getvalue()
     output.close()
@@ -158,30 +147,61 @@ def print_preview(request):
     return response
 
 
-def header_content(components):
-    header = []
-    center_element = 1
-    for entity in components:
-        if entity['id_component'] == 1:
-            center_element = entity['position_y']
+class Pdf(object):
+    def __init__(self, elements, size_y_base, unit, margin):
+        self.center_element = 0
+        self.last_header_y_position = 0
+        self.last_size_y_header = 0
+        self.first_footer_y_position = 100000
+        self.last_footer_y_position = 0
+        self.last_footer_y_size = 0
+        self.header = []
+        self.footer = []
+        self.elements = elements
+        self.space_footer_y = 0
+        self.space_header_y = 0
+        self.size_y_base = size_y_base
+        self.unit = unit
+        self.margin = margin
+        for entity in elements:
+            if entity['id_component'] == 1:
+                self.center_element = entity['position_y']
+        for element in elements:
+            if element['position_y'] > self.center_element:
+                self.footer.append(element)
+                if element['position_y'] < self.first_footer_y_position:
+                    self.first_footer_y_position = element['position_y']
+                if element['position_y'] > self.last_footer_y_position:
+                    self.last_footer_y_position = element['position_y']
+                    self.last_footer_y_size = element['size_y']
+            elif element['position_y'] < self.center_element:
+                self.header.append(element)
+                if element['position_y'] > self.last_header_y_position:
+                    self.last_header_y_position = element['position_y']
+                    self.last_size_y_header = element['size_y']
+        self.space_footer_y = self.last_footer_y_position + self.last_footer_y_size - self.first_footer_y_position
+        self.space_header_y = self.last_header_y_position + self.last_size_y_header - 1
 
-    for entity in components:
-        if entity['position_y'] < center_element:
-            header.append(entity)
-    return header
+    def x_position(self, element):
+        return element['position_x']*self.unit
 
+    def x_size(self, element):
+        return element['size_x']*self.unit
 
-def footer_content(components):
-    footer = []
-    center_element = 1
-    for entity in components:
-        if entity['id_component'] == 1:
-            center_element = entity['position_y']
+    def y_size(self, element):
+        return element['size_y']*self.unit
 
-    for entity in components:
-        if entity['position_y'] > center_element:
-            footer.append(entity)
-    return footer
+    def header_y_position(self, element):
+        return self.size_y_base - (element['position_y'] + element['size_y'] - 1)*self.unit
+
+    def footer_y_position(self, element):
+        return self.size_y_base - self.content_y_size()
+
+    def content_y_position(self):
+        return self.size_y_base - self.space_header_y*self.unit - self.content_y_size()
+
+    def content_y_size(self):
+        return self.size_y_base - (self.space_header_y + self.space_footer_y)*self.unit
 
 
 class AddInvoice(CreateView):

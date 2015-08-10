@@ -140,3 +140,25 @@ class ProductListJson(LoginRequiredMixin, CompanyMixin, ListView):
         results = Paginator(queryset.order_by('name'), 20)
         return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
                             content_type='application/json')
+
+
+class ProductGroupListJson(LoginRequiredMixin, CompanyMixin, ListView):
+    def GetProductGroupsJson(self):
+        try:
+            user = self.user
+            company = user.userprofile.company
+            category_filter = self.GET.get('category')
+            parent_filter = self.GET.get('parent')
+            name_filter = self.GET.get('name')
+            queryset = ProductGroup.objects.filter(company=company)
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+            if category_filter:
+                queryset = queryset.filter(category__contains=category_filter)
+            if parent_filter:
+                queryset = queryset.filter(parent__contains=parent_filter)
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')

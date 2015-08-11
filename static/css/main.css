@@ -87,16 +87,15 @@ footer{
 }
 
 .gridster {
-    border-style: solid;
-    border-color: #000000;
     min-height: 30px;
 }
 
 .element-added {
     list-style: none;
 }
+
 .gridster .gs-w {
-    background: #DDD;
+    background: #FFFFFF;
     cursor: pointer;
 }
 
@@ -127,6 +126,21 @@ footer{
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     background-clip: padding-box;
 }
-a {
-    text-decoration: none !important;
+
+#form-save-template {
+    margin-bottom: 10px;
+}
+
+.addable-element, .edit-component, .delete-component {
+    float: right;
+}
+
+.element {
+    background-color: #FFFFFF;
+    list-style: none;
+}
+
+.remove {
+    float: right;
+>>>>>>> master
 }

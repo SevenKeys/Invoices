@@ -1,85 +1,85 @@
 {% extends "base.html" %}
 {% load extra_products %}
 {% block content %}
-		<form class="form-contact col-md-offset-2 col-md-8" action="" method="POST">
+	<form class="form-contact col-md-offset-2 col-md-8" action="" method="POST">
 
-        <div class="row">
-        {% if add %}
-            <h2 class="col-md-10 col-md-offset-4">Add a new product</h2>
-        {% else %}
-            <h2 class="col-md-10 col-md-offset-4">Edit or delete product</h2>
-        {% endif %}
-       </div>
-        {% csrf_token %}
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
-        {% for field in form.visible_fields %}
+    <div class="row">
+	    {% if add %}
+	        <h2 class="col-md-10 col-md-offset-4">Add a new product</h2>
+	    {% else %}
+	        <h2 class="col-md-10 col-md-offset-4">Edit or delete product</h2>
+	    {% endif %}
+   </div>
+    {% csrf_token %}
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+    {% for field in form.visible_fields %}
 
-			{% if field.errors %}
-			    <fieldset class="form-group {% add_css_class 'has-error' %}" >
-			{% elif field.value %}
-			  <fieldset class="form-group {% add_css_class 'has-success' %}" >
-			{% else %}
-			  <fieldset class="form-group" >
-			{% endif %}
-			
-			  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
-			  {% if not field.field.required %}
-				 <span class="special_class">(optional)</span>
-		  	  {% endif %}
-                {% for error in field.errors %}
-                    <strong>{{ error|escape }}</strong>
-                {% endfor %}
-			  </label>
-			      
-		        {{ field | addcss:'form-control' }}
-		        <p class="help-text">{{ field.help_text }}</p>
-		        
-			</fieldset>
-        {% endfor %}
-			   <input type="submit" value="Submit"  class="btn btn-primary">
-		</form>
-		{% if not add %}
-			<form class="col-md-12 text-center" action="" method="POST">
-				{% csrf_token %}
-		        <input type="button" id="product_{{ object.id }}" class="btn btn-danger tm_style_2" value="Delete Product" style="margin-right:auto;margin-left:auto" data-toggle="popover" data-placement="top">
-		    </form>
+		{% if field.errors %}
+		    <fieldset class="form-group {% add_css_class 'has-error' %}" >
+		{% elif field.value %}
+		  <fieldset class="form-group {% add_css_class 'has-success' %}" >
+		{% else %}
+		  <fieldset class="form-group" >
 		{% endif %}
+		
+		  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+		  {% if not field.field.required %}
+			 <span class="special_class">(optional)</span>
+	  	  {% endif %}
+            {% for error in field.errors %}
+                <strong>{{ error|escape }}</strong>
+            {% endfor %}
+		  </label>
+		      
+	        {{ field | addcss:'form-control' }}
+	        <p class="help-text">{{ field.help_text }}</p>
+	        
+		</fieldset>
+    {% endfor %}
+		   <input type="submit" value="Submit"  class="btn btn-primary">
+	</form>
+	{% if not add %}
+		<form class="col-md-12 text-center" action="" method="POST">
+			{% csrf_token %}
+	        <input type="button" id="product_{{ object.id }}" class="btn btn-default tm_style_2" value="Delete Product" style="margin-right:auto;margin-left:auto" data-toggle="popover" data-placement="top">
+	    </form>
+	{% endif %}
 
-	    <script type="text/javascript">
-		    $(function(){
-				function getCookie(name) {
-			    var cookieValue = null;
-			    if (document.cookie && document.cookie != '') {
-			        var cookies = document.cookie.split(';');
-			        for (var i = 0; i < cookies.length; i++) {
-			            var cookie = jQuery.trim(cookies[i]);
-			            // Does this cookie string begin with the name we want?
-			            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-			                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-			                break;
-			            }
-			        }
-			    }
-			    return cookieValue;
-			}
-			var csrftoken = getCookie('csrftoken');
-			$button = $('#product_{{ object.id }}')
-	    	$button.click(function(){
-		    	if (confirm("Are you sure you want to delete this product?") == true){
-			    	$.ajax({
-			    		type: 'POST',
-			    		url: '/products/delete/{{ object.id }}/',
-			    		data: {
-		    			'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
-			    		},
-			    		success: function(){
-				    		window.location.href = '/products/all/'
-			    		} 
-			    	});
-			    }
-		    });
+    <script type="text/javascript">
+	    $(function(){
+			function getCookie(name) {
+		    var cookieValue = null;
+		    if (document.cookie && document.cookie != '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = jQuery.trim(cookies[i]);
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+		var csrftoken = getCookie('csrftoken');
+		$button = $('#product_{{ object.id }}')
+    	$button.click(function(){
+	    	if (confirm("Are you sure you want to delete this product?") == true){
+		    	$.ajax({
+		    		type: 'POST',
+		    		url: '/products/delete/{{ object.id }}/',
+		    		data: {
+	    			'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+		    		},
+		    		success: function(){
+			    		window.location.href = '/products/all/'
+		    		} 
+		    	});
+		    }
 	    });
-	    </script>
+    });
+    </script>
 {% endblock %}

@@ -81,6 +81,7 @@ class UpdateProduct(UpdateView, CompanyMixin):
         except (Company.DoesNotExist, UserProfile.DoesNotExist):
             company = False
         context['company'] = company
+        context['add'] = True
         return context
 
 
@@ -88,7 +89,6 @@ class DeleteProduct(DeleteView):
     model = Product
     form_class = ProductForm
     pk_url_kwarg = 'product_id'
-    success_url = '/products/all/'
 
 
 # CRUD for ProductGroup

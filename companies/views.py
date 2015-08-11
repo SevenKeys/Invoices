@@ -14,13 +14,10 @@ from users.permissions import LoginRequiredMixin
 # Mixin to get company of user
 class CompanyMixin(object):
 
-    def get_company(self,**kwargs):
-        try:
-            user = self.request.user
-            company = user.userprofile.company
-            return company
-        except AttributeError:
-            pass
+    def get_company(self):
+        user = self.request.user
+        company = user.userprofile.company
+        return company
         
     def get_context_data(self,**kwargs):
         context = super(CompanyMixin,self).get_context_data(**kwargs)
@@ -53,7 +50,6 @@ class NavMenuView(TemplateView, CompanyMixin):
 
 
 class CompanyDetail(DetailView, LoginRequiredMixin, CompanyMixin):
-    # context_object_name = 'company_details'
     template_name = 'companies/company_detail.html'
     pk_url_kwarg = 'company_id'
     model = Company

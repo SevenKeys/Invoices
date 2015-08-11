@@ -2,19 +2,18 @@
 
 {% block content %}
     {% if company %}
-        <h2>Products of <strong>{{ company }}</strong> company.</h2>
+        <h1>Products of <strong>{{ company }}</strong> company.</h1>
+        <br/>
         {% csrf_token %}
-
         <a class="btn btn-primary pull-right" href="{% url 'add_product' %}">Add New Product</a>
         <div id="productsGrid" style="min-height: 250px;"></div>
         <br/><br/>
 
         <a class="btn btn-primary pull-right" href="{% url 'add_product_group' %}">Add New Product Group</a>
         <div id="productGroupsGrid" style="min-height: 250px;"></div>
-
     {% else %}
         <h3>You have not registered a company yet.</h3>
-        <button type="button" class="btn btn-info tm_style_2"><a href="{% url 'add_company' %}">Create company</a></button>
+        <button type="button"><a href="{% url 'add_company' %}">Create company</a></button>
     {% endif %}
 
 {% endblock %}
@@ -94,5 +93,4 @@
             });
         </script>
 
->>>>>>> master
 {% endblock %}

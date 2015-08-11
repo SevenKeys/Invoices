@@ -62,6 +62,7 @@ class AddProduct(CreateView, CompanyMixin):
         except (Company.DoesNotExist, UserProfile.DoesNotExist):
             company = False
         context['company'] = company
+        context['add'] = True
         return context
 
 

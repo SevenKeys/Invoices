@@ -4,10 +4,10 @@
 		<form class="form-contact col-md-offset-2 col-md-8" action="" method="POST">
 
         <div class="row">
-        {% if edit %}
-            <h2 class="col-md-10 col-md-offset-4">Edit product</h2>
+        {% if add %}
+            <h2 class="col-md-10 col-md-offset-4">Add a new product</h2>
         {% else %}
-            <h2 class="col-md-10 col-md-offset-4">Add product</h2>
+            <h2 class="col-md-10 col-md-offset-4">Edit or delete product</h2>
         {% endif %}
        </div>
         {% csrf_token %}
@@ -40,4 +40,8 @@
         {% endfor %}
 			   <input type="submit" value="Submit"  class="btn btn-primary">
 		</form>
+		<div class="col-md-12 text-center">
+	        <button type="button" class="btn btn-danger tm_style_2 non_decor" style="margin-right:auto;margin-left:auto"><a href="{% url 'delete_product' object.id %}">Delete product</a></button>
+	    </div>
+
 {% endblock %}

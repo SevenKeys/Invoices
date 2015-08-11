@@ -31,7 +31,8 @@ urlpatterns = [
     url(r'^users/',include('users.urls')),
     url(r'^products/',include('products.urls')),
     url(r'^companies/',include('companies.urls')),
-    url(r'^invoices/',include('invoices.urls'))
+    url(r'^invoices/',include('invoices.urls')),
+    url(r'^templates/',include('invoicetemplates.urls'))
 ]
 
 urlpatterns += staticfiles_urlpatterns()

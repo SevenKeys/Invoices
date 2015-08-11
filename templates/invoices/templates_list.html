@@ -5,7 +5,7 @@
 <div class="row">
     <h2>{% trans "Templates" %}</h2>
     {% if company %}
-        <a href="/invoices/templates/new" class="btn btn-primary">{% trans "New template" %}</a>
+        <a href="/templates/new" class="btn btn-primary">{% trans "New template" %}</a>
         <table id="templates-list" class="table table-hover">
             <tr>
                 <th>{% trans "Name" %}</th>
@@ -20,7 +20,7 @@
                     <td>{{template.description}}</td>
                     <td>{{template.active}}</td>
                     <td>{{template.company}}</td>
-                    <td><a href="/invoices/templates/edit?id_template={{template.id}}">{% trans "Edit" %}</a> <a href="/invoices/templates/delete?id_template={{template.id}}">{% trans "Delete" %}</a></td>
+                    <td><a href="/templates/edit?id_template={{template.id}}">{% trans "Edit" %}</a> <a href="/templates/delete?id_template={{template.id}}">{% trans "Delete" %}</a></td>
                 </tr>
             {% endfor %}
         </table>

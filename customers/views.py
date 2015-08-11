@@ -103,7 +103,6 @@ class UpdateCustomer(UpdateView):
 class DeleteCustomer(DeleteView):
     model = Customer
     form_class = CustomerForm
-    template_name = 'customers/delete_customer.html'
     pk_url_kwarg = 'customer_id'
     success_url = '/customers/all/'
 

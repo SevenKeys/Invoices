@@ -89,6 +89,7 @@ class DeleteProduct(DeleteView):
     model = Product
     form_class = ProductForm
     pk_url_kwarg = 'product_id'
+    success_url = '/products/all/'
 
 
 # CRUD for ProductGroup
@@ -96,6 +97,7 @@ class ProductGroupDetail(DetailView):
     model = ProductGroup
     template_name = 'products/product_group.html'
     pk_url_kwarg = 'group_id'
+    success_url = '/products/all/'
 
 
 

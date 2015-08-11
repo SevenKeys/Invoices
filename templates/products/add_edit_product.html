@@ -43,7 +43,7 @@
 	{% if not add %}
 		<form class="col-md-12 text-center" action="" method="POST">
 			{% csrf_token %}
-	        <input type="button" id="product_{{ object.id }}" class="btn btn-default tm_style_2" value="Delete Product" style="margin-right:auto;margin-left:auto" data-toggle="popover" data-placement="top">
+	        <input type="button" id="product_{{ object.id }}" class="btn btn-default tm_style_2" value="Delete Product" style="margin-right:auto;margin-left:auto">
 	    </form>
 	{% endif %}
 

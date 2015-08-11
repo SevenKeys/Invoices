@@ -40,8 +40,46 @@
         {% endfor %}
 			   <input type="submit" value="Submit"  class="btn btn-primary">
 		</form>
-		<div class="col-md-12 text-center">
-	        <button type="button" class="btn btn-danger tm_style_2 non_decor" style="margin-right:auto;margin-left:auto"><a href="{% url 'delete_product' object.id %}">Delete product</a></button>
-	    </div>
+		{% if not add %}
+			<form class="col-md-12 text-center" action="" method="POST">
+				{% csrf_token %}
+		        <input type="button" id="product_{{ object.id }}" class="btn btn-danger tm_style_2" value="Delete Product" style="margin-right:auto;margin-left:auto" data-toggle="popover" data-placement="top">
+		    </form>
+		{% endif %}
 
+	    <script type="text/javascript">
+		    $(function(){
+				function getCookie(name) {
+			    var cookieValue = null;
+			    if (document.cookie && document.cookie != '') {
+			        var cookies = document.cookie.split(';');
+			        for (var i = 0; i < cookies.length; i++) {
+			            var cookie = jQuery.trim(cookies[i]);
+			            // Does this cookie string begin with the name we want?
+			            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+			                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+			                break;
+			            }
+			        }
+			    }
+			    return cookieValue;
+			}
+			var csrftoken = getCookie('csrftoken');
+			$button = $('#product_{{ object.id }}')
+	    	$button.click(function(){
+		    	if (confirm("Are you sure you want to delete this product?") == true){
+			    	$.ajax({
+			    		type: 'POST',
+			    		url: '/products/delete/{{ object.id }}/',
+			    		data: {
+		    			'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+			    		},
+			    		success: function(){
+				    		window.location.href = '/products/all/'
+			    		} 
+			    	});
+			    }
+		    });
+	    });
+	    </script>
 {% endblock %}

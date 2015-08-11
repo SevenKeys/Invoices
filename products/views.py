@@ -87,7 +87,6 @@ class UpdateProduct(UpdateView, CompanyMixin):
 class DeleteProduct(DeleteView):
     model = Product
     form_class = ProductForm
-    template_name = 'products/delete_product.html'
     pk_url_kwarg = 'product_id'
     success_url = '/products/all/'
 

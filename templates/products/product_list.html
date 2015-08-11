@@ -2,7 +2,7 @@
 
 {% block content %}
     {% if company %}
-        <h2>Products of <strong>{{ company }}</strong> company.</h2>
+        <h1>Products of <strong>{{ company }}</strong> company.</h1>
         {% csrf_token %}
 
         <a class="btn btn-primary pull-right" href="{% url 'add_product' %}">Add New Product</a>

@@ -1,11 +1,10 @@
-from django.core import serializers
-from django.core.paginator import Paginator
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from companies.models import Company
+from django.core.paginator import Paginator
+from django.core import serializers
 from products.models import Product, ProductGroup
 from users.models import UserProfile
 from .forms import ProductForm, ProductGroupForm
@@ -63,6 +62,7 @@ class AddProduct(CreateView, CompanyMixin):
         except (Company.DoesNotExist, UserProfile.DoesNotExist):
             company = False
         context['company'] = company
+        context['add'] = True
         return context
 
 
@@ -87,7 +87,6 @@ class UpdateProduct(UpdateView, CompanyMixin):
 class DeleteProduct(DeleteView):
     model = Product
     form_class = ProductForm
-    template_name = 'products/delete_product.html'
     pk_url_kwarg = 'product_id'
     success_url = '/products/all/'
 

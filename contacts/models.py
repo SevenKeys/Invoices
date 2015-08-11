@@ -13,6 +13,6 @@ class Contact(models.Model):
     website = models.CharField(max_length=150, blank=True)
 
     def __str__(self):
-    	return self.email
+        return self.email
 
 # Create your models here.

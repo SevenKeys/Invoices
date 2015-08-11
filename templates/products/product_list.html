@@ -14,7 +14,7 @@
 
     {% else %}
         <h3>You have not registered a company yet.</h3>
-        <button type="button" class="btn btn-info tm_style_2"><a href="{% url 'add_company' %}">Create company</a></button>
+        <a href="{% url 'add_company' %}" class="btn btn-info tm_style_2">Create company</a>
     {% endif %}
 
 {% endblock %}
@@ -93,6 +93,4 @@
                 });
             });
         </script>
-
->>>>>>> master
 {% endblock %}

@@ -1,11 +1,13 @@
+from django.core import serializers
+from django.core.paginator import Paginator
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from companies.models import Company
 from products.models import Product, ProductGroup
 from users.models import UserProfile
-# from json import dumps
 from .forms import ProductForm, ProductGroupForm
 from users.permissions import LoginRequiredMixin
 from companies.views import CompanyMixin
@@ -199,4 +201,3 @@ class ProductGroupListJson(LoginRequiredMixin, CompanyMixin, ListView):
         results = Paginator(queryset.order_by('name'), 20)
         return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
                             content_type='application/json')
->>>>>>> master

@@ -8,10 +8,8 @@ from products.models import Product, ProductGroup
 from users.models import UserProfile
 # from json import dumps
 from .forms import ProductForm, ProductGroupForm
-# from common.components.sortable_list import SortableListView
 from users.permissions import LoginRequiredMixin
 from companies.views import CompanyMixin
-# from django.views.generic import TemplateView
 
 
 # CRUD for Product app
@@ -27,15 +25,6 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
         except:
             queryset = False
         return queryset
-
-    # def get_context_data(self):
-    #     context = super(ProductList, self).get_context_data()
-    #     try:
-    #         company = self.get_company()
-    #     except UserProfile.DoesNotExist:
-    #         company = False
-    #     context['company'] = company
-    #     return context
 
 
 class ProductDetails(DetailView, CompanyMixin):
@@ -118,8 +107,6 @@ class AddProductGroup(CreateView, CompanyMixin):
 
     def form_valid(self, form):
         new_group = form.save(commit=False)
-        # user = self.request.user
-        # company = user.userprofile.company
         new_group.company = self.get_company()
         new_group.save()
         return super(AddProductGroup,self).form_valid(form)

@@ -1,21 +1,20 @@
 {% extends "base.html" %}
 {% load extra_products %}
 {% block content %}
-		<form class="form-contact col-md-offset-2 col-md-8" action="" method="POST">
+	<form class="form-contact col-md-offset-2 col-md-8" action="" method="POST">
 
-        <div class="row">
-        {% if add %}
-            <h2 class="col-md-10 col-md-offset-4">Add a new product</h2>
-        {% else %}
-            <h2 class="col-md-10 col-md-offset-4">Edit or delete product</h2>
-        {% endif %}
-       </div>
-        {% csrf_token %}
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
-        {% for field in form.visible_fields %}
-
+    <div class="row">
+	    {% if add %}
+	        <h2 class="col-md-10 col-md-offset-4">Add a new product</h2>
+	    {% else %}
+	        <h2 class="col-md-10 col-md-offset-4">Edit product</h2>
+	    {% endif %}
+   </div>
+    {% csrf_token %}
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+    {% for field in form.visible_fields %}
 			{% if field.errors %}
 			    <fieldset class="form-group {% add_css_class 'has-error' %}" >
 			{% elif field.value %}
@@ -45,12 +44,11 @@
 		        <input type="button" id="product_{{ object.id }}" class="btn tm_style_2" value="Delete Product"
                        style="margin-right:auto;margin-left:auto" data-toggle="popover" data-placement="top">
 		{% endif %}
-
         </div>
-            <div class="col-md-2 col-md-offset-1">
-			   <input type="submit" value="Submit"  class="btn btn-primary">
-            </div>
-		</form>
+        <div class="col-md-2 col-md-offset-1">
+		   <input type="submit" value="Submit"  class="btn btn-primary">
+        </div>
+	</form>
 {% endblock %}
 
 {% block scripts %}

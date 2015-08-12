@@ -81,6 +81,7 @@ class UpdateProduct(UpdateView, CompanyMixin):
         except (Company.DoesNotExist, UserProfile.DoesNotExist):
             company = False
         context['company'] = company
+        context['add'] = True
         return context
 
 
@@ -96,6 +97,7 @@ class ProductGroupDetail(DetailView):
     model = ProductGroup
     template_name = 'products/product_group.html'
     pk_url_kwarg = 'group_id'
+    success_url = '/products/all/'
 
 
 

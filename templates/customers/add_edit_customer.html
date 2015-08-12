@@ -38,5 +38,46 @@
 		{% endfor %}
 		   <input type="submit" value="Submit"  class="btn btn-primary">
 	</form>
+	{% if not add %}
+		<form class="col-md-12 text-center" action="" method="POST">
+			{% csrf_token %}
+	        <input type="button" id="customer_{{ object.id }}" class="btn btn-default tm_style_2" value="Delete Client" style="margin-right:auto;margin-left:auto">
+	    </form>
+	{% endif %}
 
+	<script type="text/javascript">
+	    $(function(){
+			function getCookie(name) {
+		    var cookieValue = null;
+		    if (document.cookie && document.cookie != '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = jQuery.trim(cookies[i]);
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+		var csrftoken = getCookie('csrftoken');
+		$button = $('#customer_{{ object.id }}')
+    	$button.click(function(){
+	    	if (confirm("Are you sure you want to delete this client?") == true){
+		    	$.ajax({
+		    		type: 'POST',
+		    		url: '/customers/delete/{{ object.id }}/',
+		    		data: {
+	    			'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+		    		},
+		    		success: function(){
+			    		window.location.href = '/customers/all/'
+		    		} 
+		    	});
+		    }
+	    });
+    });
+    </script>
 {% endblock %}

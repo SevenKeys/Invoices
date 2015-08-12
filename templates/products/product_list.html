@@ -4,13 +4,20 @@
     {% if company %}
         <h1>Products of <strong>{{ company }}</strong> company.</h1>
         {% csrf_token %}
+        <div class="row" style="margin-bottom:5px;">
+            <a class="btn btn-primary pull-right" href="{% url 'add_product' %}">Add New Product</a>
+        </div>
 
-        <a class="btn btn-primary pull-right" href="{% url 'add_product' %}">Add New Product</a>
-        <div id="productsGrid" style="min-height: 250px;"></div>
+        <div class="row" >
+            <div id="productsGrid" style="min-height: 250px;"></div>
+        </div>
         <br/><br/>
-
-        <a class="btn btn-primary pull-right" href="{% url 'add_product_group' %}">Add New Product Group</a>
-        <div id="productGroupsGrid" style="min-height: 250px;"></div>
+        <div class="row" style="margin-bottom:5px;">
+            <a class="btn btn-primary pull-right" href="{% url 'add_product_group' %}">Add New Product Group</a>
+        </div>
+        <div class="row">
+            <div id="productGroupsGrid" style="min-height: 250px;"></div>
+        </div>
 
     {% else %}
         <h3>You have not registered a company yet.</h3>

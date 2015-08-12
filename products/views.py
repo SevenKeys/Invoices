@@ -5,6 +5,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator
 from django.core import serializers
+from companies.models import Company
 from products.models import Product, ProductGroup
 from users.models import UserProfile
 from .forms import ProductForm, ProductGroupForm
@@ -25,22 +26,6 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
         except:
             queryset = False
         return queryset
-
-
-class ProductDetails(DetailView, CompanyMixin):
-    model = Product
-    template_name = 'products/product_details.html'
-    pk_url_kwarg = 'product_id'
-
-    def get_context_data(self,**kwargs):
-        context = super(ProductDetails, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
-
 
 
 class AddProduct(CreateView, CompanyMixin):
@@ -81,6 +66,7 @@ class UpdateProduct(UpdateView, CompanyMixin):
         except (Company.DoesNotExist, UserProfile.DoesNotExist):
             company = False
         context['company'] = company
+        context['add'] = False
         return context
 
 
@@ -89,13 +75,6 @@ class DeleteProduct(DeleteView):
     form_class = ProductForm
     pk_url_kwarg = 'product_id'
     success_url = '/products/all/'
-
-
-# CRUD for ProductGroup
-class ProductGroupDetail(DetailView):
-    model = ProductGroup
-    template_name = 'products/product_group.html'
-    pk_url_kwarg = 'group_id'
 
 
 

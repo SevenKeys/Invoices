@@ -2,43 +2,87 @@
 
 {% load extra_products %}
 {% block content %}
-	{% if edit %}
-		<h2>Edit Product Group</h2>
-	{% else %}
-		<h2>Add Product Group</h2>
+	<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:70%">
+		<div class="row">
+		    {% if add %}
+		        <h2 class="col-md-10 col-md-offset-4">Add a new product group</h2>
+		    {% else %}
+		        <h2 class="col-md-10 col-md-offset-4">Edit or delete product group</h2>
+		    {% endif %}
+	   </div>
+		{% csrf_token %} 
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+		{% for field in form.visible_fields %}
+		
+		{% if field.errors %}
+		    <fieldset class="form-group {% add_css_class 'has-error' %}" >
+		    <ol>
+		    {% for error in field.errors %}
+		        <li><strong>{{ error|escape }}</strong></li>
+		    {% endfor %}
+		    </ol>
+		{% elif field.value %}
+		  <fieldset class="form-group {% add_css_class 'has-success' %}" >
+		{% else %}
+		  <fieldset class="form-group" >
+		{% endif %}
+
+		  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+		  {% if field.field.required %}
+			 <span class="special_class">*</span>
+	  	  {% endif %}
+		  </label>
+
+		      {{ field | addcss:'form-control' }}
+		      <p class="help-text">{{ field.help_text }} </p>
+		
+		</fieldset>
+		{% endfor %}
+		   <input type="submit" value="Submit"  class="btn btn-primary">
+	</form>
+
+	{% if not add %}
+		<form class="col-md-12 text-center" action="" method="POST">
+			{% csrf_token %}
+	        <input type="button" id="productgroup_{{ object.id }}" class="btn btn-default tm_style_2" value="Delete Product Group" style="margin-right:auto;margin-left:auto">
+	    </form>
 	{% endif %}
-		<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:70%">
-			{% csrf_token %} 
-			{% for hidden in form.hidden_fields %}
-				{{ hidden }}
-			{% endfor %}
-			{% for field in form.visible_fields %}
-			
-			{% if field.errors %}
-			    <fieldset class="form-group {% add_css_class 'has-error' %}" >
-			    <ol>
-			    {% for error in field.errors %}
-			        <li><strong>{{ error|escape }}</strong></li>
-			    {% endfor %}
-			    </ol>
-			{% elif field.value %}
-			  <fieldset class="form-group {% add_css_class 'has-success' %}" >
-			{% else %}
-			  <fieldset class="form-group" >
-			{% endif %}
 
-			  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
-			  {% if field.field.required %}
-				 <span class="special_class">*</span>
-		  	  {% endif %}
-			  </label>
-
-			      {{ field | addcss:'form-control' }}
-			      <p class="help-text">{{ field.help_text }} </p>
-			
-			</fieldset>
-			{% endfor %}
-			   <input type="submit" value="Submit"  class="btn btn-primary">
-		</form>
-
+    <script type="text/javascript">
+	    $(function(){
+			function getCookie(name) {
+		    var cookieValue = null;
+		    if (document.cookie && document.cookie != '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = jQuery.trim(cookies[i]);
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+		var csrftoken = getCookie('csrftoken');
+		$button = $('#productgroup_{{ object.id }}')
+    	$button.click(function(){
+	    	if (confirm("Are you sure you want to delete this group?") == true){
+		    	$.ajax({
+		    		type: 'POST',
+		    		url: '/products/delete_group/{{ object.id }}/',
+		    		data: {
+	    			'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+		    		},
+		    		success: function(){
+			    		window.location.href = '/products/all/'
+		    		} 
+		    	});
+		    }
+	    });
+    });
+    </script>
 {% endblock %}

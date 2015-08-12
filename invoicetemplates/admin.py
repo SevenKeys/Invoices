@@ -1,6 +1,6 @@
-from .models import InvoiceTemplate, TemplateComponent, TemplateComponentInstance
+from .models import Template, Component, ComponentInstance
 from django.contrib import admin
 
-admin.site.register(InvoiceTemplate)
-admin.site.register(TemplateComponent)
-admin.site.register(TemplateComponentInstance)
+admin.site.register(Template)
+admin.site.register(Component)
+admin.site.register(ComponentInstance)

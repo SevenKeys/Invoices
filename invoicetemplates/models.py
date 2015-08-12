@@ -2,7 +2,7 @@ from django.db import models
 from companies.models import Company
 
 
-class InvoiceTemplate(models.Model):
+class Template(models.Model):
     company = models.ForeignKey(Company)
     title = models.CharField(max_length=150)
     description = models.CharField(max_length=300, default="")
@@ -17,7 +17,7 @@ class InvoiceTemplate(models.Model):
         return self.title
 
 
-class TemplateComponent(models.Model):
+class Component(models.Model):
     company = models.ForeignKey(Company, blank=True, null=True)
     default = models.BooleanField(default=False)
     removable = models.BooleanField(default=True)
@@ -36,9 +36,9 @@ class TemplateComponent(models.Model):
         return self.title
 
 
-class TemplateComponentInstance(models.Model):
-    component = models.ForeignKey(TemplateComponent)
-    template = models.ForeignKey(InvoiceTemplate, related_name='component_instances')
+class ComponentInstance(models.Model):
+    component = models.ForeignKey(Component)
+    template = models.ForeignKey(Template, related_name='component_instances')
     reference = models.CharField(max_length=200, default="")
     position_x = models.IntegerField()
     position_y = models.IntegerField()

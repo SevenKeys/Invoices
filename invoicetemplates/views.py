@@ -21,16 +21,16 @@ DESC_TEMPLATE = "description_template"
 
 
 def templates_list(request):
-    templates = InvoiceTemplate.objects.filter(company=request.user.userprofile.company).order_by("-created")
+    templates = Template.objects.filter(company=request.user.userprofile.company).order_by("-created")
     return render_to_response(LIST, {
         "templates": templates, "user": request.user, "company": request.user.userprofile.company})
 
 
 def new_template(request):
-    defaultcomponents = TemplateComponent.objects.filter(default=True)
+    defaultcomponents = Component.objects.filter(default=True)
     unremovablecomponents = []
     removablecomponents = []
-    customcomponents = TemplateComponent.objects.filter(company=request.user.userprofile.company)
+    customcomponents = Component.objects.filter(company=request.user.userprofile.company)
     for item in defaultcomponents:
         if item.type == IMAGE:
             item.content = item.content.replace("[url]", "/" + IMAGES_BASE + "/" + IMAGE_1)
@@ -44,11 +44,11 @@ def new_template(request):
 
 
 def edit_template(request):
-    defaultcomponents = TemplateComponent.objects.filter(default=True)
+    defaultcomponents = Component.objects.filter(default=True)
     unremovablecomponents = []
     removablecomponents = []
-    customcomponents = TemplateComponent.objects.filter(company=request.user.userprofile.company)
-    template = InvoiceTemplate.objects.get(id=request.GET[ID_TEMPLATE])
+    customcomponents = Component.objects.filter(company=request.user.userprofile.company)
+    template = Template.objects.get(id=request.GET[ID_TEMPLATE])
     for item in defaultcomponents:
         if item.type == IMAGE:
             item.content = item.content.replace("[url]", IMAGES_BASE + "/" + IMAGE_1)
@@ -62,8 +62,8 @@ def edit_template(request):
 
 
 def get_template(request):
-    template = InvoiceTemplate.objects.get(id=request.GET[ID_TEMPLATE])
-    component_instances = TemplateComponentInstance.objects.filter(template=template)
+    template = Template.objects.get(id=request.GET[ID_TEMPLATE])
+    component_instances = ComponentInstance.objects.filter(template=template)
     list = []
     for row in component_instances:
         if row.component.type == IMAGE:
@@ -75,20 +75,20 @@ def get_template(request):
 
 
 def add_custom_component(request):
-    saved_component = TemplateComponent(company=request.user.userprofile.company, default=False, removable=True, title=request.POST['title'], size_x=request.POST[SIZE_X], size_y=request.POST[SIZE_Y], content=request.POST[CONTENT])
+    saved_component = Component(company=request.user.userprofile.company, default=False, removable=True, title=request.POST['title'], size_x=request.POST[SIZE_X], size_y=request.POST[SIZE_Y], content=request.POST[CONTENT])
     saved_component.save()
     return HttpResponse(saved_component.id)
 
 
 def update_custom_component(request):
-    TemplateComponent.objects.filter(pk=request.POST[COMPONENT]).update(title=request.POST['title'], content=request.POST[CONTENT])
+    Component.objects.filter(pk=request.POST[COMPONENT]).update(title=request.POST['title'], content=request.POST[CONTENT])
     return HttpResponse(request.POST[COMPONENT])
 
 
 def delete_custom_component(request):
     if request.method == 'GET':
-        component = TemplateComponent.objects.get(id=request.GET[COMPONENT])
-        instances = TemplateComponentInstance.objects.filter(component=component)
+        component = Component.objects.get(id=request.GET[COMPONENT])
+        instances = ComponentInstance.objects.filter(component=component)
         if instances.exists():
             return HttpResponse("ko")
         else:
@@ -100,17 +100,17 @@ def delete_custom_component(request):
 
 def save_template(request):
     if request.POST[ID_TEMPLATE] is "":
-        template = InvoiceTemplate(title=request.POST['title_template'], description=request.POST[DESC_TEMPLATE], company=request.user.userprofile.company)
+        template = Template(title=request.POST['title_template'], description=request.POST[DESC_TEMPLATE], company=request.user.userprofile.company)
         template.save()
     else:
-        template = InvoiceTemplate.objects.get(id=request.POST[ID_TEMPLATE])
-        TemplateComponentInstance.objects.filter(template=template).delete()
-        InvoiceTemplate.objects.filter(id=request.POST[ID_TEMPLATE]).update(title=request.POST['title_template'], description=request.POST[DESC_TEMPLATE])
+        template = Template.objects.get(id=request.POST[ID_TEMPLATE])
+        ComponentInstance.objects.filter(template=template).delete()
+        Template.objects.filter(id=request.POST[ID_TEMPLATE]).update(title=request.POST['title_template'], description=request.POST[DESC_TEMPLATE])
     instances = json.loads(request.POST[COMPONENTS])
     for instance in instances:
-        TemplateComponentInstance(template=template, reference=instance[REFERENCE],
+        ComponentInstance(template=template, reference=instance[REFERENCE],
                                   position_x=instance[X], position_y=instance[Y],
-                                  component=TemplateComponent.objects.get(id=instance[COMPONENT])).save()
+                                  component=Component.objects.get(id=instance[COMPONENT])).save()
 
     return HttpResponse(template.id)
 

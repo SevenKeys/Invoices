@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load extra_customers %}
 {% block content %}
+
 	{% if edit %}
 		<h2 style="text-align:center">Edit client profile</h2>
 	{% else %}
@@ -25,26 +26,36 @@
 		{% else %}
 		  <fieldset class="form-group" >
 		{% endif %}
-		  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
-		  {% if field.field.required %}
-			 <span class="special_class">*</span>
-	  	  {% endif %}
-	  	  </label>
-
-		        {{ field | addcss:'form-control' }}
-		        <p class="help-text">{{ field.help_text }} </p>
-
+		  
+	<div class="col-md-3">
+	  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+	  {% if not field.field.required %}
+		 <span class="special_class">(optional)</span>
+  	  {% endif %}
+        {% for error in field.errors %}
+            <strong>{{ error|escape }}</strong>
+        {% endfor %}
+	  </label>
+        <p class="help-text">{{ field.help_text }}</p>
+    </div>
+    <div class="col-md-9">{{ field | addcss:'form-control' }}</div>
+		        
 		</fieldset>
-		{% endfor %}
-		   <input type="submit" value="Submit"  class="btn btn-primary">
-	</form>
-	{% if not add %}
-		<form class="col-md-12 text-center" action="" method="POST">
-			{% csrf_token %}
-	        <input type="button" id="customer_{{ object.id }}" class="btn btn-default tm_style_2" value="Delete Client" style="margin-right:auto;margin-left:auto">
-	    </form>
-	{% endif %}
+        {% endfor %}
+        <!-- button delete -->
+        <div class="col-md-2 col-md-offset-7">
+		{% if edit %}
+		  <input type="button" id="customer_{{ object.id }}" class="btn tm_style_2" value="Delete Client" style="margin-right:auto;margin-left:auto">
+		{% endif %}
+        </div>
 
+        <div class="col-md-2 col-md-offset-1">
+		   <input type="submit" value="Submit"  class="btn btn-primary">
+        </div>
+	</form>
+{% endblock %}
+{% block scripts %}
+{% if edit %}
 	<script type="text/javascript">
 	    $(function(){
 			function getCookie(name) {
@@ -80,4 +91,5 @@
 	    });
     });
     </script>
+{% endif %}
 {% endblock %}

@@ -3,7 +3,7 @@
 {% block content %}
 	<div class="header" style="text-align:center">
 	{% if edit %}
-		<h2>Edit or remove client group</h2>
+		<h2>Edit client group</h2>
 	{% else %}
 		<h2>Add client group</h2>
 	{% endif %}
@@ -28,26 +28,36 @@
 				  <fieldset class="form-group" >
 				{% endif %}
 
-				  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
-				  {% if field.field.required %}
-					 <span class="special_class">*</span>
-			  	  {% endif %}
-				  </label>
-						
-					{{ field | addcss:'form-control' }}
-			        <p class="help-text">{{ field.help_text }} </p>
+				<div class="col-md-3">
+	  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+	  {% if not field.field.required %}
+		 <span class="special_class">(optional)</span>
+  	  {% endif %}
+        {% for error in field.errors %}
+            <strong>{{ error|escape }}</strong>
+        {% endfor %}
+	  </label>
+        <p class="help-text">{{ field.help_text }}</p>
+    </div>
+    <div class="col-md-9">{{ field | addcss:'form-control' }}</div>
+		        
+		</fieldset>
+        {% endfor %}
+        <!-- button delete -->
+        <div class="col-md-2 col-md-offset-7">
+		{% if edit %}
+		  <input type="button" id="customergroup_{{ object.id }}" class="btn tm_style_2" value="Delete Group" style="margin-right:auto;margin-left:auto">
+		{% endif %}
+        </div>
 
-				</fieldset>
-			{% endfor %}
-			   <input type="submit" value="Submit"  class="btn btn-primary">
-		</form>
-		{% if not add %}
-		<form class="col-md-12 text-center" action="" method="POST">
-			{% csrf_token %}
-	        <input type="button" id="customergroup_{{ object.id }}" class="btn btn-default tm_style_2" value="Delete Client Group" style="margin-right:auto;margin-left:auto">
-	    </form>
-	{% endif %}
+        <div class="col-md-2 col-md-offset-1">
+		   <input type="submit" value="Submit"  class="btn btn-primary">
+        </div>
+	</form>
+{% endblock %}
 
+{% block scripts %}
+{% if edit %}
 	<script type="text/javascript">
 	    $(function(){
 			function getCookie(name) {
@@ -83,4 +93,5 @@
 	    });
     });
     </script>
+{% endif %}
 {% endblock %}

@@ -357,6 +357,5 @@ function addComponentInstance(id, component, content, x_size, y_size, x_position
  * @param content Content to set
  */
 function inlineEdition(id, content) {
-
 	$('#' + id).html(content);
 }

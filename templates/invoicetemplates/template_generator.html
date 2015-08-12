@@ -60,7 +60,7 @@
         <div class="gridster col-md-9" data-offset-top="60" data-offset-bottom="200">
             <ul>
                 {% for item in unremovablecomponents %}
-                    <li id="{{item.id}}" data-component="{{item.id}}" data-type="{{item.type}}" class="element" data-row="1" data-col="1" data-sizex="{{item.size_x}}" data-sizey="{{item.size_y}}"><span class="glyphicon glyphicon-move" aria-hidden="true"></span><div id="editable_{{item.id}}" name="editable_{{item.id}}" class="editable">{{item.content}}</div></li><script>inlineEdition(editable_{{item.id}}, '{{item.content}}')</script>
+                    <li id="{{item.id}}" data-component="{{item.id}}" data-type="{{item.type}}" class="element" data-row="1" data-col="1" data-sizex="{{item.size_x}}" data-sizey="{{item.size_y}}"><span class="glyphicon glyphicon-move" aria-hidden="true"></span><div id="editable_{{item.id}}" name="editable_{{item.id}}" class="editable"></div></li><script>inlineEdition('editable_{{item.id}}', '{{item.content}}')</script>
                 {% endfor %}
             </ul>
         </div>

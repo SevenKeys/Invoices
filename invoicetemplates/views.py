@@ -8,7 +8,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import A4
 import logging
-from .helpers import Pdf, IMAGE, IMAGES_BASE, LOGO, IMAGE_1, SIZE_Y, SIZE_X, LOGO_EXAMPLE, CONTENT, COMPONENT, Y, X, REFERENCE
+from .helpers import Pdf, IMAGE, IMAGES_BASE, LOGO, IMAGE_1, SIZE_Y, SIZE_X, LOGO_EXAMPLE, CONTENT, COMPONENT, Y, X, REFERENCE, TYPE
 
 logger = logging.getLogger("main.views.invoicetemplates")
 size = A4

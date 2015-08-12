@@ -121,17 +121,6 @@ class DeleteProductGroup(DeleteView):
     pk_url_kwarg = 'group_id'
     success_url = '/products/all/'
 
-# AJAX search function
-def searchProdAjax(request):
-    if request.method == 'POST':
-        search_text = request.POST['search_text']
-    else:
-        search_text = ''
-    products = Product.objects.filter(name__icontains=search_text)
-    context = {};
-    context['products'] = products
-
-    return render(request, 'products/search_products_results.html', context)
 
 
 class ProductListJson(LoginRequiredMixin, CompanyMixin, ListView):

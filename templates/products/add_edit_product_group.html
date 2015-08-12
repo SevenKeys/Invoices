@@ -4,10 +4,10 @@
 {% block content %}
 	<form class="form-contact" action="" method="POST" style="margin-right:auto; margin-left:auto; width:70%">
 		<div class="row">
-		    {% if add %}
+		    {% if not edit %}
 		        <h2 class="col-md-10 col-md-offset-4">Add a new product group</h2>
 		    {% else %}
-		        <h2 class="col-md-10 col-md-offset-4">Edit or delete product group</h2>
+		        <h2 class="col-md-10 col-md-offset-4">Edit product group</h2>
 		    {% endif %}
 	   </div>
 		{% csrf_token %} 
@@ -29,27 +29,33 @@
 		  <fieldset class="form-group" >
 		{% endif %}
 
-		  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
-		  {% if field.field.required %}
-			 <span class="special_class">*</span>
-	  	  {% endif %}
-		  </label>
-
-		      {{ field | addcss:'form-control' }}
-		      <p class="help-text">{{ field.help_text }} </p>
+		  <div class="col-md-3">
+			<label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+			{% if not field.field.required %}
+			  <span class="special_class">(optional)</span>
+		  	{% endif %}
+	        {% for error in field.errors %}
+	          <strong>{{ error|escape }}</strong>
+	        {% endfor %}
+			</label>
+		      <p class="help-text">{{ field.help_text }}</p>
+	      </div>
+	      <div class="col-md-9">{{ field | addcss:'form-control' }}</div>
 		
-		</fieldset>
+		  </fieldset>
 		{% endfor %}
+	    <div class="col-md-2 col-md-offset-7">
+		{% if edit %}
+		  <input type="button" id="product_{{ object.id }}" class="btn tm_style_2" value="Delete Group" style="margin-right:auto;margin-left:auto">
+		{% endif %}
+        </div>
+        <div class="col-md-2 col-md-offset-1">
 		   <input type="submit" value="Submit"  class="btn btn-primary">
-	</form>
-
-	{% if not add %}
-		<form class="col-md-12 text-center" action="" method="POST">
-			{% csrf_token %}
-	        <input type="button" id="productgroup_{{ object.id }}" class="btn btn-default tm_style_2" value="Delete Product Group" style="margin-right:auto;margin-left:auto">
+        </div>
 	    </form>
-	{% endif %}
-
+{% endblock %}
+{% block scripts %}
+{% if edit %}
     <script type="text/javascript">
 	    $(function(){
 			function getCookie(name) {
@@ -85,4 +91,5 @@
 	    });
     });
     </script>
+{% endif %}
 {% endblock %}

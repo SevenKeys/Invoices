@@ -5,6 +5,9 @@
         <h1>Products of <strong>{{ company }}</strong> company.</h1>
         {% csrf_token %}
 
+        <a class="btn btn-primary pull-right" href="" style="margin-left:10px">Currencies</a>
+        <a class="btn btn-primary pull-right" href="" style="margin-left:10px">Categories</a>
+        <a class="btn btn-primary pull-right" href="" style="margin-left:10px">Units Of Measure</a>
         <a class="btn btn-primary pull-right" href="{% url 'add_product' %}">Add New Product</a>
         <div id="productsGrid" style="min-height: 250px;"></div>
         <br/><br/>

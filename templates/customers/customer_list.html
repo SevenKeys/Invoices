@@ -12,8 +12,7 @@
                 </ul>
             </div>
             {% if customer_list.count > 0 %}
-                {% for customer in customer_list %}
-                <table class="table">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -23,9 +22,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                    {% for customer in customer_list %}
+                        <tr class="info">
                             <td>
-                               {{ customer.name }}
+                               <a href="{% url 'customer_detail' customer.id %}">{{ customer.name }}</a> 
                             </td>
                             <td>{{ customer.company }}</td>
                             <td>{{ customer.created }}</td>
@@ -37,25 +37,25 @@
                         {% endif %}
                             </td>
                             <td>
-                                <button type="button"><a href="{% url 'edit_customer' customer.id %}">Edit</a></button>
+                                <button type="button" class="btn btn-warning tm_style_2"><a href="{% url 'edit_customer' customer.id %}">Edit</a></button>
                             </td>
                             <td>
-                                <button type="button"><a href="{% url 'delete_customer' customer.id %}">Delete</a></button>
+                                <button type="button" class="btn btn-danger tm_style_2"><a href="{% url 'delete_customer' customer.id %}">Delete</a></button>
                             </td>
                         </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
-                    
-                
-                {% endfor %}
+                                    
             {% else %}
                 <h3>No clients was added yet.</h3>
             {% endif %}
         </ul>
-        <button type="button"><a href="{% url 'add_customer' %}">Add client</a></button>
-        <button type="button"><a href="{% url 'add_group' %}">Add client group</a></button>
+        <button type="button" class="btn btn-info tm_style_2"><a href="{% url 'add_customer' %}">Add client</a></button>
+        <button type="button" class="btn btn-info tm_style_2"><a href="{% url 'add_group' %}">Add client group</a></button>
+        <button type="button" class="btn btn-warning tm_style_2"><a href="{% url 'add_company' %}">Edit company</a></button>
     {% else %}
         <h3>You have not registered a company yet.</h3>
-        <button type="button"><a href="{% url 'add_company' %}">Create company</a></button>
+        <a href="{% url 'add_company' %}" class="btn btn-info tm_style_2">Create company</a>
     {% endif %}
 {% endblock %}

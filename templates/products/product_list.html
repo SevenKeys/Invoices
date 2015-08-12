@@ -2,59 +2,95 @@
 
 {% block content %}
     {% if company %}
-        <h2>Products of <strong>{{ company }}</strong> company.</h2>
+        <h1>Products of <strong>{{ company }}</strong> company.</h1>
         {% csrf_token %}
-        <div class="input-group">
-            <input type="text" id="search_products" class="form-control" placeholder="Input search text" aria-describedby="sizing-addon2">
-        </div>
-        <div class="dropdown">
-            <ul id="search_products_results" class="custom_dropdown">
-            </ul>
-        </div>
-        <ul>
-            {% if product_list.count > 0 %}
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Company</th>
-                            <th>Price</th>
-                            <th>Group</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for product in product_list %}
-                        <tr>
-                            <td>
-                               {{ product.name }}
-                            </td>
-                            <td>{{ product.company }}</td>
-                            <td>{{ product.price }}</td>
-                            <td>
-                                {% if product.group %}
-                                <a href="{% url 'product_group' product.group.id %}">{{ product.group }}</a>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <button type="button"><a href="{% url 'edit_product' product.id %}">Edit</a></button>
-                            </td>
-                            <td>
-                                <button type="button"><a href="{% url 'delete_product' product.id %}">Delete</a></button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                                    
-            {% else %}
-                <h3>No products was added yet.</h3>
-            {% endif %}
-        </ul>
-        <button type="button"><a href="{% url 'add_product' %}">Add Product</a></button>
-        <button type="button"><a href="{% url 'add_product_group' %}">Add Product Group</a></button>
+
+        <a class="btn btn-primary pull-right" href="{% url 'add_product' %}">Add New Product</a>
+        <div id="productsGrid" style="min-height: 250px;"></div>
+        <br/><br/>
+
+        <a class="btn btn-primary pull-right" href="{% url 'add_product_group' %}">Add New Product Group</a>
+        <div id="productGroupsGrid" style="min-height: 250px;"></div>
+
     {% else %}
         <h3>You have not registered a company yet.</h3>
-        <button type="button"><a href="{% url 'add_company' %}">Create company</a></button>
+        <a href="{% url 'add_company' %}" class="btn btn-info tm_style_2">Create company</a>
     {% endif %}
 
+{% endblock %}
+{% block scripts %}
+        <script>
+            $(function() {
+                $("#productGroupsGrid").jsGrid({
+                    height: "100%",
+                    width: "100%",
+                    sorting: true,
+                    paging: true,
+                    autoload: true,
+                    pageSize: 10,
+                    pageButtonCount: 5,
+                    filtering: true,
+                    rowClick: function(args) {
+                        return window.location.replace("/products/edit_group/"+args.item.id);
+                    },
+                    controller: {
+                        loadData: function(filter) {
+                            var d = $.Deferred();
+                            $.ajax({
+                                type: "GET",
+                                url: "/products/list_group/",
+                                data: filter
+                            }).done(function(result) {
+                                d.resolve($.map(result, function(item) {
+                                    return $.extend(item.fields, { id: item.pk });
+                                }));
+                            });
+                            return d.promise();
+                        }
+                    },
+                    fields: [
+                        { name: "name", type: "text", width: 150 },
+                        { name: "category", type: "text", width: 150 },
+                        { name: "parent", type: "text", width: 100 }
+                    ]
+                });
+            });
+
+            $(function() {
+                $("#productsGrid").jsGrid({
+                    height: "100%",
+                    width: "100%",
+                    sorting: true,
+                    paging: true,
+                    autoload: true,
+                    pageSize: 10,
+                    pageButtonCount: 5,
+                    filtering: true,
+                    rowClick: function(args) {
+                        return window.location.replace("/products/edit/"+args.item.id);
+                    },
+                    controller: {
+                        loadData: function(filter) {
+                            var d = $.Deferred();
+                            $.ajax({
+                                type: "GET",
+                                url: "/products/list/",
+                                data: filter
+                            }).done(function(result) {
+                                d.resolve($.map(result, function(item) {
+                                    return $.extend(item.fields, { id: item.pk });
+                                }));
+                            });
+                            return d.promise();
+                        }
+                    },
+                    fields: [
+                        { name: "name", type: "text", width: 150 },
+                        { name: "code", type: "text", width: 150 },
+                        { name: "price", type: "number", width: 100 },
+                        { name: "currency", type: "text", width: 50 }
+                    ]
+                });
+            });
+        </script>
 {% endblock %}

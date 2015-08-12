@@ -2,7 +2,7 @@ from django.conf.urls import url
 from .views import CustomerList
 from .views import AddCustomer, DeleteCustomer, UpdateCustomer
 from .views import AddCustomerGroup, CustomerGroupDetail, DeleteCustomerGroup, UpdateCustomerGroup
-from .views import SearchCustAjax
+from .views import searchCustAjax
 
 urlpatterns = [
     url(r'^all/$', CustomerList.as_view(), name='customers'),
@@ -13,5 +13,5 @@ urlpatterns = [
     url(r'^get_group/(?P<group_id>\d+)/$', CustomerGroupDetail.as_view(), name='get_group'),
     url(r'^edit_group/(?P<group_id>\d+)/$', UpdateCustomerGroup.as_view(), name='edit_group'),
     url(r'^delete_group/(?P<group_id>\d+)/$', DeleteCustomerGroup.as_view(), name='delete_group'),
-    url(r'^search/$', SearchCustAjax)
+    url(r'^search/$', searchCustAjax)
 ]

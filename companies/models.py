@@ -7,6 +7,15 @@ class Company(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     contact = models.ForeignKey(Contact, blank=True, null=True)
     reg_code = models.CharField(max_length=30)
+    credit_status = models.CharField(max_length=30,blank=True,null=True)
+    office_number = models.IntegerField(blank=True,null=True)
 
     def __str__(self):
-        return self.name
+    	return self.name
+
+class CompanySegment(models.Model):
+	company = models.ForeignKey(Company)
+	name = models.CharField(max_length=60)
+
+	def __str__(self):
+		return self.name

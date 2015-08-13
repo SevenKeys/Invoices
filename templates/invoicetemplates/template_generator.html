@@ -4,7 +4,7 @@
 {% block content %}
 <script type="text/javascript">
     $(document).on("ready", function() {
-        $(".gridster ul").template("{{id_template}}");
+        $(".gridster ul").template("{{id_template}}", "{{archetype_selected}}");
     });
 </script>
 <div class="row">
@@ -33,6 +33,12 @@
 
     <div class="row">
     	<div id="components" class="col-md-3">
+            <h3>{% trans "Archetype" %}</h3>
+            <select id="archetype" name="archetype" class="form-control" onchange="applyArchetype(this.value);">
+            {% for arch in archetypes %}
+                <option value="{{arch.id}}">{{arch.title}}</option>
+            {% endfor %}
+            </select>
             <h3>{% trans "Common components" %}</h3>
             <ul class="list-group">
                 {% for component in defaultcomponents %}

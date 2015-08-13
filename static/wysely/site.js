@@ -5,7 +5,7 @@ var gridster;
  */
 $(function() {
 	$.fn.extend({
-		template: function(id_template) {
+		template: function(id_template, id_archetype) {
 			prepareAjax();
 			gridster = $(this).gridster({
 				widget_margins: [10, 10],
@@ -47,7 +47,7 @@ $(function() {
 
 			editableEvent(".edit-component");
 			addableEvent();
-
+			applyArchetype(id_archetype);
 			$('#save').on('click', function() {
 				if (CKEDITOR.instances['widget-content']) {
 					CKEDITOR.instances["widget-content"].destroy();
@@ -57,7 +57,8 @@ $(function() {
 					document.getElementById('id_template').value,
 					document.getElementById('title_template').value,
 					document.getElementById('description_template').value,
-					document.getElementById('instances_template').value);
+					document.getElementById('instances_template').value,
+					document.getElementById('archetype').value);
 				CKEDITOR.replace("widget-content");
 			});
 
@@ -157,8 +158,9 @@ function updateComponent(id_component, title, content) {
  * @param title Title of the template
  * @param description Description of the template
  * @param component_instances List of widgets of the template
+ * @param archetype Id of the selected archetype
  */
-function saveTemplate(id_template, title, description, component_instances) {
+function saveTemplate(id_template, title, description, component_instances, archetype) {
     $(document).ready(function() {
         $.ajax({
             url: '/templates/save/',
@@ -166,7 +168,8 @@ function saveTemplate(id_template, title, description, component_instances) {
                     title_template: title,
                     description_template: description,
                     id_template: id_template,
-                    instances_template: component_instances
+                    instances_template: component_instances,
+                    archetype: archetype
             },
             dataType: "json",
             error: function(data) {
@@ -233,6 +236,7 @@ function loadTemplate(id_template) {
             error: function(data) {
              	console.error(data);
             },
+            async: false,
             success: function(data) {
             	gridster.remove_all_widgets();
             	$.each(Gridster.sort_by_row_and_col_asc(data), function() {
@@ -358,4 +362,42 @@ function addComponentInstance(id, component, content, x_size, y_size, x_position
  */
 function inlineEdition(id, content) {
 	$('#' + id).html(content);
+}
+
+/**
+ * Apply the selected archetype to
+ * the template.
+ * @param id Id of the selected archetype
+ */
+function applyArchetype(id) {
+	$(document).ready(function() {
+        $.ajax({
+            url: '/templates/archetypes/',
+            data: {
+                    id: id
+            },
+            dataType: "json",
+            error: function(data) {
+             	console.error(data);
+            },
+            async: false,
+            success: function(data) {
+            	for (item of data) {
+            		element = item.element;
+            		if (element != "horizontal_lines" && element != "alignment" && element != "vertical_lines" && element != "border_right_table" && element != "border_bottom_header" && element != "border_top_header") {
+						$(item.field).css('background-color', item.value);
+            		} else if (item.element == "vertical_lines") {
+            			$(item.field).css('border-style', "solid");
+            			$(item.field).css('border-left-color', item.value);
+            			$(item.field).css('border-right-color', item.value);
+            		} else if (item.element == "horizontal_lines") {
+            			$(item.field).css('border-style', "solid");
+            			$(item.field).css('border-top-color', item.value);
+            			$(item.field).css('border-bottom-color', item.value);
+            		}
+            	}
+            },
+            type: 'GET'
+        });
+    });
 }

@@ -144,6 +144,10 @@ footer{
     float: right;
 }
 
-.container{
+.container {
     margin-bottom: 50px;
+}
+
+#products {
+    width: 100%;
 }

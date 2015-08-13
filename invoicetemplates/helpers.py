@@ -81,6 +81,14 @@ class Pdf(object):
     def body_y_size(self):
         return self.size_y_base - (self.space_header_y + self.space_footer_y)*self.unit
 
+    def header_footer(self, canvas):
+        canvas.saveState()
+        for item in self.header:
+            self.paint_header_item(item, canvas)
+        for item in self.footer:
+            self.paint_footer_item(item, canvas)
+        canvas.restoreState()
+
     def paint_header_item(self, item, canvas):
         if item[TYPE] == IMAGE or item[TYPE] == LOGO:
             image = item[CONTENT].split("/")

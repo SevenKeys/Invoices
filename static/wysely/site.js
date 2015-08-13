@@ -96,7 +96,7 @@ function uuid(){
 function saveComponent(title, sizex, sizey, cnt) {
     $(document).ready(function(){
         $.ajax({
-            url: '/invoices/templates/customcomponents/',
+            url: '/templates/customcomponents/',
             data: {
                     title: title,
                     size_x: sizex,
@@ -131,7 +131,7 @@ function saveComponent(title, sizex, sizey, cnt) {
 function updateComponent(id_component, title, content) {
     $(document).ready(function(){
         $.ajax({
-            url: '/invoices/templates/customcomponents/update/',
+            url: '/templates/customcomponents/update/',
             data: {
                     id_component: id_component,
                     title: title,
@@ -161,7 +161,7 @@ function updateComponent(id_component, title, content) {
 function saveTemplate(id_template, title, description, component_instances) {
     $(document).ready(function() {
         $.ajax({
-            url: '/invoices/templates/save/',
+            url: '/templates/save/',
             data: {
                     title_template: title,
                     description_template: description,
@@ -188,7 +188,7 @@ function saveTemplate(id_template, title, description, component_instances) {
 function deleteComponent(id_component) {
     $(document).ready(function() {
         $.ajax({
-            url: '/invoices/templates/customcomponents/delete/',
+            url: '/templates/customcomponents/delete/',
             data: {
                     id_component: id_component
             },
@@ -225,7 +225,7 @@ function deleteComponent(id_component) {
 function loadTemplate(id_template) {
     $(document).ready(function() {
         $.ajax({
-            url: '/invoices/templates/get/',
+            url: '/templates/get/',
             data: {
                     id_template: id_template
             },

@@ -13,7 +13,7 @@
         <p>{% trans "Template saved" %}</p>
     </div>
     <div>
-        <form id="form-save-template" class="form-inline" action="/invoices/templates/preview/" method="get" onsubmit="printPreview();">
+        <form id="form-save-template" class="form-inline" action="/templates/preview/" method="get" onsubmit="printPreview();">
             <input type="hidden" id="instances_template" name="instances_template"/>
             <input type="hidden" id="id_template" name="id_template" value="{{id_template}}"/>
             <div class="form-group">

@@ -247,6 +247,20 @@ class CategoryList(ListView, CompanyMixin):
         context['company'] = company
         return context
 
+class AddCategoryView(CreateView):
+    model = Category
+    fields = ['name']
+    template_name = '/products/categories/currency_list.html'
+    success_url = '/products/categories/'
+
+
+class DeleteCategoryView(DeleteView):
+    model = Category
+    template_name = 'products/categories/category_list.html'
+    pk_url_kwarg = 'cat_id'
+    success_url = '/products/categories/'
+
+
 # CRUD for Unit
 class UnitList(ListView, CompanyMixin):
     model = Unit

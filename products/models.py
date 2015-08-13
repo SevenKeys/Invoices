@@ -12,6 +12,29 @@ class ProductGroup(models.Model):
     def __str__(self):
         return self.name
 
+class Currency(models.Model):
+    name = models.CharField(max_length=25)
+
+    def __str__(self):
+        return self.name
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+class Unit(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+class Tax(models.Model):
+    value = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.value)
 
 class Product(models.Model):
     company = models.ForeignKey(Company)
@@ -20,12 +43,15 @@ class Product(models.Model):
     price = models.FloatField(default=0.0)
     description = models.TextField(blank=True, null=True)
     group = models.ForeignKey(ProductGroup, blank=True, null=True)
-    currency = models.CharField(max_length=25, blank=True, null=True)
-    category = models.CharField(max_length=25, default='service')
     stock = models.IntegerField(blank=True, null=True)
-    units_of_measure = models.CharField(max_length=25, default='unit1')
-    tax = models.IntegerField(default=2)
+    currency = models.ForeignKey(Currency,default='')
+    category = models.ForeignKey(Category,default='')
+    unit = models.ForeignKey(Unit,default='')
+    tax = models.ForeignKey(Tax,default=0)
     price_with_tax = models.FloatField(default=0.0)
 
     def __str__(self):
         return self.name
+
+
+

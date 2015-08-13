@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if unit_list.count > 0 %}
+	<h2>List of units of measure</h2>
+	<ul class="list-group">
+	{% for unit in unit_list %}
+		<form action="" class="form-inline" method="POST">{% csrf_token %}
+			<li class="list-group-item">{{ unit.name }}
+		        <input type="button" data-id="{{ unit.id }}" class="btn btn-primary pull-right del-btn" style="margin-bottom:5px" value="Delete" />
+	        </li>
+	    </form>
+	{% endfor %}
+	</ul>
+{% else %}
+
+	<h3>No units of measure was added yet</h3>
+
+{% endif %}
+	<form action="" method="POST">
+	{% csrf_token %}
+	    <input type="button" class="btn btn-primary" id="addCur" style="" value="Add New unit"/>
+	</form>
+
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(function(){
+            function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+        // add new unit after click with ajax
+        var refreshPage = function(){
+        	window.location.reload(true);
+        }
+        $add = $('#addCur');
+        $add.click(function(){
+            var name = prompt("Please, enter a new unit");
+            $.ajax({
+                type: 'POST',
+                url: '/products/add_unit/',
+                data: {
+                	'name': name,
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                },
+                dataType: 'json'
+            });
+            refreshPage();
+        });
+        // delete any unit from list
+        $del = $('.del-btn');
+        $del.click(function(){
+	        var $id = $(this).attr('data-id');
+            if (confirm("Are you sure you want to delete this unit?") == true){
+                $.ajax({
+                    type: 'POST',
+                    url: '/products/delete_unit/'+$id+'/',
+                    data: {
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                    }
+                });
+            }
+	        refreshPage();
+        });
+    });
+    </script>
+
+{% endblock %}

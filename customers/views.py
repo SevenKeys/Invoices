@@ -28,14 +28,6 @@ class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
             queryset = False
         return queryset
 
-    # def get_context_data(self):
-    #   context = super(CustomerList, self).get_context_data()
-    #   try:
-    #       company = self.get_company()
-    #   except UserProfile.DoesNotExist:
-    #       company = False
-    #   context['company'] = company
-    #   return context
 
 
 

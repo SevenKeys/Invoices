@@ -1,25 +1,14 @@
 from django import forms
-from .models import Product, ProductGroup
+from .models import Product, ProductGroup, Currency, Category, Unit, Tax
 
 
 class ProductForm(forms.ModelForm):
-    cur = (
-        ('usd', 'USD'),
-        ('eur', 'EUR'),
-        ('rub', 'RUB'))
-    categories = (
-        ('service', 'service'),
-        ('item', 'item'))
-    units = (
-        ('unit1', 'unit1'),
-        ('unit2', 'unit2'),
-        ('unit3', 'unit3'))
-    taxes = (
-        (2, '2'),
-        (4, '4'),
-        (6, '6'))
+    cur = [((x.name),(x)) for x in Currency.objects.all()]
+    categories = [((x.name),(x)) for x in Category.objects.all()]
+    units = [((x.name),(x)) for x in Unit.objects.all()]
+    taxes = [((x.value),(x)) for x in Tax.objects.all()]
     name = forms.CharField(label='Product name')
-    currency = forms.ChoiceField(choices=cur)
+    currency = forms.ChoiceField(choices=cur,required=False)
     category = forms.ChoiceField(choices=categories)
     units_of_measure = forms.ChoiceField(choices=units)
     tax = forms.ChoiceField(choices=taxes)

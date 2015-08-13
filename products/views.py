@@ -218,6 +218,13 @@ class AddCurrencyView(CreateView):
     success_url = '/products/currencies/'
 
 
+class DeleteCurrencyView(DeleteView):
+    model = Currency
+    template_name = 'products/currencies/currency_list.html'
+    pk_url_kwarg = 'cur_id'
+    success_url = '/products/currencies/'
+
+
 # CRUD for Category
 class CategoryList(ListView, CompanyMixin):
     model = Category

@@ -3,7 +3,7 @@ from .views import ProductList, AddProduct, UpdateProduct, DeleteProduct
 from .views import AddProductGroup, UpdateProductGroup
 from .views import DeleteProductGroup
 from .views import ProductListJson, ProductGroupListJson
-from .views import CurrencyList, AddCurrencyView
+from .views import CurrencyList, AddCurrencyView, DeleteCurrencyView
 from .views import CategoryList
 from .views import UnitList
 
@@ -29,6 +29,8 @@ urlpatterns = [
         name='product_currencies'),
     url(r'^add_currency/$', AddCurrencyView.as_view(), 
         name='add_currency'),
+    url(r'^delete_currency/(?P<cur_id>\d+)/$', DeleteCurrencyView.as_view(), 
+        name='delete_currency'),
     url(r'^categories/$', CategoryList.as_view(), 
         name='product_categories'),
     url(r'^units/$', UnitList.as_view(), 

@@ -15,7 +15,11 @@
 
         <a class="btn btn-primary pull-right" href="{% url 'add_product_group' %}">Add New Product Group</a>
         <div id="productGroupsGrid" style="min-height: 250px;"></div>
-
+        <ul class="dropdown-menu" aria-labelledby="dLabel">
+            {% for product in product_list %}
+                <li>{{ product.currency }}</li>
+            {% endfor %}
+        </ul>
     {% else %}
         <h3>You have not registered a company yet.</h3>
         <a href="{% url 'add_company' %}" class="btn btn-info tm_style_2">Create company</a>

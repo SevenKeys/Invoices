@@ -38,22 +38,7 @@ class AddProduct(CreateView, CompanyMixin):
     def form_valid(self, form):
         new_product = form.save(commit=False)
         new_product.company = self.get_company()
-        currency = self.request.POST['currency']
         new_product.save()
-        if currency is not None:
-            new_cur = Currency.objects.get(name=currency)
-            new_cur.product = new_product
-            new_cur.save()
-        category = self.request.POST['category']
-        if category is not None:
-            new_cat = Category.objects.get(name=category)
-            new_cat.product = new_product
-            new_cat.save()
-        unit = self.request.POST['units_of_measure']
-        if unit is not None:
-            new_unit = Unit.objects.get(name=unit)
-            new_unit.product = new_product
-            new_unit.save()
         return super(AddProduct,self).form_valid(form)
 
     def get_context_data(self,**kwargs):
@@ -86,22 +71,7 @@ class UpdateProduct(UpdateView, CompanyMixin):
 
     def form_valid(self, form):
         new_product = form.save(commit=False)
-        currency = self.request.POST['currency']
         new_product.save()
-        if currency is not None:
-            new_cur = Currency.objects.get(name=currency)
-            new_cur.product = new_product
-            new_cur.save()
-        category = self.request.POST['category']
-        if category is not None:
-            new_cat = Category.objects.get(name=category)
-            new_cat.product = new_product
-            new_cat.save()
-        unit = self.request.POST['units_of_measure']
-        if unit is not None:
-            new_unit = Unit.objects.get(name=unit)
-            new_unit.product = new_product
-            new_unit.save()
         return super(UpdateProduct,self).form_valid(form)
 
 

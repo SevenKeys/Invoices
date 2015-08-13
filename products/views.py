@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.core import serializers
 from companies.models import Company
 from .models import Product, ProductGroup
-from .models import Currency, Category, Unit
+from .models import Currency, Category, Unit, Tax
 from users.models import UserProfile
 from .forms import ProductForm, ProductGroupForm
 from users.permissions import LoginRequiredMixin
@@ -52,7 +52,6 @@ class AddProduct(CreateView, CompanyMixin):
         return context
 
 
-
 class UpdateProduct(UpdateView, CompanyMixin):
     model = Product
     form_class = ProductForm
@@ -78,7 +77,6 @@ class DeleteProduct(DeleteView):
     success_url = '/products/all/'
 
 
-
 class AddProductGroup(CreateView, CompanyMixin):
     model = ProductGroup
     form_class = ProductGroupForm
@@ -99,7 +97,6 @@ class AddProductGroup(CreateView, CompanyMixin):
             company = False
         context['company'] = company
         return context
-
 
 
 class UpdateProductGroup(UpdateView):
@@ -295,3 +292,39 @@ class DeleteUnitView(DeleteView):
     template_name = 'products/units/unit_list.html'
     pk_url_kwarg = 'unit_id'
     success_url = '/products/units/'
+
+# CRUD for Tax
+class TaxList(ListView, CompanyMixin):
+    model = Tax
+    template_name = 'products/taxes/tax_list.html'
+    context_object_name = 'tax_list'
+
+    def get_queryset(self):
+        try:
+            queryset = Tax.objects.order_by('value')
+        except Tax.DoesNotExist:
+            queryset = False
+        return queryset
+
+    def get_context_data(self,**kwargs):
+        context = super(TaxList, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
+
+class AddTaxView(CreateView):
+    model = Tax
+    fields = ['value']
+    template_name = '/products/taxes/tax_list.html'
+    success_url = '/products/taxes/'
+
+
+class DeleteTaxView(DeleteView):
+    model = Tax
+    template_name = 'products/taxes/tax_list.html'
+    pk_url_kwarg = 'tax_id'
+    success_url = '/products/taxes/'
+

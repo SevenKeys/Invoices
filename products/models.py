@@ -48,3 +48,10 @@ class Unit(models.Model):
     def __str__(self):
         return self.name
 
+class Tax(models.Model):
+    product = models.ForeignKey(Product,blank=True,null=True,related_name='product')
+    value = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.value)
+

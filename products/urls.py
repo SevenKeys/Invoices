@@ -6,6 +6,7 @@ from .views import ProductListJson, ProductGroupListJson
 from .views import CurrencyList, AddCurrencyView, DeleteCurrencyView
 from .views import CategoryList, AddCategoryView, DeleteCategoryView
 from .views import UnitList, AddUnitView, DeleteUnitView
+from .views import TaxList, AddTaxView, DeleteTaxView
 
 urlpatterns = [
     url(r'^all/$', ProductList.as_view(), 
@@ -44,5 +45,12 @@ urlpatterns = [
     url(r'^add_unit/$', AddUnitView.as_view(), 
         name='add_unit'),
     url(r'^delete_unit/(?P<unit_id>\d+)/$', DeleteUnitView.as_view(), 
-        name='delete_unit')
+        name='delete_unit'),
+    # CRUD for product taxes
+    url(r'^taxes/$', TaxList.as_view(), 
+        name='product_taxes'),
+    url(r'^add_tax/$', AddTaxView.as_view(), 
+        name='add_tax'),
+    url(r'^delete_tax/(?P<tax_id>\d+)/$', DeleteTaxView.as_view(), 
+        name='delete_tax')
 ]

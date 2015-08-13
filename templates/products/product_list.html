@@ -6,6 +6,7 @@
         {% csrf_token %}
 
         <a class="btn btn-primary pull-right" href="{% url 'product_currencies' %}" style="margin-left:10px">Currencies</a>
+        <a class="btn btn-primary pull-right" href="{% url 'product_taxes' %}" style="margin-left:10px">Tax</a>
         <a class="btn btn-primary pull-right" href="{% url 'product_categories' %}" style="margin-left:10px">Categories</a>
         <a class="btn btn-primary pull-right" href="{% url 'product_units' %}" style="margin-left:10px">Units Of Measure</a>
         <a class="btn btn-primary pull-right" href="{% url 'add_product' %}">Add New Product</a>

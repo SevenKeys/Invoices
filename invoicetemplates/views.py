@@ -8,7 +8,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import A4
 import logging
-from .helpers import Pdf, IMAGE, IMAGES_BASE, LOGO, IMAGE_1, SIZE_Y, SIZE_X, LOGO_EXAMPLE, CONTENT, COMPONENT, Y, X, REFERENCE, TYPE
+from .helpers import Pdf, IMAGE, IMAGES_BASE, LOGO, IMAGE_1, SIZE_Y, SIZE_X, LOGO_EXAMPLE, CONTENT, COMPONENT, Y, X, REFERENCE, TYPE, build_table_style
 
 logger = logging.getLogger("main.views.invoicetemplates")
 size = A4
@@ -154,8 +154,10 @@ def print_preview(request):
     story = []
     products = [['Description', 'Category', 'Unit prize', 'Units', 'Tax', 'Amount']]
     for i in range(40):
-        products.append(['Product %s' % i, 'Category %s' % i , i, i, i, i])
-    story.append(Table(products))
+        products.append(['Product %s' % i, 'Category %s' % i, i, i, i, i])
+    table = Table(products)
+    table.setStyle(build_table_style(ArchetypeField.objects.filter(archetype=request.GET['archetype'])))
+    story.append(table)
     doc.build(story)
     pdf_output = output.getvalue()
     output.close()

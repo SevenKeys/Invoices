@@ -2,14 +2,14 @@
 {% block content %}
 
 {% if category_list.count > 0 %}
-	<h2>List of currencies</h2>
+	<h2>List of categories</h2>
 	<ul class="list-group">
 	{% for category in category_list %}
-			<form action="" class="form-inline" method="POST">{% csrf_token %}
-				<li class="list-group-item">{{ category.name }}
-			        <input type="button" data-id="{{ category.id }}" class="btn btn-primary pull-right del-btn" style="margin-bottom:5px" value="Delete" />
-		        </li>
-		    </form>
+		<form action="" class="form-inline" method="POST">{% csrf_token %}
+			<li class="list-group-item">{{ category.name }}
+		        <input type="button" data-id="{{ category.id }}" class="btn btn-primary pull-right del-btn" style="margin-bottom:5px" value="Delete" />
+	        </li>
+	    </form>
 	{% endfor %}
 	</ul>
 {% else %}

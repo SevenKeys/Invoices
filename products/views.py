@@ -264,7 +264,7 @@ class DeleteCategoryView(DeleteView):
 # CRUD for Unit
 class UnitList(ListView, CompanyMixin):
     model = Unit
-    template_name = 'products/categories/unit_list.html'
+    template_name = 'products/units/unit_list.html'
     context_object_name = 'unit_list'
 
     def get_queryset(self):
@@ -282,3 +282,16 @@ class UnitList(ListView, CompanyMixin):
             company = False
         context['company'] = company
         return context
+
+class AddUnitView(CreateView):
+    model = Unit
+    fields = ['name']
+    template_name = '/products/units/unit_list.html'
+    success_url = '/products/units/'
+
+
+class DeleteUnitView(DeleteView):
+    model = Unit
+    template_name = 'products/units/unit_list.html'
+    pk_url_kwarg = 'unit_id'
+    success_url = '/products/units/'

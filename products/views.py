@@ -1,12 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator
 from django.core import serializers
 from companies.models import Company
-from products.models import Product, ProductGroup
+from .models import Product, ProductGroup
+from .models import Currency, Category, Unit
 from users.models import UserProfile
 from .forms import ProductForm, ProductGroupForm
 from users.permissions import LoginRequiredMixin
@@ -168,3 +169,95 @@ class ProductGroupListJson(LoginRequiredMixin, CompanyMixin, ListView):
         results = Paginator(queryset.order_by('name'), 20)
         return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
                             content_type='application/json')
+
+# CRUD for Currency
+class CurrencyList(ListView, CompanyMixin):
+    model = Currency
+    template_name = 'products/currencies/currency_list.html'
+    context_object_name = 'currency_list'
+
+    def get_queryset(self):
+        try:
+            queryset = Currency.objects.order_by('name')
+        except Currency.DoesNotExist:
+            queryset = False
+        return queryset
+
+    def get_context_data(self,**kwargs):
+        context = super(CurrencyList, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
+
+class AjaxableResponseMixin(object):
+    
+    def form_invalid(self, form):
+        response = super(AjaxableResponseMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
+
+    def form_valid(self, form):
+        response = super(AjaxableResponseMixin, self).form_valid(form)
+        if self.request.is_ajax():
+            data = {
+                'pk': self.object.pk,
+            }
+            return JsonResponse(data)
+        else:
+            return response
+
+class AddCurrencyView(CreateView):
+    model = Currency
+    fields = ['name']
+    template_name = '/products/currencies/currency_list.html'
+    success_url = '/products/currencies/'
+
+
+# CRUD for Category
+class CategoryList(ListView, CompanyMixin):
+    model = Category
+    template_name = 'products/categories/category_list.html'
+    context_object_name = 'category_list'
+
+    def get_queryset(self):
+        try:
+            queryset = Category.objects.order_by('name')
+        except Category.DoesNotExist:
+            queryset = False
+        return queryset
+
+    def get_context_data(self,**kwargs):
+        context = super(CategoryList, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
+
+# CRUD for Unit
+class UnitList(ListView, CompanyMixin):
+    model = Unit
+    template_name = 'products/categories/unit_list.html'
+    context_object_name = 'unit_list'
+
+    def get_queryset(self):
+        try:
+            queryset = Unit.objects.order_by('name')
+        except Unit.DoesNotExist:
+            queryset = False
+        return queryset
+
+    def get_context_data(self,**kwargs):
+        context = super(UnitList, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context

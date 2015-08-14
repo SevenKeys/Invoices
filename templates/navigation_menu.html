@@ -16,7 +16,21 @@
             <a href="{% url 'customers' %}"><span class="glyphicon glyphicon-user"></span>{% trans "Clients" %}</a>
         </li>
         <li>
-            <a href="{% url 'products' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>
+            <a id="navbar_products" class="dropdown  dropdown-toggle" data-toggle="dropdown" href="{% url 'products' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>
+            <ul id="products-dropdown-menu">
+                <li>
+                    <a class="products-list" href="{% url 'products' %}">{% trans "Products" %}</a>
+                </li>
+                <li>
+                    <a class="products-list" href="{% url 'product_currencies' %}">{% trans "Currencies" %}</a>
+                </li>
+                <li>
+                    <a class="products-list" href="{% url 'product_categories' %}">{% trans "Categories" %}</a>
+                </li>
+                <li>
+                    <a class="products-list" href="{% url 'product_taxes' %}">{% trans "Tax" %}</a>
+                </li>
+            </ul>
         </li>
         {% if user.company %}
         <li>

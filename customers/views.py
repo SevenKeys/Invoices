@@ -41,7 +41,7 @@ class AddCustomer(CreateView, CompanyMixin):
     def form_valid(self, form):
         new_customer = form.save(commit=False)
         new_customer.company = self.get_company()
-        group = self.request.POST['group']
+        # group = self.request.POST['group']
         new_customer.save()
         return super(AddCustomer, self).form_valid(form)
 

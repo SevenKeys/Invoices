@@ -81,6 +81,7 @@
                                 url: "/products/list/",
                                 data: filter
                             }).done(function(result) {
+                                console.log(result);
                                 d.resolve($.map(result, function(item) {
                                     return $.extend(item.fields, { id: item.pk });
                                 }));
@@ -89,6 +90,7 @@
                         }
                     },
                     fields: [
+                        { name: "id", type: "number", width: 50 },
                         { name: "name", type: "text", width: 150 },
                         { name: "code", type: "text", width: 150 },
                         { name: "price", type: "number", width: 100 },

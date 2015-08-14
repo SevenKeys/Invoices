@@ -1,7 +1,8 @@
 $(function(){
 	$menu = $('#products-dropdown-menu');
+	$nav = $('#navbar_products');
 	$menu.hide();
-	$('#navbar_products').mouseover(function(){
+	$nav.mouseover(function(){
 		$menu.show();
 	})
 	$menu.mouseleave(function(){

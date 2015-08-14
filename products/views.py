@@ -262,6 +262,13 @@ class AddCategoryView(CreateView):
     template_name = '/products/categories/currency_list.html'
     success_url = '/products/categories/'
 
+class EditCategoryView(UpdateView):
+    model = Category
+    fields = ['name']
+    template_name = 'products/categories/category_list.html'
+    pk_url_kwarg = 'cat_id'
+    success_url = '/products/categories/'
+
 
 class DeleteCategoryView(DeleteView):
     model = Category

@@ -27,7 +27,7 @@
 	<form action="" method="POST">
 	{% csrf_token %}
         <!-- Button trigger modal add-->
-	    <input type="button" class="btn btn-primary" id="addCur" value="Add New Currency" data-toggle="modal" data-target="#modalAdd"/>
+	    <input type="button" class="btn btn-primary" value="Add New Currency" data-toggle="modal" data-target="#modalAdd"/>
 	</form>
 
 {% endblock %}
@@ -59,7 +59,6 @@
         $add = $('#addCurrency');
         $add.click(function(){
             var name = $('#message-text').val();
-            console.log(name);
             $.ajax({
                 type: 'POST',
                 url: '/products/add_currency/',

@@ -305,6 +305,12 @@ class AddUnitView(CreateView):
     template_name = '/products/units/unit_list.html'
     success_url = '/products/units/'
 
+class EditUnitView(UpdateView):
+    model = Unit
+    fields = ['name']
+    template_name = 'products/units/unit_list.html'
+    pk_url_kwarg = 'unit_id'
+    success_url = '/products/units/'
 
 class DeleteUnitView(DeleteView):
     model = Unit
@@ -334,10 +340,19 @@ class TaxList(ListView, CompanyMixin):
         context['company'] = company
         return context
 
+
 class AddTaxView(CreateView):
     model = Tax
     fields = ['value']
     template_name = '/products/taxes/tax_list.html'
+    success_url = '/products/taxes/'
+
+
+class EditTaxView(UpdateView):
+    model = Tax
+    fields = ['value']
+    template_name = 'products/taxes/tax_list.html'
+    pk_url_kwarg = 'tax_id'
     success_url = '/products/taxes/'
 
 

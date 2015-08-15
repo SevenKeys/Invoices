@@ -35,7 +35,7 @@
     {% endfor %}
     {% for field in form.visible_fields %}
 			{% if field.errors %}
-			    <fieldset class="form-group {% add_css_class 'has-error' %}" >
+			  <fieldset class="form-group {% add_css_class 'has-error' %}" >
 			{% elif field.value %}
 			  <fieldset class="form-group {% add_css_class 'has-success' %}" >
 			{% else %}

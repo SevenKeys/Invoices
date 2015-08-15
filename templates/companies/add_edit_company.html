@@ -1,44 +1,46 @@
 {% extends "base.html" %}
 {% load add_class %}
 {% block content %}
-	{% if edit %}
-	    <h2><span  class="col-sm-offset-6">Edit company data</span></h2>
-	{% else %}
-	    <h2><span  class="col-sm-offset-6">Add company</span></h2>
-	{% endif %}
-	<form class="form-horizontal" action="" method="POST" style="width:60%;margin-right:auto; margin-left:auto">
+
+	<form class="form-contact col-md-offset-2 col-md-8" action="" method="POST">
+		<div class="row">
+			{% if edit %}
+			    <h2><span  class="col-sm-offset-6">Edit company data</span></h2>
+			{% else %}
+			    <h2><span  class="col-sm-offset-6">Add company</span></h2>
+			{% endif %}
+		</div>
 		{% csrf_token %} 
 		{% for hidden in form.hidden_fields %}
 			{{ hidden }}
 		{% endfor %}
 		{% for field in form.visible_fields %}
-		{% if field.errors %}
-		<fieldset class="form-group {% add_css_class 'has-error' %}" >
-		    <ol>
-		    {% for error in field.errors %}
-		        <li><strong>{{ error|escape }}</strong></li>
-		    {% endfor %}
-		    </ol>
-		{% elif field.value %}
-		  <fieldset class="form-group {% add_css_class 'has-success' %}" >
-		{% else %}
-		  <fieldset class="form-group" >
-		{% endif %}
-		  <label class="col-lg-2 control-label" for="id_{{ field.name }}" style="width:50%">{{ field.label }}:
-		  {% if field.field.required %}
-			 <span class="special_class">*</span>
-	  	  {% endif %}
-		  	</label>
-		        {{ field | addcss:'form-control' }}
-		        <p class="help-text">{{ field.help_text }} </p>
-		</fieldset>
+			{% if field.errors %}
+			  <fieldset class="form-group {% add_css_class 'has-error' %}" >
+			{% elif field.value %}
+			  <fieldset class="form-group {% add_css_class 'has-success' %}" >
+			{% else %}
+			  <fieldset class="form-group" >
+			{% endif %}
+
+		  	<div class="col-md-3">
+			  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+			  {% if not field.field.required %}
+				 <span class="special_class">(optional)</span>
+		  	  {% endif %}
+                {% for error in field.errors %}
+                    <strong>{{ error|escape }}</strong>
+                {% endfor %}
+			  </label>
+		        <p class="help-text">{{ field.help_text }}</p>
+            </div>
+            <div class="col-md-9">{{ field | addcss:'form-control' }}</div>	        
+			</fieldset>
 		{% endfor %}
 
-        <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-6">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                  &nbsp;<button type="reset" class="btn">Cancel</button>
-            </div>
+        <div class="col-sm-offset-3 col-sm-6">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          &nbsp;<button type="reset" class="btn">Cancel</button>
         </div>
 	</form>
 

@@ -1,6 +1,7 @@
 from reportlab.platypus import Paragraph, Frame
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
 import logging
 import os
 from os.path import join
@@ -13,7 +14,7 @@ styles = getSampleStyleSheet()
 TYPE_COMPONENT = 'type'
 LOGO = "logo"
 IMAGE = "image_1"
-IMAGE_1 = "wysely.jpg"
+IMAGE_1 = "invoice.jpg"
 PRINCIPAL = "principal"
 IMAGES_BASE = "static/images"
 LOGO_EXAMPLE = "kairos_logo.jpg"
@@ -26,6 +27,19 @@ SIZE_X = 'size_x'
 SIZE_Y = 'size_y'
 REFERENCE = 'reference'
 COMPONENT = 'id_component'
+BACKGROUND_HEADER = 'background_header'
+BACKGROUND_COLUMN_0 = 'background_column_0'
+BACKGROUND_COLUMN_1 = 'background_column_1'
+BACKGROUND_COLUMN_2 = 'background_column_2'
+BACKGROUND_COLUMN_3 = 'background_column_3'
+BACKGROUND_COLUMN_4 = 'background_column_4'
+BACKGROUND_COLUMN_5 = 'background_column_5'
+HORIZONTAL_LINES = 'horizontal_lines'
+ALIGNMENT = 'aligment'
+VERTICAL_LINES = 'vertical_lines'
+BORDER_RIGHT_TABLE = 'border_right_table'
+BORDER_BOTTOM_HEADER = 'border_bottom_header'
+BORDER_TOP_HEADER = 'border_top_header'
 
 
 class Pdf(object):
@@ -81,6 +95,14 @@ class Pdf(object):
     def body_y_size(self):
         return self.size_y_base - (self.space_header_y + self.space_footer_y)*self.unit
 
+    def header_footer(self, canvas):
+        canvas.saveState()
+        for item in self.header:
+            self.paint_header_item(item, canvas)
+        for item in self.footer:
+            self.paint_footer_item(item, canvas)
+        canvas.restoreState()
+
     def paint_header_item(self, item, canvas):
         if item[TYPE] == IMAGE or item[TYPE] == LOGO:
             image = item[CONTENT].split("/")
@@ -117,3 +139,35 @@ class StringTranslator:
         if result:
             paragraphs.append(Paragraph(result.groups(0)[0], styles[style]))
         return paragraphs
+
+
+def build_table_style(archetype):
+    style = []
+    for field in archetype:
+        if field.element.code == BACKGROUND_HEADER:
+            style.append(('BACKGROUND', (0, 0), (5, 0), colors.HexColor(field.value)))
+        elif field.element.code == BACKGROUND_COLUMN_0:
+            style.append(('BACKGROUND', (0, 1), (0, -1), colors.HexColor(field.value)))
+        elif field.element.code == BACKGROUND_COLUMN_1:
+            style.append(('BACKGROUND', (1, 1), (1, -1), colors.HexColor(field.value)))
+        elif field.element.code == BACKGROUND_COLUMN_2:
+            style.append(('BACKGROUND', (2, 1), (2, -1), colors.HexColor(field.value)))
+        elif field.element.code == BACKGROUND_COLUMN_3:
+            style.append(('BACKGROUND', (3, 1), (3, -1), colors.HexColor(field.value)))
+        elif field.element.code == BACKGROUND_COLUMN_4:
+            style.append(('BACKGROUND', (4, 1), (4, -1), colors.HexColor(field.value)))
+        elif field.element.code == BACKGROUND_COLUMN_5:
+            style.append(('BACKGROUND', (5, 1), (5, -1), colors.HexColor(field.value)))
+        elif field.element.code == HORIZONTAL_LINES:
+            style.append(('LINEBELOW', (0, 1), (-1, -1), 0, colors.HexColor(field.value)))
+        elif field.element.code == ALIGNMENT:
+            style.append(('ALIGN', (1, 1), (-1, -1), field.value))
+        elif field.element.code == VERTICAL_LINES:
+            style.append(('LINEBEFORE', (0, 0), (-1, -1), 0.25, colors.HexColor(field.value)))
+        elif field.element.code == BORDER_RIGHT_TABLE:
+            style.append(('LINEAFTER', (4, 0), (-1, -1), 0.25, colors.HexColor(field.value)))
+        elif field.element.code == BORDER_BOTTOM_HEADER:
+            style.append(('LINEBELOW', (0, 0), (-1, 0), 2, colors.HexColor(field.value)))
+        elif field.element.code == BORDER_TOP_HEADER:
+            style.append(('LINEABOVE', (0, 0), (-1, 0), 2, colors.HexColor(field.value)))
+    return style

@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^customcomponents/update/$', 'invoicetemplates.views.update_custom_component', name='update_custom_component'),
     url(r'^customcomponents/delete/$', 'invoicetemplates.views.delete_custom_component', name='delete_custom_component'),
     url(r'^save/$', 'invoicetemplates.views.save_template', name='save_template'),
-    url(r'^preview/$', 'invoicetemplates.views.print_preview', name='print_preview')
+    url(r'^preview/$', 'invoicetemplates.views.print_preview', name='print_preview'),
+    url(r'^archetypes/$', 'invoicetemplates.views.archetypes', name='archetypes')
 ]

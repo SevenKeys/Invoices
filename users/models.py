@@ -11,4 +11,4 @@ class UserProfile(models.Model):
     name = models.CharField(max_length=120, blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return "eeee"

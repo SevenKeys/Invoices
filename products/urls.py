@@ -3,10 +3,10 @@ from .views import ProductList, AddProduct, UpdateProduct, DeleteProduct
 from .views import AddProductGroup, UpdateProductGroup
 from .views import DeleteProductGroup
 from .views import ProductListJson, ProductGroupListJson
-from .views import CurrencyList, AddCurrencyView, DeleteCurrencyView
-from .views import CategoryList, AddCategoryView, DeleteCategoryView
-from .views import UnitList, AddUnitView, DeleteUnitView
-from .views import TaxList, AddTaxView, DeleteTaxView
+from .views import CurrencyList, EditCurrencyView, AddCurrencyView, DeleteCurrencyView
+from .views import CategoryList, EditCategoryView, AddCategoryView, DeleteCategoryView
+from .views import UnitList, AddUnitView, EditUnitView, DeleteUnitView
+from .views import TaxList, AddTaxView, EditTaxView, DeleteTaxView
 
 urlpatterns = [
     url(r'^all/$', ProductList.as_view(), 
@@ -32,6 +32,8 @@ urlpatterns = [
         name='add_currency'),
     url(r'^delete_currency/(?P<cur_id>\d+)/$', DeleteCurrencyView.as_view(), 
         name='delete_currency'),
+    url(r'^edit_currency/(?P<cur_id>\d+)/$', EditCurrencyView.as_view(), 
+        name='edit_currency'),
     # CRUD for product categories
     url(r'^categories/$', CategoryList.as_view(), 
         name='product_categories'),
@@ -39,6 +41,8 @@ urlpatterns = [
         name='add_category'),
     url(r'^delete_category/(?P<cat_id>\d+)/$', DeleteCategoryView.as_view(), 
         name='delete_currency'),
+    url(r'^edit_category/(?P<cat_id>\d+)/$', EditCategoryView.as_view(), 
+        name='edit_category'),
     # CRUD for product units of measure
     url(r'^units/$', UnitList.as_view(), 
         name='product_units'),
@@ -46,11 +50,15 @@ urlpatterns = [
         name='add_unit'),
     url(r'^delete_unit/(?P<unit_id>\d+)/$', DeleteUnitView.as_view(), 
         name='delete_unit'),
+    url(r'^edit_unit/(?P<unit_id>\d+)/$', EditUnitView.as_view(), 
+        name='edit_unit'),
     # CRUD for product taxes
     url(r'^taxes/$', TaxList.as_view(), 
         name='product_taxes'),
     url(r'^add_tax/$', AddTaxView.as_view(), 
         name='add_tax'),
     url(r'^delete_tax/(?P<tax_id>\d+)/$', DeleteTaxView.as_view(), 
-        name='delete_tax')
+        name='delete_tax'),
+    url(r'^edit_tax/(?P<tax_id>\d+)/$', EditTaxView.as_view(), 
+        name='edit_tax')
 ]

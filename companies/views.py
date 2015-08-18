@@ -131,34 +131,34 @@ class DeleteCompany(DeleteView):
     form_class = CompanyForm
     template_name = 'companies/delete_company.html'
     pk_url_kwarg = 'company_id'
-    success_url = ''
+    success_url = '/'
 
 
-class AddCompanySegment(CreateView,CompanyMixin):
-    model = Company
-    form_class = SegmentForm
-    template_name = 'companies/add_segment.html'
-    pk_url_kwarg = 'company_id'
+# class AddCompanySegment(CreateView,CompanyMixin):
+#     model = Company
+#     form_class = SegmentForm
+#     template_name = 'companies/add_segment.html'
+#     pk_url_kwarg = 'company_id'
 
-    def get_success_url(self):
-        self.object = self.get_object()
-        return reverse('get_company',kwargs={'company_id':self.object.pk})
+#     def get_success_url(self):
+#         self.object = self.get_object()
+#         return reverse('get_company',kwargs={'company_id':self.object.pk})
 
-    def form_valid(self,form):
-        new_segment = form.save(commit=False)
-        self.object = self.get_object()
-        self.object.companysegment_set.add(new_segment)
-        new_segment.save()
-        return super(AddCompanySegment,self).form_valid(form)
+#     def form_valid(self,form):
+#         new_segment = form.save(commit=False)
+#         self.object = self.get_object()
+#         self.object.companysegment_set.add(new_segment)
+#         new_segment.save()
+#         return super(AddCompanySegment,self).form_valid(form)
 
-    def get_context_data(self,**kwargs):
-        self.object = self.get_object()
-        context = super(AddCompanySegment, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = None
-        context['company'] = company
-        return context
+#     def get_context_data(self,**kwargs):
+#         self.object = self.get_object()
+#         context = super(AddCompanySegment, self).get_context_data(**kwargs)
+#         try:
+#             company = self.get_company()
+#         except (Company.DoesNotExist, UserProfile.DoesNotExist):
+#             company = None
+#         context['company'] = company
+#         return context
 
 

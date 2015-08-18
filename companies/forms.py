@@ -3,12 +3,7 @@ from .models import Company, CompanySegment
 from users.models import UserProfile
 
 class CompanyForm(forms.ModelForm):
-    segments = (('segment1','segment1'),
-                ('segment2','segment2'),
-                ('segment3','segment3'))
-    stats = (('status1','status1'),
-            ('status2','status2'),
-            ('status3','status3'))
+
     phone_number = forms.IntegerField(required=False)
     email = forms.EmailField()
     street = forms.CharField(required=False)
@@ -18,14 +13,11 @@ class CompanyForm(forms.ModelForm):
     website = forms.CharField(required=False)
     full_user_name = forms.CharField()
     name = forms.CharField(label='Company name')
-    segment = forms.ChoiceField(choices=segments,required=False)
-    credit_status = forms.ChoiceField(choices=stats,required=False)
 
     class Meta:
         model = Company
         fields = ['full_user_name', 'name', 'phone_number', 'email', 'street',
-                  'city', 'postcode', 'country', 'website', 'reg_code','segment',
-                  'credit_status','office_number']
+                  'city', 'postcode', 'country', 'website', 'reg_code','office_number']
 
     def __init__(self,*args,**kwargs):
         user = kwargs.pop('user')

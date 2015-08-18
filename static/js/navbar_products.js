@@ -4,7 +4,7 @@ $(function(){
 	$menu.hide();
 	$nav.mouseover(function(){
 		$menu.show();
-	})
+	});
 	$menu.mouseleave(function(){
 		$(this).hide();
 	})

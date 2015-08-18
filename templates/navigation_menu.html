@@ -35,14 +35,14 @@
                 </li>
             </ul>
         </li>
-        {% if user.company %}
+        {% if company %}
         <li>
             <a href="{% url 'get_company' company.id %}"><span class="glyphicon glyphicon-thumbs-up"></span>{% trans "My Company" %}</a>
         </li>
             {% else %}
         <li>
             <a href="{% url 'add_company' %}"><span class="glyphicon glyphicon-thumbs-up"></span
-                    >{% trans "My Company" %}</a>
+                    >{% trans "Create Company" %}</a>
         </li>
             {%  endif %}
     {% endif %}

@@ -1,13 +1,15 @@
 from django.db import models
 from companies.models import Company
 
+# class ProductCategory(models.Model):
+#     name = models.CharField()
 
 class ProductGroup(models.Model):
     company = models.ForeignKey(Company)
     name = models.CharField(max_length=100)
     parent = models.ManyToManyField('self', symmetrical=False, blank=True, default='goods')
     description = models.TextField(blank=True, null=True)
-    category = models.CharField(max_length=100, blank=True, null=True)
+    # category = models.ForeignKey(ProductCategory, blank=True, null=True)
 
     def __str__(self):
         return self.name

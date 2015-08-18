@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% include "products/currencies/currency_modals.html" %}
+
 {% if currency_list.count > 0 %}
 	<h2>List of currencies</h2>
-
-    {% include "products/currencies/currency_modals.html" %}
 
     <!-- Form -->
 	<ul class="list-group">

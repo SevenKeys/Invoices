@@ -2,7 +2,7 @@ from django.db import models
 from companies.models import Company
 
 # class ProductCategory(models.Model):
-#     name = models.CharField()
+#     name = models.CharField(max_length=50)
 
 class ProductGroup(models.Model):
     company = models.ForeignKey(Company)

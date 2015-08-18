@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% include "products/units/unit_modals.html" %}
+
 {% if unit_list.count > 0 %}
     <h2>List of units of measure</h2>
-
-    {% include "products/units/unit_modals.html" %}
 
     <ul class="list-group">
     {% for unit in unit_list %}

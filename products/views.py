@@ -82,11 +82,28 @@ class DeleteProduct(DeleteView):
     success_url = '/products/all/'
 
 
+# CRUD for Product Group App
+class ProductGroupList(LoginRequiredMixin, CompanyMixin, ListView):
+    context_object_name = 'product_group_list'
+    template_name = 'products/product_group_list.html'
+    # paginate_by = '10'
+    model = ProductGroup
+
+    def get_context_data(self,**kwargs):
+        context = super(ProductGroupList, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
+
+
 class AddProductGroup(CreateView, CompanyMixin):
     model = ProductGroup
     form_class = ProductGroupForm
     template_name = 'products/add_edit_product_group.html'
-    success_url = '/products/all/'
+    success_url = '/products/product_groups/'
 
     def form_valid(self, form):
         new_group = form.save(commit=False)
@@ -125,7 +142,7 @@ class DeleteProductGroup(DeleteView):
     success_url = '/products/all/'
 
 
-
+# JS-GRID
 class ProductListJson(LoginRequiredMixin, CompanyMixin, ListView):
     def GetProductsJson(self):
         try:

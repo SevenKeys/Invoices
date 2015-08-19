@@ -147,7 +147,7 @@ footer{
 .container{
     margin-bottom: 50px;
 }
-#products-dropdown-menu{
+#products-dropdown-menu,#product-group-dropdown-menu{
     position: absolute;
     top: 100%;
     left: 0;

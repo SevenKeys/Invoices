@@ -10,15 +10,25 @@ class ProductGroup(models.Model):
     parent = models.ManyToManyField('self', symmetrical=False, blank=True, default='goods')
     description = models.TextField(blank=True, null=True)
     # category = models.ForeignKey(ProductCategory, blank=True, null=True)
+    category = models.CharField(max_length=50,default='')
 
     def __str__(self):
         return self.name
+
+
+class CurrencyManager(models.Manager):
+
+    def get_by_natural_key(self,name):
+        return self.get(name=name)
+
 
 class Currency(models.Model):
-    name = models.CharField(max_length=25)
+    objects = CurrencyManager()
+    name = models.CharField(max_length=25,unique=True)
 
-    def __str__(self):
+    def natural_key(self):
         return self.name
+
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -26,17 +36,20 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+
 class Unit(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
 
+
 class Tax(models.Model):
     value = models.IntegerField(default=0)
 
     def __str__(self):
         return str(self.value)
+
 
 class Product(models.Model):
     company = models.ForeignKey(Company)

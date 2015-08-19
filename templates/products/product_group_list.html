@@ -2,12 +2,12 @@
 
 {% block content %}
     {% if company %}
-        <h1>Products of <strong>{{ company }}</strong> company.</h1>
+        <h1>Product groups.</h1>
         {% csrf_token %}
 
-        <a class="btn btn-primary pull-right" href="{% url 'add_product' %}">Add New Product</a>
-        <div id="productsGrid" style="min-height: 250px;"></div>
-
+        <a class="btn btn-primary pull-right" href="{% url 'add_product_group' %}">Add New Product Group</a>
+        <div id="productGroupsGrid" style="min-height: 250px;"></div>
+        
     {% else %}
         <h3>You have not registered a company yet.</h3>
         <a href="{% url 'add_company' %}" class="btn btn-info tm_style_2">Create company</a>
@@ -16,9 +16,8 @@
 {% endblock %}
 {% block scripts %}
         <script>
-
             $(function() {
-                $("#productsGrid").jsGrid({
+                $("#productGroupsGrid").jsGrid({
                     height: "100%",
                     width: "100%",
                     sorting: true,
@@ -28,14 +27,14 @@
                     pageButtonCount: 5,
                     filtering: true,
                     rowClick: function(args) {
-                        return window.location.replace("/products/edit/"+args.item.id);
+                        return window.location.replace("/products/edit_group/"+args.item.id);
                     },
                     controller: {
                         loadData: function(filter) {
                             var d = $.Deferred();
                             $.ajax({
                                 type: "GET",
-                                url: "/products/list/",
+                                url: "/products/list_group/",
                                 data: filter
                             }).done(function(result) {
                                 d.resolve($.map(result, function(item) {
@@ -46,13 +45,12 @@
                         }
                     },
                     fields: [
-                        { name: "id", type: "number", width: 50 },
                         { name: "name", type: "text", width: 150 },
-                        { name: "code", type: "text", width: 150 },
-                        { name: "price", type: "number", width: 100 },
-                        { name: "currency", type: "text", width: 50 }
+                        { name: "category", type: "text", width: 150 },
+                        { name: "parent", type: "text", width: 100 }
                     ]
                 });
             });
+
         </script>
 {% endblock %}

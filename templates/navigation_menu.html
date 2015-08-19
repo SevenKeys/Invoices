@@ -15,8 +15,9 @@
         <li>
             <a href="{% url 'customers' %}"><span class="glyphicon glyphicon-user"></span>{% trans "Clients" %}</a>
         </li>
-        <li>
-            <a id="navbar_products" class="dropdown  dropdown-toggle" data-toggle="dropdown" href="{% url 'products' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>
+        <!-- Navbar dropdown for products -->
+        <li id="navbar_products">
+            <a class="dropdown  dropdown-toggle" data-toggle="dropdown" href="{% url 'products' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>
             <ul id="products-dropdown-menu">
                 <li>
                     <a class="products-list" href="{% url 'products' %}">{% trans "Products" %}</a>
@@ -32,6 +33,18 @@
                 </li>
                 <li>
                     <a class="products-list" href="{% url 'product_taxes' %}">{% trans "Tax" %}</a>
+                </li>
+            </ul>
+        </li>
+        <!-- Navbar dropdown for product groups -->
+        <li id="navbar-product-groups">
+            <a class="dropdown  dropdown-toggle" data-toggle="dropdown" href="{% url 'product_groups' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Product Groups" %}</a>
+            <ul id="product-group-dropdown-menu">
+                <li>
+                    <a class="products-list" href="{% url 'product_groups' %}">{% trans "Group List" %}</a>
+                </li>
+                <li>
+                    <a class="products-list" href="">{% trans "Group Categories" %}</a>
                 </li>
             </ul>
         </li>

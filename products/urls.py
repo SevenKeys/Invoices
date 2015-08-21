@@ -7,6 +7,8 @@ from .views import CurrencyList, EditCurrencyView, AddCurrencyView, DeleteCurren
 from .views import CategoryList, EditCategoryView, AddCategoryView, DeleteCategoryView
 from .views import UnitList, AddUnitView, EditUnitView, DeleteUnitView
 from .views import TaxList, AddTaxView, EditTaxView, DeleteTaxView
+from .views import GroupCatList, AddGroupCategoryView
+from .views import EditGroupCategoryView, DeleteGroupCategoryView
 
 urlpatterns = [
     url(r'^all/$', ProductList.as_view(), 
@@ -28,6 +30,15 @@ urlpatterns = [
         name='delete_product_group'),
     url(r'^list/', ProductListJson.GetProductsJson),
     url(r'^list_group/', ProductGroupListJson.GetProductGroupsJson),
+    # CRUD for ProductGroup categories
+    url(r'^group_categories/$', GroupCatList.as_view(), 
+        name='product__group_categories'),
+    url(r'^add_group_category/$', AddGroupCategoryView.as_view(), 
+        name='add_group_category'),
+    url(r'^delete_group_category/(?P<group_cat_id>\d+)/$', DeleteGroupCategoryView.as_view(), 
+        name='delete_group_category'),
+    url(r'^edit_group_category/(?P<group_cat_id>\d+)/$', EditGroupCategoryView.as_view(), 
+        name='edit_group_category'),
     # CRUD for product currencies
     url(r'^currencies/$', CurrencyList.as_view(), 
         name='product_currencies'),
@@ -43,7 +54,7 @@ urlpatterns = [
     url(r'^add_category/$', AddCategoryView.as_view(), 
         name='add_category'),
     url(r'^delete_category/(?P<cat_id>\d+)/$', DeleteCategoryView.as_view(), 
-        name='delete_currency'),
+        name='delete_category'),
     url(r'^edit_category/(?P<cat_id>\d+)/$', EditCategoryView.as_view(), 
         name='edit_category'),
     # CRUD for product units of measure

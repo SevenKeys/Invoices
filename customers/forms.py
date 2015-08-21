@@ -4,16 +4,8 @@ from .models import Customer, CustomerGroup
 
 
 class CustomerForm(forms.ModelForm):
-	languages = (('english','English'),
-			     ('spanish','Spanish'),
-			     ('russian','Russian'))
-	types = (('retail','retail'),
-		     ('wholesale','wholesale'),
-		     ('dealer','dealer'))
 	groups = [((x),(x.name)) for x in CustomerGroup.objects.all()]
 	name = forms.CharField(label='Client name')
-	language = forms.ChoiceField(choices=languages,required=False)
-	client_type = forms.ChoiceField(choices=types,required=False)
 	group = forms.ChoiceField(choices=groups,required=False)
 
 	class Meta:

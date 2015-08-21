@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator
 from django.core import serializers
 from companies.models import Company
-from .models import Product, ProductGroup
+from .models import Product, ProductGroup, ProductGroupCategory
 from .models import Currency, Category, Unit, Tax
 from users.models import UserProfile
 from .forms import ProductForm, ProductGroupForm
@@ -188,7 +188,8 @@ class ProductGroupListJson(LoginRequiredMixin, CompanyMixin, ListView):
         except BaseException as exc:
             queryset = []
         results = Paginator(queryset.order_by('name'), 20)
-        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list],
+                                                  use_natural_foreign_keys=True),
                             content_type='application/json')
 
 # CRUD for Currency
@@ -380,4 +381,50 @@ class DeleteTaxView(DeleteView):
     template_name = 'products/taxes/tax_list.html'
     pk_url_kwarg = 'tax_id'
     success_url = '/products/taxes/'
+
+
+# CRUD for ProductGroupCategory
+class GroupCatList(ListView, CompanyMixin):
+    model = ProductGroupCategory
+    template_name = 'products/product_groups/prod_group_cat.html'
+    context_object_name = 'prod_group_cat_list'
+
+    def get_queryset(self):
+        try:
+            queryset = ProductGroupCategory.objects.order_by('name')
+        except ProductGroupCategory.DoesNotExist:
+            queryset = False
+        print(queryset)
+        return queryset
+
+    def get_context_data(self,**kwargs):
+        context = super(GroupCatList, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
+
+
+class AddGroupCategoryView(CreateView):
+    model = ProductGroupCategory
+    fields = ['name']
+    template_name = 'products/product_groups/prod_group_cat.html'
+    success_url = '/products/group_categories/'
+
+
+class EditGroupCategoryView(UpdateView):
+    model = ProductGroupCategory
+    fields = ['name']
+    template_name = 'products/product_groups/prod_group_cat.html'
+    pk_url_kwarg = 'group_cat_id'
+    success_url = '/products/group_categories/'
+
+
+class DeleteGroupCategoryView(DeleteView):
+    model = ProductGroupCategory
+    template_name = 'products/product_groups/prod_group_cat.html'
+    pk_url_kwarg = 'group_cat_id'
+    success_url = '/products/group_categories/'
 

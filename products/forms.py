@@ -12,11 +12,6 @@ class ProductForm(forms.ModelForm):
 
 
 class ProductGroupForm(forms.ModelForm):
-    categs = (
-        ('categ1', 'category1'),
-        ('categ2', 'category2'),
-        ('categ3', 'category3'))
-    category = forms.ChoiceField(choices=categs)
 
     class Meta:
         model = ProductGroup

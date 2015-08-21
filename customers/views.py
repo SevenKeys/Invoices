@@ -261,6 +261,7 @@ class LanguageDeleteView(DeleteView):
     pk_url_kwarg = 'language_id'
     success_url = '/customers/languages/'
 
+
 class LanguageEditView(UpdateView):
     model = Language
     fields = ['name']
@@ -304,6 +305,7 @@ class ClientTypeDeleteView(DeleteView):
     template_name = 'customers/client_types/client_types_list.html'
     pk_url_kwarg = 'client_type_id'
     success_url = '/customers/client_types/'
+
 
 class ClientTypeEditView(UpdateView):
     model = ClientType

@@ -6,7 +6,8 @@ from django.http import HttpResponse
 from django.core.urlresolvers import reverse_lazy
 from django.core.paginator import Paginator
 from django.core import serializers
-from .models import Customer, CustomerGroup
+from .models import Customer, CustomerGroup, CustomerCategory
+from .models import Language, ClientType
 from .forms import CustomerForm, CustomerGroupForm
 from companies.models import Company
 from users.models import UserProfile
@@ -27,7 +28,6 @@ class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
         except:
             queryset = False
         return queryset
-
 
 
 
@@ -104,7 +104,7 @@ class DeleteCustomer(DeleteView):
 class CustomerGroupDetail(DetailView, CompanyMixin):
     model = CustomerGroup
     template_name = 'customers/group_details.html'
-    pk_url_kwarg = 'group_id'
+    pk_url_kwarg = 'customer_group_id'
 
     def get_context_data(self,**kwargs):
         context = super(CustomerGroupDetail, self).get_context_data(**kwargs)
@@ -115,6 +115,27 @@ class CustomerGroupDetail(DetailView, CompanyMixin):
         context['company'] = company
         return context
 
+
+class CustomerGroupList(ListView, CompanyMixin, LoginRequiredMixin):
+    model = CustomerGroup
+    template_name = 'customers/customer_groups/customer_group_list.html'
+    context_object_name = 'customer_group_list'
+
+    def get_context_data(self,**kwargs):
+        context = super(CustomerGroupList, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
+
+    def get_queryset(self):
+        try:
+            queryset = CustomerGroup.objects.order_by('name')
+        except:
+            queryset = False
+        return queryset
 
 
 class AddCustomerGroup(CreateView, CompanyMixin):
@@ -156,7 +177,7 @@ class DeleteCustomerGroup(DeleteView):
     success_url = reverse_lazy('customers')
 
 
-
+# JS-GRID
 class CustomerListJson(LoginRequiredMixin, CompanyMixin, ListView):
     def GetCustomersJson(self):
         try:
@@ -202,3 +223,135 @@ class CustomerGroupListJson(LoginRequiredMixin, CompanyMixin, ListView):
         results = Paginator(queryset.order_by('name'), 20)
         return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
                             content_type='application/json')
+
+
+# CRUD for Language
+class LanguageListView(ListView, CompanyMixin, LoginRequiredMixin):
+    model = Language
+    template_name = 'customers/languages/language_list.html'
+    context_object_name = 'language_list'
+
+    def get_queryset(self):
+        try:
+            queryset = Language.objects.order_by('name')
+        except Language.DoesNotExist:
+            queryset = False
+        return queryset
+
+    def get_context_data(self,**kwargs):
+        context = super(LanguageListView, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
+
+
+class LanguageAddView(CreateView):
+    model = Language
+    fields = ['name']
+    template_name = '/customers/languages/language_list.html'
+    success_url = '/customers/languages/'
+
+
+class LanguageDeleteView(DeleteView):
+    model = Language
+    template_name = 'customers/languages/language_list.html'
+    pk_url_kwarg = 'language_id'
+    success_url = '/customers/languages/'
+
+class LanguageEditView(UpdateView):
+    model = Language
+    fields = ['name']
+    template_name = 'customers/languages/language_list.html'
+    pk_url_kwarg = 'language_id'
+    success_url = '/customers/languages/'
+
+
+# CRUD for ClientType
+class ClientTypeListView(ListView, CompanyMixin, LoginRequiredMixin):
+    model = ClientType
+    template_name = 'customers/client_types/client_type_list.html'
+    context_object_name = 'client_type_list'
+
+    def get_queryset(self):
+        try:
+            queryset = ClientType.objects.order_by('name')
+        except ClientType.DoesNotExist:
+            queryset = False
+        return queryset
+
+    def get_context_data(self,**kwargs):
+        context = super(ClientTypeListView, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
+
+
+class ClientTypeAddView(CreateView):
+    model = ClientType
+    fields = ['name']
+    template_name = '/customers/client_types/client_types_list.html'
+    success_url = '/customers/client_types/'
+
+
+class ClientTypeDeleteView(DeleteView):
+    model = ClientType
+    template_name = 'customers/client_types/client_types_list.html'
+    pk_url_kwarg = 'client_type_id'
+    success_url = '/customers/client_types/'
+
+class ClientTypeEditView(UpdateView):
+    model = ClientType
+    fields = ['name']
+    template_name = 'customers/client_types/client_types_list.html'
+    pk_url_kwarg = 'client_type_id'
+    success_url = '/customers/client_types/'
+
+
+# CRUD for customer categories
+class CustCatListView(ListView, CompanyMixin, LoginRequiredMixin):
+    model = CustomerCategory
+    template_name = 'customers/customer_categories/cust_cat_list.html'
+    context_object_name = 'cust_cat_list'
+
+    def get_queryset(self):
+        try:
+            queryset = CustomerCategory.objects.order_by('name')
+        except CustomerCategory.DoesNotExist:
+            queryset = False
+        return queryset
+
+    def get_context_data(self,**kwargs):
+        context = super(CustomerCategoryListView, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
+
+
+class CustCatAddView(CreateView):
+    model = CustomerCategory
+    fields = ['name']
+    template_name = '/customers/customer_categories/cust_cat_list.html'
+    success_url = '/customers/customer_categories/'
+
+
+class CustCatDeleteView(DeleteView):
+    model = CustomerCategory
+    template_name = 'customers/customer_categories/cust_cat_list.html'
+    pk_url_kwarg = 'cust_cat_id'
+    success_url = '/customers/customer_categories/'
+
+class CustCatEditView(UpdateView):
+    model = CustomerCategory
+    fields = ['name']
+    template_name = 'customers/customer_categories/cust_cat_list.html'
+    pk_url_kwarg = 'cust_cat_id'
+    success_url = '/customers/customer_categories/'

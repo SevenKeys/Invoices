@@ -167,6 +167,7 @@ PIPELINE_JS = {
             'bower_components/js-grid/dist/jsgrid.min.js',
             # components
             'js/navbar_products.js',
+            'js/navbar_customers.js',
         ),
         # Compress all passed files into `js/libs.min.js`.
         'output_filename': 'js/libs.min.js',

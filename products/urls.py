@@ -32,7 +32,7 @@ urlpatterns = [
     url(r'^list_group/', ProductGroupListJson.GetProductGroupsJson),
     # CRUD for ProductGroup categories
     url(r'^group_categories/$', GroupCatList.as_view(), 
-        name='product__group_categories'),
+        name='product_group_categories'),
     url(r'^add_group_category/$', AddGroupCategoryView.as_view(), 
         name='add_group_category'),
     url(r'^delete_group_category/(?P<group_cat_id>\d+)/$', DeleteGroupCategoryView.as_view(), 

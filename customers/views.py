@@ -329,7 +329,7 @@ class CustCatListView(ListView, CompanyMixin, LoginRequiredMixin):
         return queryset
 
     def get_context_data(self,**kwargs):
-        context = super(CustomerCategoryListView, self).get_context_data(**kwargs)
+        context = super(CustCatListView, self).get_context_data(**kwargs)
         try:
             company = self.get_company()
         except (Company.DoesNotExist, UserProfile.DoesNotExist):

@@ -58,8 +58,8 @@ urlpatterns = [
         name='customer_categories'),
     url(r'^add_customer_category/$', CustCatAddView.as_view(), 
         name='add_customer_category'),
-    url(r'^edit_cust_cat/(?P<cust_cat_id>\d+)/$', CustCatEditView.as_view(), 
+    url(r'^edit_customer_category/(?P<cust_cat_id>\d+)/$', CustCatEditView.as_view(), 
         name='edit_customer_category'),
-    url(r'^delete_cust_cat/(?P<cust_cat_id>\d+)/$', CustCatDeleteView.as_view(), 
+    url(r'^delete_customer_category/(?P<cust_cat_id>\d+)/$', CustCatDeleteView.as_view(), 
         name='delete_customer_category')
 ]

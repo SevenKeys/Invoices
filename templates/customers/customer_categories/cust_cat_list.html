@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% include "customers/customer_categories/cust_cat_modals.html" %}
+
+{% if cust_cat_list.count > 0 %}
+	<h2>List of customer categories</h2>
+
+    <!-- Form -->
+	<ul class="list-group">
+	{% for cust_cat in cust_cat_list %}
+		<form action="" class="form-inline" method="POST">{% csrf_token %}
+			<li class="list-group-item"><b>{{ cust_cat.name | upper }}</b>
+                <!-- Button trigger modal delete-->
+		        <input type="button" data-id="{{ cust_cat.id }}" class="btn btn-primary pull-right del-btn" style="margin:-7px 2px" value="Delete" data-toggle="modal" data-target="#modalDeleteCustCat"/>
+                <!-- Button trigger modal edit-->
+                <input type="button" data-id="{{ cust_cat.id }}" data-name="{{ cust_cat.name }}" class="btn btn-primary pull-right edit-btn" style="margin:-7px 2px" value="Edit" data-toggle="modal" data-target="#modalEditCustCat"/>
+	        </li>
+	    </form>
+	{% endfor %}
+	</ul>
+{% else %}
+
+	<h3>No categories was added yet</h3>
+
+{% endif %}
+	<form action="" method="POST">
+	{% csrf_token %}
+        <!-- Button trigger modal add-->
+	    <input type="button" class="btn btn-primary" value="Add New Category" data-toggle="modal" data-target="#modalAddCustCat"/>
+	</form>
+
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(function(){
+            function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        var refreshPage = function(){
+        	window.location.reload(true);
+        }
+        // Add new client type with ajax
+        $add = $('#addCust_cat');
+        $add.click(function(){
+            var name = $('#message-text-cust-cat').val();
+            $.ajax({
+                type: 'POST',
+                url: '/customers/add_customer_category/',
+                data: {
+                	'name': name,
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                },
+                dataType: 'json'
+            });
+            refreshPage();
+        });
+        // delete any cust_cat from list
+        $del = $('.del-btn');
+        $del.click(function(){
+	        var $id = $(this).attr('data-id');
+            $('#deleteCust_cat').click(function(){
+                $.ajax({
+                    type: 'POST',
+                    url: '/customers/delete_customer_category/'+$id+'/',
+                    data: {
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                    }
+                });
+                refreshPage();
+            })
+        });
+        // Edit any category in list
+        $edit = $('.edit-btn');
+        $edit.click(function(){
+            var $old_name = $(this).attr('data-name');
+            var $id = $(this).attr('data-id');
+            $('#message-new-cust-cat').val($old_name);
+            $('#editCust_cat').click(function(){
+                var name = $('#message-new-cust-cat').val();
+                $.ajax({
+                type: 'POST',
+                url: '/customers/edit_customer_category/'+ $id + '/',
+                data: {
+                    'name': name,
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                },
+                dataType: 'json'
+            });
+            refreshPage();
+            })
+        });
+    });
+    </script>
+
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% include "customers/client_types/client_type_modals.html" %}
+
+{% if client_type_list.count > 0 %}
+	<h2>List of client types</h2>
+
+    <!-- Form -->
+	<ul class="list-group">
+	{% for client_type in client_type_list %}
+		<form action="" class="form-inline" method="POST">{% csrf_token %}
+			<li class="list-group-item"><b>{{ client_type.name | upper }}</b>
+                <!-- Button trigger modal delete-->
+		        <input type="button" data-id="{{ client_type.id }}" class="btn btn-primary pull-right del-btn" style="margin:-7px 2px" value="Delete" data-toggle="modal" data-target="#modalDeleteType"/>
+                <!-- Button trigger modal edit-->
+                <input type="button" data-id="{{ client_type.id }}" data-name="{{ client_type.name }}" class="btn btn-primary pull-right edit-btn" style="margin:-7px 2px" value="Edit" data-toggle="modal" data-target="#modalEditType"/>
+	        </li>
+	    </form>
+	{% endfor %}
+	</ul>
+{% else %}
+
+	<h3>No types was added yet</h3>
+
+{% endif %}
+	<form action="" method="POST">
+	{% csrf_token %}
+        <!-- Button trigger modal add-->
+	    <input type="button" class="btn btn-primary" value="Add New Type" data-toggle="modal" data-target="#modalAddType"/>
+	</form>
+
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(function(){
+            function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        var refreshPage = function(){
+        	window.location.reload(true);
+        }
+        // Add new client type with ajax
+        $add = $('#addClient_type');
+        $add.click(function(){
+            var name = $('#message-text-type').val();
+            console.log(name);
+            $.ajax({
+                type: 'POST',
+                url: '/customers/add_client_type/',
+                data: {
+                	'name': name,
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                },
+                dataType: 'json'
+            });
+            refreshPage();
+        });
+        // delete any client_type from list
+        $del = $('.del-btn');
+        $del.click(function(){
+	        var $id = $(this).attr('data-id');
+            $('#deleteClient_type').click(function(){
+                $.ajax({
+                    type: 'POST',
+                    url: '/customers/delete_client_type/'+$id+'/',
+                    data: {
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                    }
+                });
+                refreshPage();
+            })
+        });
+        // Edit any client_type in list
+        $edit = $('.edit-btn');
+        $edit.click(function(){
+            var $old_name = $(this).attr('data-name');
+            var $id = $(this).attr('data-id');
+            $('#message-new-type').val($old_name);
+            $('#editClient_type').click(function(){
+                var name = $('#message-new-type').val();
+                $.ajax({
+                type: 'POST',
+                url: '/customers/edit_client_type/'+ $id + '/',
+                data: {
+                    'name': name,
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                },
+                dataType: 'json'
+            });
+            refreshPage();
+            })
+        });
+    });
+    </script>
+
+{% endblock %}

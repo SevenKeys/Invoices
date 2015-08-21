@@ -1,25 +1,13 @@
 $(function(){
-	$menu = $('#customers-dropdown-menu');
-	$menu_group = $('#customer-group-dropdown-menu');
-	$nav = $('#navbar-customers');
-	$nav_group = $('#navbar-customer-groups');
-	$menu.hide();
-	$menu_group.hide();
-
-	$nav.hover(
+	$menu_cust = $('#customers-dropdown-menu');
+	$nav_cust = $('#navbar-customers');
+	$menu_cust.hide();
+	$nav_cust.hover(
 		function(){
-			$menu.show();
+			$menu_cust.show();
 		},
 		function(){
-			$menu.hide();
-		}
-	);
-	$nav_group.hover(
-		function(){
-			$menu_group.show();
-		},
-		function(){
-			$menu_group.hide();
+			$menu_cust.hide();
 		}
 	);
 });

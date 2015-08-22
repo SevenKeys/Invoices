@@ -163,10 +163,8 @@ class ProductListJson(LoginRequiredMixin, CompanyMixin, ListView):
                 queryset = queryset.filter(price__contains=price_filter)
         except BaseException as exc:
             queryset = []
-
         results = Paginator(queryset.order_by('name'), 20)
-        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list],
-                                                  use_natural_foreign_keys=True),
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
                             content_type='application/json')
 
 

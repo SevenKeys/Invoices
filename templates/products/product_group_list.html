@@ -2,7 +2,7 @@
 
 {% block content %}
     {% if company %}
-        <h1>Product groups.</h1>
+        <h1>Product groups</h1>
         {% csrf_token %}
 
         <a class="btn btn-primary pull-right" href="{% url 'add_product_group' %}">Add New Product Group</a>

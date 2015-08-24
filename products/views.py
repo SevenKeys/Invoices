@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.views.generic import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -33,7 +34,7 @@ class AddProduct(CreateView, CompanyMixin):
     model = Product
     form_class = ProductForm
     template_name = 'products/add_edit_product.html'
-    success_url = '/products/all/'
+    success_url = '/products/success/'
 
     def form_valid(self, form):
         new_product = form.save(commit=False)
@@ -50,6 +51,10 @@ class AddProduct(CreateView, CompanyMixin):
         context['company'] = company
         context['add'] = True
         return context
+
+
+class SuccessProduct(TemplateView):
+    template_name = 'products/add_product_success.html'
 
 
 class UpdateProduct(UpdateView, CompanyMixin):
@@ -164,7 +169,8 @@ class ProductListJson(LoginRequiredMixin, CompanyMixin, ListView):
         except BaseException as exc:
             queryset = []
         results = Paginator(queryset.order_by('name'), 20)
-        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list],
+                                                  use_natural_foreign_keys=True),
                             content_type='application/json')
 
 

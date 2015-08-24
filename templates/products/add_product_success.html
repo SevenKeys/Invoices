@@ -1,0 +1,13 @@
+<div class="modal-dialog" style="display: none"> 
+	<div class="modal-content"> 
+		<script> 
+			setTimeout(function() { 
+				jQuery('#modalAddProduct').modal('hide'); 
+			}, 1000); 
+			$('body').on('hidden.bs.modal', '.modal', function () { 
+				$(this).removeData('bs.modal');
+			});
+			window.location.reload(true);
+		</script>
+	</div><!-- /.modal-content --> 
+</div><!-- /.modal-dialog -->

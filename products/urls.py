@@ -1,5 +1,6 @@
 from django.conf.urls import url
-from .views import ProductList, AddProduct, UpdateProduct, DeleteProduct
+from .views import ProductList, AddProduct, SuccessProduct
+from .views import UpdateProduct, DeleteProduct
 from .views import ProductGroupList, AddProductGroup, UpdateProductGroup
 from .views import DeleteProductGroup
 from .views import ProductListJson, ProductGroupListJson
@@ -15,6 +16,8 @@ urlpatterns = [
         name='products'),
     url(r'^add/$', AddProduct.as_view(), 
         name='add_product'),
+    url(r'^success/$', SuccessProduct.as_view(), 
+        name='success_product'),
     url(r'^edit/(?P<product_id>\d+)/$', UpdateProduct.as_view(), 
         name='edit_product'),
     url(r'^delete/(?P<product_id>\d+)/$', DeleteProduct.as_view(), 

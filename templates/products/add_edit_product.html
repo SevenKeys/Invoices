@@ -1,57 +1,59 @@
-{% extends "base.html" %}
 {% load extra_products %}
-{% block content %}
-<!-- Modal delete product -->
-{% include "products/delete_product.html" %}
 <!-- Form -->
-<form class="form-contact col-md-offset-2 col-md-8" action="" method="POST">
-
-    <div class="row">
-	    {% if add %}
-	        <h2 class="col-md-10 col-md-offset-4">Add a new product</h2>
-	    {% else %}
-	        <h2 class="col-md-10 col-md-offset-4">Edit product</h2>
-	    {% endif %}
-    </div>
+<form id="update_product_form" class="form" action="{% url 'add_product' %}" method="POST">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {% if add %}
+        <h4 class="modal-title" id="addProductModalLabel">Add a new product</h4>
+    {% else %}
+        <h4 class="modal-title" id="addProductModalLabel">Edit product</h4>
+    {% endif %}
+</div>
+<div class="modal-body">
     {% csrf_token %}
     {% for hidden in form.hidden_fields %}
         {{ hidden }}
     {% endfor %}
     {% for field in form.visible_fields %}
-		{% if field.errors %}
-		  <fieldset class="form-group {% add_css_class 'has-error' %}" >
-		{% elif field.value %}
-		  <fieldset class="form-group {% add_css_class 'has-success' %}" >
-		{% else %}
-		  <fieldset class="form-group" >
-		{% endif %}
+        {% if field.errors %}
+          <fieldset class="form-group {% add_css_class 'has-error' %}" >
+        {% elif field.value %}
+          <fieldset class="form-group {% add_css_class 'has-success' %}" >
+        {% else %}
+          <fieldset class="form-group" >
+        {% endif %}
 
-        <div class="col-md-3">
-		  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
-		  {% if not field.field.required %}
-			 <span class="special_class">(optional)</span>
-	  	  {% endif %}
+          <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+          {% if not field.field.required %}
+             <span class="special_class">(optional)</span>
+          {% endif %}
             {% for error in field.errors %}
                 <strong>{{ error|escape }}</strong>
             {% endfor %}
-		  </label>
-	        <p class="help-text">{{ field.help_text }}</p>
-        </div>
-        <div class="col-md-9">{{ field | addcss:'form-control' }}</div>	        
-		</fieldset>
-    {% endfor %}
-    <div class="col-md-2 col-md-offset-7">
-	{% if not add %}
+          </label>
+            <p class="help-text">{{ field.help_text }}</p>
+        <div class="col-md-9">{{ field | addcss:'form-control' }}</div>         
+        </fieldset>
+    {% endfor %}  
+</div>
+<div class="modal-footer">
+    <input type="submit" id="product_success" class="btn btn-primary" value="submit" />
+    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" />
+    {% if not add %}
+        <!-- Modal delete product -->
+        {% include "products/delete_product.html" %}
         <!-- Button trigger modal delete-->
-	    <input type="button" id="product_{{ object.id }}" class="btn tm_style_2" data-toggle="modal" data-target="#modalDeleteProduct" value="Delete Product" style="margin-right:auto;margin-left:auto">
-	{% endif %}
-    </div>
-    <div class="col-md-2 col-md-offset-1">
-	   <input type="submit" value="Submit" class="btn btn-primary">
-    </div>
-</form>
-{% endblock %}
-
+        <input type="button" id="product_{{ object.id }}" class="btn tm_style_2" data-toggle="modal" data-target="#modalDeleteProduct" value="Delete Product" style="margin-right:auto;margin-left:auto">
+    {% endif %}
+</div>
+    </form>
+<script>
+    var form_options = { 
+        target: '#modalAddProduct .modal-content', 
+        success: function() { } 
+        } 
+        $('#update_product_form').ajaxForm(form_options);
+</script>
 <!-- Scripts -->
 {% block scripts %}
 {% if not add %}
@@ -73,6 +75,7 @@
             return cookieValue;
         }
         var csrftoken = getCookie('csrftoken');
+
         // Delete product with ajax
         $button = $('#product_{{ object.id }}');
         $button.click(function(){
@@ -86,6 +89,9 @@
                     window.location.href = '/products/all/'
                 }
             });
+        });
+        $('#product_success').click(function(){
+            $('#modalAddProduct').modal('hide'); 
         });
     });
     </script>

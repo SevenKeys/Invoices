@@ -34,11 +34,11 @@
             </ul>
         </li>
         <!-- Navbar dropdown for products -->
-        <li id="navbar_products">
-            <a class="dropdown  dropdown-toggle" data-toggle="dropdown" href="{% url 'products' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>
-            <ul id="products-dropdown-menu">
+        <li id="navbar_products" class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="{% url 'products' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>
+            <ul id="products-dropdown-menu" class="dropdown-menu">
                 <li>
-                    <a class="products-list" href="{% url 'products' %}">{% trans "Products" %}</a>
+                    <a class="products-list" href="{% url 'products' %}">{% trans "List Of Products" %}</a>
                 </li>
                 <li>
                     <a class="products-list" href="{% url 'product_currencies' %}">{% trans "Currencies" %}</a>
@@ -52,20 +52,21 @@
                 <li>
                     <a class="products-list" href="{% url 'product_taxes' %}">{% trans "Tax" %}</a>
                 </li>
+                <!-- Navbar dropdown for product groups -->
+                <li id="navbar-product-groups" class="dropdown-submenu">
+                    <a tabindex="-1" href="">{% trans "Product Groups" %}<span class="glyphicon glyphicon-triangle-right"></span></a>
+                    <ul id="product-group-dropdown-menu" class="dropdown-menu">
+                        <li>
+                            <a class="products-list" href="{% url 'product_groups' %}">{% trans "Group List" %}</a>
+                        </li>
+                        <li>
+                            <a class="products-list" href="{% url 'product_group_categories' %}">{% trans "Group Categories" %}</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </li>
-        <!-- Navbar dropdown for product groups -->
-        <li id="navbar-product-groups">
-            <a class="dropdown  dropdown-toggle" data-toggle="dropdown" href="{% url 'product_groups' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Product Groups" %}</a>
-            <ul id="product-group-dropdown-menu">
-                <li>
-                    <a class="products-list" href="{% url 'product_groups' %}">{% trans "Group List" %}</a>
-                </li>
-                <li>
-                    <a class="products-list" href="{% url 'product_group_categories' %}">{% trans "Group Categories" %}</a>
-                </li>
-            </ul>
-        </li>
+    
         {% if company %}
         <li>
             <a href="{% url 'get_company' company.id %}"><span class="glyphicon glyphicon-thumbs-up"></span>{% trans "My Company" %}</a>

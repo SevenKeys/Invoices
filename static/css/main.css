@@ -147,7 +147,7 @@ footer{
 .container{
     margin-bottom: 50px;
 }
-#products-dropdown-menu,#product-group-dropdown-menu,#customers-dropdown-menu{
+#products-dropdown-menu,#customers-dropdown-menu{
     position: absolute;
     top: 100%;
     left: 0;
@@ -179,4 +179,11 @@ footer{
 .products-list:hover{
     background-color:#A11B9C;
     text-decoration: none;
+}
+.dropdown-submenu>.dropdown-menu{
+    top: 141px;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    border-radius: 0 6px 6px 6px;
 }

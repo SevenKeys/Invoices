@@ -55,6 +55,7 @@ INSTALLED_APPS = (
     'customers',
     'companies',
     'contacts',
+    'invoicetemplates',
     'common.apps.CommonConfig',
 )
 

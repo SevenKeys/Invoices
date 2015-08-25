@@ -1,8 +1,5 @@
 {% extends "base.html" %}
 
-{% block extra_js %} 
-    <script src="http://malsup.github.com/jquery.form.js"></script> 
-{% endblock %}
 
 {% block content %}
 
@@ -12,10 +9,11 @@
             <div class="modal-content"></div>
         </div>
     </div>
-        <h1>Products of <strong>{{ company }}</strong> company.</h1>
+        <h1>Products of <strong>{{ company }}</strong> company</h1>
         {% csrf_token %}
 
         <a class="btn btn-primary pull-right" href="{% url 'add_product' %}" data-toggle="modal" data-target="#modalAddProduct">Add New Product</a>
+        <a id="editProduct" href="" data-toggle="modal" data-target="#modalAddProduct" style="display:none"></a>
         <div id="productsGrid" style="min-height: 250px;"></div>
 
     {% else %}
@@ -38,7 +36,8 @@
                 pageButtonCount: 5,
                 filtering: true,
                 rowClick: function(args) {
-                    return window.location.replace("/products/edit/"+args.item.id);
+                    var url = '/products/edit/' + args.item.id;
+                    $('#editProduct').attr('href',url).click();
                 },
                 controller: {
                     loadData: function(filter) {

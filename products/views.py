@@ -34,11 +34,15 @@ class AddProduct(CreateView, CompanyMixin):
     model = Product
     form_class = ProductForm
     template_name = 'products/add_edit_product.html'
-    success_url = '/products/success/'
+    success_url = '/products/all/'
 
     def form_valid(self, form):
         new_product = form.save(commit=False)
         new_product.company = self.get_company()
+        cur = self.request.POST['currency']
+        if cur == '':
+            new_cur = Currency.objects.get_or_create(name='None')
+            new_product.currency = new_cur[0]
         new_product.save()
         return super(AddProduct,self).form_valid(form)
 
@@ -76,6 +80,10 @@ class UpdateProduct(UpdateView, CompanyMixin):
 
     def form_valid(self, form):
         new_product = form.save(commit=False)
+        cur = self.request.POST['currency']
+        if cur == '':
+            new_cur = Currency.objects.get_or_create(name='None')
+            new_product.currency = new_cur[0]
         new_product.save()
         return super(UpdateProduct,self).form_valid(form)
 

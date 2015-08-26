@@ -1,8 +1,8 @@
 from django.conf.urls import url
 from .views import ProductList, AddProduct, SuccessProduct
 from .views import UpdateProduct, DeleteProduct
-from .views import ProductGroupList, AddProductGroup, UpdateProductGroup
-from .views import DeleteProductGroup
+from .views import ProductGroupList, AddProductGroup, SuccessProductGroup
+from .views import DeleteProductGroup, UpdateProductGroup
 from .views import ProductListJson, ProductGroupListJson
 from .views import CurrencyList, EditCurrencyView, AddCurrencyView, DeleteCurrencyView
 from .views import CategoryList, EditCategoryView, AddCategoryView, DeleteCategoryView
@@ -23,10 +23,12 @@ urlpatterns = [
     url(r'^delete/(?P<product_id>\d+)/$', DeleteProduct.as_view(), 
         name='delete_product'),
     # CRUD for Product group app
-    url(r'^product_groups/$', ProductGroupList.as_view(),
+    url(r'^groups/$', ProductGroupList.as_view(),
         name='product_groups'),
     url(r'^add_group/$', AddProductGroup.as_view(), 
         name='add_product_group'),
+    url(r'^success_group/$', SuccessProductGroup.as_view(), 
+        name='success_product_group'),
     url(r'^edit_group/(?P<group_id>\d+)/$', UpdateProductGroup.as_view(), 
         name='edit_product_group'),
     url(r'^delete_group/(?P<group_id>\d+)/$', DeleteProductGroup.as_view(), 

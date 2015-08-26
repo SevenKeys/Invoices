@@ -34,7 +34,7 @@ class AddProduct(CreateView, CompanyMixin):
     model = Product
     form_class = ProductForm
     template_name = 'products/add_edit_product.html'
-    success_url = '/products/all/'
+    success_url = '/products/success/'
 
     def form_valid(self, form):
         new_product = form.save(commit=False)
@@ -66,7 +66,7 @@ class UpdateProduct(UpdateView, CompanyMixin):
     form_class = ProductForm
     template_name = 'products/add_edit_product.html'
     pk_url_kwarg = 'product_id'
-    success_url = '/products/all/'
+    success_url = '/products/success/'
 
     def get_context_data(self,**kwargs):
         context = super(UpdateProduct, self).get_context_data(**kwargs)
@@ -98,8 +98,7 @@ class DeleteProduct(DeleteView):
 # CRUD for Product Group App
 class ProductGroupList(LoginRequiredMixin, CompanyMixin, ListView):
     context_object_name = 'product_group_list'
-    template_name = 'products/product_group_list.html'
-    # paginate_by = '10'
+    template_name = 'products/product_groups/product_group_list.html'
     model = ProductGroup
 
     def get_context_data(self,**kwargs):
@@ -115,12 +114,16 @@ class ProductGroupList(LoginRequiredMixin, CompanyMixin, ListView):
 class AddProductGroup(CreateView, CompanyMixin):
     model = ProductGroup
     form_class = ProductGroupForm
-    template_name = 'products/add_edit_product_group.html'
-    success_url = '/products/product_groups/'
+    template_name = 'products/product_groups/add_edit_product_group.html'
+    success_url = '/products/success_group/'
 
     def form_valid(self, form):
         new_group = form.save(commit=False)
         new_group.company = self.get_company()
+        cat = self.request.POST['category']
+        if cat == '':
+            new_cat = ProductGroupCategory.objects.get_or_create(name='None')
+            new_group.category = new_cat[0]
         new_group.save()
         return super(AddProductGroup,self).form_valid(form)
 
@@ -134,25 +137,38 @@ class AddProductGroup(CreateView, CompanyMixin):
         return context
 
 
+class SuccessProductGroup(TemplateView):
+    template_name = 'products/product_groups/add_group_success.html'
+
+
 class UpdateProductGroup(UpdateView):
     model = ProductGroup
     form_class = ProductGroupForm
-    template_name = 'products/add_edit_product_group.html'
+    template_name = 'products/product_groups/add_edit_product_group.html'
     pk_url_kwarg = 'group_id'
-    success_url = '/products/all/'
+    success_url = '/products/success_group/'
 
     def get_context_data(self,**kwargs):
         context = super(UpdateProductGroup,self).get_context_data(**kwargs)
         context['edit'] = True
         return context
 
+    def form_valid(self, form):
+        new_group = form.save(commit=False)
+        cat = self.request.POST['category']
+        if cat == '':
+            new_cat = ProductGroupCategory.objects.get_or_create(name='None')
+            new_group.category = new_cat[0]
+        new_group.save()
+        return super(UpdateProductGroup,self).form_valid(form)
+
 
 class DeleteProductGroup(DeleteView):
     model = ProductGroup
     form_class = ProductForm
-    template_name = 'products/delete_product_group.html'
+    template_name = 'products/product_groups/delete_product_group.html'
     pk_url_kwarg = 'group_id'
-    success_url = '/products/all/'
+    success_url = '/products/groups/'
 
 
 # JS-GRID

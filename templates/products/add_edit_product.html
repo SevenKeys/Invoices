@@ -1,73 +1,84 @@
 {% load extra_products %}
-<!-- Form -->
+
 {% if not add %}
 <!-- Modal delete product -->
 {% include "products/delete_product.html" %}
-    <form id="update_product_form" class="form" action="{% url 'edit_product' object.id %}" method="POST">
+<!-- Form -->
+<form id="update_product_form" class="form" action="{% url 'edit_product' object.id %}" method="POST">
 {% else %}
-    <form id="update_product_form" class="form" action="{% url 'add_product' %}" method="POST">
+<form id="update_product_form" class="form" action="{% url 'add_product' %}" method="POST">
 {% endif %}
-<div class="modal-header">
-    <button type="button" id="close_window" class="close btn_modal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    {% if add %}
-        <h4 class="modal-title" id="addProductModalLabel">Add a new product</h4>
-    {% else %}
-        <h4 class="modal-title" id="addProductModalLabel">Edit product</h4>
-    {% endif %}
-</div>
-<div class="modal-body">
-    {% csrf_token %}
-    {% for hidden in form.hidden_fields %}
-        {{ hidden }}
-    {% endfor %}
-    {% for field in form.visible_fields %}
-        {% if field.errors %}
-          <fieldset class="form-group {% add_css_class 'has-error' %}" >
-        {% elif field.value %}
-          <fieldset class="form-group {% add_css_class 'has-success' %}" >
+    <div class="modal-header">
+        <button type="button" id="close_window" class="close btn_modal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {% if add %}
+            <h4 class="modal-title" id="addProductModalLabel">Add a new product</h4>
         {% else %}
-          <fieldset class="form-group" >
+            <h4 class="modal-title" id="addProductModalLabel">Edit product</h4>
         {% endif %}
+    </div>
+    <div class="modal-body">
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        {% for field in form.visible_fields %}
+            {% if field.errors %}
+              <fieldset class="form-group {% add_css_class 'has-error' %}" >
+            {% elif field.value %}
+              <fieldset class="form-group {% add_css_class 'has-success' %}" >
+            {% else %}
+              <fieldset class="form-group" >
+            {% endif %}
 
-          <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
-          {% if not field.field.required %}
-             <span class="special_class">(optional)</span>
-          {% endif %}
+            <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+            {% if not field.field.required %}
+                <span class="special_class">(optional)</span>
+            {% endif %}
             {% for error in field.errors %}
                 <strong>{{ error|escape }}</strong>
             {% endfor %}
-          </label>
-            <p class="help-text">{{ field.help_text }}</p>
-        <div class="col-md-9">{{ field | addcss:'form-control' }}</div>         
-        </fieldset>
-    {% endfor %}  
-</div>
-<div class="modal-footer">
-    <input type="submit" class="btn btn-primary btn_modal" value="submit" />
-    <input type="button" class="btn btn-default btn_modal" data-dismiss="modal" value="Cancel" />
-</div>
-    </form>
-    {% if not add %}
-        <!-- Button trigger modal delete-->
-        <div>
-            <input type="button" id="product_delete" class="btn tm_style_2 btn_delete" value="Delete Product" data-toggle="modal" data-target="#modalDeleteProduct" style="margin:10px 245px">
-        </div>
+              </label>
+                <p class="help-text">{{ field.help_text }}</p>
+            <div class="col-md-9">{{ field | addcss:'form-control' }}</div>         
+            </fieldset>
+        {% endfor %}  
+    </div>
+    <div class="modal-footer">
+    {% if add %}
+        <input type="submit" class="btn btn-primary" value="Submit" />
+    {% else %}
+        <input type="submit" class="btn btn-primary btn_modal" value="Submit" />
     {% endif %}
+        <input type="button" class="btn btn-default btn_modal" data-dismiss="modal" value="Cancel" />
+    </div>
+    
+</form>
+{% if not add %}
+    <!-- Button trigger modal delete-->
+    <div>
+        <input type="button" id="product_delete" class="btn tm_style_2 btn_delete" value="Delete Product" data-toggle="modal" data-target="#modalDeleteProduct" style="margin:10px 245px">
+    </div>
+{% endif %}
 
 <!-- Scripts -->
 {% block scripts %}
+
 <script type="text/javascript">
-    $(function(){
-        $('.btn_modal').click(function(){
-            // $('#modalAddProduct').modal('hide');
-            window.location.href = '/products/all/';
-        });
-    })
+$(function(){
+    $('.btn_modal').click(function(){
+        window.location.href = '/products/all/';
+    });
+    var form_options = { 
+        target: '#modalAddProduct .modal-content', 
+        success: function() { } 
+    };
+    $('#update_product_form').ajaxForm(form_options);
+});
 </script>
 {% if not add %}
     <script type="text/javascript">
-        $(function(){
-            function getCookie(name) {
+    $(function(){
+        function getCookie(name) {
             var cookieValue = null;
             if (document.cookie && document.cookie != '') {
                 var cookies = document.cookie.split(';');

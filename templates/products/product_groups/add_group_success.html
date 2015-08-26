@@ -2,12 +2,12 @@
 	<div class="modal-content"> 
 		<script> 
 			setTimeout(function() { 
-				$('#modalAddProduct').modal('hide'); 
-			}, 500); 
+				$('#modalAddProductGroup').modal('hide'); 
+			}, 500);
 			$('body').on('hidden.bs.modal', '.modal', function () { 
 				$(this).removeData('bs.modal');
 			});
-			window.location.href = '/products/all/';
+			window.location.href = '/products/groups/';
 		</script>
 	</div><!-- /.modal-content --> 
 </div><!-- /.modal-dialog -->

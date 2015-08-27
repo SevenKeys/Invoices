@@ -7,30 +7,30 @@
 {% block content %}
     {% if company %}
         <!-- Shell for modal -->
-        <div class="modal fade" id="modalAddCustomer" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel">
+        <div class="modal fade" id="modalAddCustomerGroup" tabindex="-1" role="dialog" aria-labelledby="addCustomerGroupModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content"></div>
             </div>
         </div>
-        <h2>Clients of <strong>{{ company }}</strong> company.</h2>
+        <h2>Client groups</h2>
         {% csrf_token %}
-            <a class="btn btn-primary pull-right" href="{% url 'add_customer' %}" data-toggle="modal" data-target="#modalAddCustomer">Add client</a>
-            <a id="editCustomer" href="" data-toggle="modal" data-target="#modalAddCustomer" style="display:none"></a>
-        {% if customer_list.count > 0 %}
-            <div id="customersGrid" style="min-height: 250px;"></div>
+            <a class="btn btn-primary pull-right" href="{% url 'add_customer_group' %}" data-toggle="modal" data-target="#modalAddCustomerGroup">Add client group</a>
+            <a id="editCustomerGroup" href="" data-toggle="modal" data-target="#modalAddCustomerGroup" style="display:none"></a>
+        {% if customer_group_list.count > 0 %}
+            <div id="customerGroupsGrid" style="min-height: 250px;"></div>
         {% else %}
-            <h3>No clients was added yet.</h3>
+            <h3>No client group was added yet.</h3>
         {% endif %}
     {% else %}
         <h3>You have not registered a company yet.</h3>
-            <a href="{% url 'add_company' %}" class="btn btn-info tm_style_2">Create company</a>
+        <a href="{% url 'add_company' %}" class="btn btn-info tm_style_2">Create company</a>
     {% endif %}
 {% endblock %}
 
 {% block scripts %}
         <script>
             $(function() {
-                $("#customersGrid").jsGrid({
+                $("#customerGroupsGrid").jsGrid({
                     height: "100%",
                     width: "100%",
                     sorting: true,
@@ -40,15 +40,15 @@
                     pageButtonCount: 5,
                     filtering: true,
                     rowClick: function(args) {
-                        var url = '/customers/edit/' + args.item.id;
-                        $('#editCustomer').attr('href',url).click();
+                        var url = '/customers/edit_group/' + args.item.id;
+                        $('#editCustomerGroup').attr('href',url).click();
                     },
                     controller: {
                         loadData: function(filter) {
                             var d = $.Deferred();
                             $.ajax({
                                 type: "GET",
-                                url: "/customers/list/",
+                                url: "/customers/list_group/",
                                 data: filter
                             }).done(function(result) {
                                 d.resolve($.map(result, function(item) {
@@ -60,9 +60,8 @@
                     },
                     fields: [
                         { name: "name", type: "text", width: 150 },
-                        { name: "status", type: "text", width: 150 },
-                        { name: "client_type", type: "text", width: 100, title: "client type" },
-                        { name: "company_segment", type: "text", width: 100, title: "company segment" }
+                        { name: "parent", type: "text", width: 150 },
+                        { name: "category", type: "text", width: 100 }
                     ]
                 });
             });

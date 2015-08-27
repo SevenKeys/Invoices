@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render
+from django.views.generic import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
@@ -35,7 +36,7 @@ class AddCustomer(CreateView, CompanyMixin):
     model = Customer
     form_class = CustomerForm
     template_name = 'customers/add_edit_customer.html'
-    success_url = '/customers/all/'
+    success_url = '/customers/success/'
 
 
     def form_valid(self, form):
@@ -53,6 +54,10 @@ class AddCustomer(CreateView, CompanyMixin):
             company = False
         context['company'] = company
         return context
+
+
+class SuccessCustomer(TemplateView):
+    template_name = 'customers/add_customer_success.html'
 
 
 class CustomerDetail(DetailView,CompanyMixin):
@@ -75,7 +80,7 @@ class UpdateCustomer(UpdateView):
     form_class = CustomerForm
     template_name = 'customers/add_edit_customer.html'
     pk_url_kwarg = 'customer_id'
-    success_url = '/customers/all/'
+    success_url = '/customers/success/'
 
     def get_context_data(self,**kwargs):
         context = super(UpdateCustomer, self).get_context_data(**kwargs)
@@ -84,10 +89,10 @@ class UpdateCustomer(UpdateView):
 
     def form_valid(self, form):
         new_customer = form.save(commit=False)
-        name_group = self.request.POST['group']
-        group = CustomerGroup.objects.get(name=name_group)
-        group.customers.add(new_customer)
-        group.save()
+        # name_group = self.request.POST['group']
+        # group = CustomerGroup.objects.get(name=name_group)
+        # group.customers.add(new_customer)
+        # group.save()
         new_customer.save()
         return super(UpdateCustomer, self).form_valid(form)
 
@@ -141,8 +146,8 @@ class CustomerGroupList(ListView, CompanyMixin, LoginRequiredMixin):
 class AddCustomerGroup(CreateView, CompanyMixin):
     model = CustomerGroup
     form_class = CustomerGroupForm
-    template_name = 'customers/add_edit_customer_group.html'
-    success_url = '/customers/all/'
+    template_name = 'customers/customer_groups/add_edit_customer_group.html'
+    success_url = '/customers/success_group/'
 
     def get_context_data(self,**kwargs):
         context = super(AddCustomerGroup,self).get_context_data(**kwargs)
@@ -156,12 +161,16 @@ class AddCustomerGroup(CreateView, CompanyMixin):
         return super(AddCustomerGroup,self).form_valid(form)
 
 
+class SuccessCustomerGroup(TemplateView):
+    template_name = '/customers/customer_groups/add_group_success.html'
+
+
 class UpdateCustomerGroup(UpdateView, CompanyMixin):
     model = CustomerGroup
     form_class = CustomerGroupForm
-    template_name = 'customers/add_edit_customer_group.html'
-    pk_url_kwarg = 'group_id'
-    success_url = '/customers/all/'
+    template_name = 'customers/customer_groups/add_edit_customer_group.html'
+    pk_url_kwarg = 'customer_group_id'
+    success_url = '/customers/success_group/'
 
     def get_context_data(self,**kwargs):
         context = super(UpdateCustomerGroup, self).get_context_data(**kwargs)
@@ -173,7 +182,7 @@ class UpdateCustomerGroup(UpdateView, CompanyMixin):
 class DeleteCustomerGroup(DeleteView):
     model = CustomerGroup
     template_name = 'customers/delete_group.html'
-    pk_url_kwarg = 'group_id'
+    pk_url_kwarg = 'customer_group_id'
     success_url = reverse_lazy('customers')
 
 
@@ -199,7 +208,8 @@ class CustomerListJson(LoginRequiredMixin, CompanyMixin, ListView):
         except BaseException as exc:
             queryset = []
         results = Paginator(queryset.order_by('name'), 20)
-        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list],
+                                                  use_natural_foreign_keys=True),
                             content_type='application/json')
 
 
@@ -221,7 +231,8 @@ class CustomerGroupListJson(LoginRequiredMixin, CompanyMixin, ListView):
         except BaseException as exc:
             queryset = []
         results = Paginator(queryset.order_by('name'), 20)
-        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list],
+                                                  use_natural_foreign_keys=True),
                             content_type='application/json')
 
 

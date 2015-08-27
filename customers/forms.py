@@ -15,14 +15,9 @@ class CustomerForm(forms.ModelForm):
 
 
 class CustomerGroupForm(forms.ModelForm):
-	categories = (
-		    ('cat1','category1'),
-		    ('cat2','category2'),
-		    ('cat3','category3'))
 	name = forms.CharField(label='Client group name')
-	category = forms.ChoiceField(choices=categories,required=False)
 
 	class Meta:
 		model = CustomerGroup
-		fields = ['name','customers','parent','category']
+		fields = ['name','parent','category']
 

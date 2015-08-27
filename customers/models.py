@@ -40,7 +40,8 @@ class Customer(models.Model):
     status = models.NullBooleanField(blank=True, null=True)
     language = models.ForeignKey(Language, blank=True,null=True)
     comment = models.TextField(blank=True, null=True)
-    client_type = models.ForeignKey(ClientType, blank=True, null=True)
+    client_type = models.ForeignKey(ClientType, blank=True, null=True, 
+                                    verbose_name='client type')
     discount_percent = models.FloatField(blank=True, null=True)
     company_segment = models.ForeignKey(CompanySegment, blank=True, null=True)
 

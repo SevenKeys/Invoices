@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 <!-- Script to manage errors in form -->
+{% load staticfiles %}
 {% block extra_js %} 
-    <script src="http://malsup.github.com/jquery.form.js"></script> 
+    <script src="{% static 'js/jquery_forms.js' %}"></script> 
 {% endblock %}
 
 {% block content %}
     {% if company %}
+        <!-- Shell for modal -->
         <div class="modal fade" id="modalAddProductGroup" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content"></div>

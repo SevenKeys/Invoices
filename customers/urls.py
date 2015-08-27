@@ -1,8 +1,8 @@
 from django.conf.urls import url
-from .views import CustomerList
+from .views import CustomerList, SuccessCustomer
 from .views import AddCustomer, DeleteCustomer, UpdateCustomer
 from .views import CustomerGroupList, AddCustomerGroup, CustomerGroupDetail 
-from .views import UpdateCustomerGroup, DeleteCustomerGroup
+from .views import UpdateCustomerGroup, DeleteCustomerGroup, SuccessCustomerGroup
 from .views import CustomerListJson, CustomerGroupListJson
 from .views import LanguageListView, LanguageAddView, LanguageEditView
 from .views import LanguageDeleteView
@@ -18,6 +18,8 @@ urlpatterns = [
         name='customers'),
     url(r'^add_customer/$', AddCustomer.as_view(), 
         name='add_customer'),
+    url(r'^success/$', SuccessCustomer.as_view(), 
+        name='success_customer'),
     url(r'^edit/(?P<customer_id>\d+)/$', UpdateCustomer.as_view(), 
         name='edit_customer'),
     url(r'^delete/(?P<customer_id>\d+)/$', DeleteCustomer.as_view(), 
@@ -27,7 +29,9 @@ urlpatterns = [
     url(r'^groups/$', CustomerGroupList.as_view(), 
         name='customer_groups'),
     url(r'^add_customer_group/$', AddCustomerGroup.as_view(), 
-        name='add_group'),
+        name='add_customer_group'),
+    url(r'^success_group/$', SuccessCustomerGroup.as_view(), 
+        name='success_customer_group'),
     url(r'^get_group/(?P<customer_group_id>\d+)/$', CustomerGroupDetail.as_view(), 
         name='get_customer_group'),
     url(r'^edit_group/(?P<customer_group_id>\d+)/$', UpdateCustomerGroup.as_view(), 

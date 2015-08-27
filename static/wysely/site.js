@@ -382,7 +382,7 @@ function applyArchetype(id) {
             },
             async: false,
             success: function(data) {
-            	for (item of data) {
+            	for (item in data) {
             		element = item.element;
             		if (element != "horizontal_lines" && element != "alignment" && element != "vertical_lines" && element != "border_right_table" && element != "border_bottom_header" && element != "border_top_header") {
 						$(item.field).css('background-color', item.value);

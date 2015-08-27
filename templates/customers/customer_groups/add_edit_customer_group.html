@@ -2,18 +2,18 @@
 	
 {% if edit %}
 <!-- Modal delete customer group -->
-{% include "customers/delete_customer.html" %}
+{% include "customers/customer_groups/delete_customer_group.html" %}
 <!-- Form -->
-<form id="update_customer_form" class="form" action="{% url 'edit_customer' object.id %}" method="POST">
+<form id="update_customer_group_form" class="form" action="{% url 'edit_customer_group' object.id %}" method="POST">
 {% else %}
-<form id="update_customer_form" class="form" action="{% url 'add_customer' %}" method="POST">
+<form id="update_customer_group_form" class="form" action="{% url 'add_customer_group' %}" method="POST">
 {% endif %}
 	<div class="modal-header">
         <button type="button" id="close_window" class="close btn_modal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         {% if not edit %}
-            <h4 class="modal-title" id="addCustomerModalLabel">Add a new client</h4>
+            <h4 class="modal-title" id="addCustomerGroupModalLabel">Add a new customer group</h4>
         {% else %}
-            <h4 class="modal-title" id="addCustomerGroupModalLabel">Edit client</h4>
+            <h4 class="modal-title" id="addCustomerGroupModalLabel">Edit customer group</h4>
         {% endif %}
     </div>
 	<div class="modal-body">
@@ -55,23 +55,23 @@
 {% if edit %}
 <!-- Button trigger modal delete group -->
 <div>
-    <input type="button" id="customer_delete" class="btn tm_style_2 btn_delete" value="Delete Customer" data-toggle="modal" data-target="#modalDeleteCustomer" style="margin:10px 245px">
+    <input type="button" id="customer_group_delete" class="btn tm_style_2 btn_delete" value="Delete Customer Group" data-toggle="modal" data-target="#modalDeleteCustomerGroup" style="margin:10px 245px">
 </div>
 {% endif %}
 
 <!-- Scripts -->
 {% block scripts %}
 <script type="text/javascript">
-	$(function(){
-	    $('.btn_modal').click(function(){
-	        window.location.href = '/customers/all/';
-	    });
-	    var form_options = { 
-	        target: '#modalAddCustomer .modal-content', 
-	        success: function() { } 
-	    };
-	    $('#update_customer_form').ajaxForm(form_options);
-	});
+$(function(){
+    $('.btn_modal').click(function(){
+        window.location.href = '/customers/groups/';
+    });
+    var form_options = { 
+        target: '#modalAddCustomerGroup .modal-content', 
+        success: function() { } 
+    };
+    $('#update_customer_group_form').ajaxForm(form_options);
+});
 </script>
 {% if edit %}
     <script type="text/javascript">
@@ -93,23 +93,23 @@
 		}
 		var csrftoken = getCookie('csrftoken');
 
-		// Delete customer with ajax
-        $del = $('#customer_delete');
-        $button = $('#customer_{{ object.id }}');
+		// Delete customer group with ajax
+        $del = $('#customer_group_delete');
+        $button = $('#customer_group_{{ object.id }}');
         $del.click(function(){
-            $('#modalAddCustomer').on('hidden.bs.modal',function(){
-                $('#modalDeleteCustomer').modal('show');
+            $('#modalAddCustomerGroup').on('hidden.bs.modal',function(){
+                $('#modalDeleteCustomerGroup').modal('show');
             });
         });
     	$button.click(function(){
 	    	$.ajax({
 	    		type: 'POST',
-	    		url: '/customers/delete/{{ object.id }}/',
+	    		url: '/customers/delete_group/{{ object.id }}/',
 	    		data: {
     			'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
 	    		},
 	    		success: function(){
-		    		window.location.href = '/customers/all/'
+		    		window.location.href = '/customers/groups/'
 	    		} 
 	    	});
 	    });

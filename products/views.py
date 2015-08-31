@@ -341,13 +341,6 @@ class CategoryList(ListView, CompanyMixin):
     template_name = 'products/categories/category_list.html'
     context_object_name = 'category_list'
 
-    def get_queryset(self):
-        try:
-            queryset = Category.objects.order_by('name')
-        except Category.DoesNotExist:
-            queryset = False
-        return queryset
-
     def get_context_data(self,**kwargs):
         context = super(CategoryList, self).get_context_data(**kwargs)
         try:
@@ -357,19 +350,25 @@ class CategoryList(ListView, CompanyMixin):
         context['company'] = company
         return context
 
+
 class AddCategoryView(CreateView):
     model = Category
     fields = ['name']
-    template_name = '/products/categories/currency_list.html'
+    template_name = 'products/categories/add_edit_category.html'
     success_url = '/products/categories/'
 
 
 class EditCategoryView(UpdateView):
     model = Category
     fields = ['name']
-    template_name = 'products/categories/category_list.html'
+    template_name = 'products/categories/add_edit_category.html'
     pk_url_kwarg = 'cat_id'
     success_url = '/products/categories/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(EditCategoryView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
 
 class DeleteCategoryView(DeleteView):

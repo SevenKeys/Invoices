@@ -1,32 +1,23 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_js %} 
+    <script src="{% static 'js/jquery_forms.js' %}"></script> 
+{% endblock %}
 {% block content %}
 
-{% include "products/categories/category_modals.html" %}
+<div class="modal fade" id="modalAddCategory" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
 
-{% if category_list.count > 0 %}
-	<h2>List of categories</h2>
-
-	<ul class="list-group">
-	{% for category in category_list %}
-		<form action="" class="form-inline" method="POST">{% csrf_token %}
-            <li class="list-group-item"><b>{{ category.name | upper }}</b>
-                <!-- Button trigger modal delete-->
-                <input type="button" data-id="{{ category.id }}" class="btn btn-primary pull-right del-btn" style="margin:-7px 2px" value="Delete" data-toggle="modal" data-target="#modalDeleteCat"/>
-                <!-- Button trigger modal edit-->
-                <input type="button" data-id="{{ category.id }}" data-name="{{ category.name }}" class="btn btn-primary pull-right edit-btn" style="margin:-7px 2px" value="Edit" data-toggle="modal" data-target="#modalEditCat"/>
-            </li>
-        </form>
-	{% endfor %}
-	</ul>
-{% else %}
-
-	<h3>No categories was added yet</h3>
-
-{% endif %}
-	<form action="" method="POST">
-	{% csrf_token %}
-	    <input type="button" class="btn btn-primary" value="Add New category" data-toggle="modal" data-target="#modalAddCat"/>
-	</form>
+<h2>List of categories</h2>
+	<!-- Button trigger modal add-->
+	<a type="button" class="btn btn-primary pull-right" href="{% url 'add_category' %}" data-toggle="modal" data-target="#modalAddCategory"/>Add a new category</a>
+    <!-- Button trigger modal edit-->
+    <a id="editCategory" style="display:none" data-toggle="modal" data-target="#modalAddCategory"/></a>
+    <!-- Js-Grid -->
+    <div id="categoryGrid" style="min-height: 200px;"></div>
 
 {% endblock %}
 
@@ -49,59 +40,44 @@
             return cookieValue;
         }
         var csrftoken = getCookie('csrftoken');
-        // add new category after click with ajax
+
         var refreshPage = function(){
         	window.location.reload(true);
         }
-        $add = $('#addCategory');
-        $add.click(function(){
-            var name = $('#message-text').val();
-            $.ajax({
-                type: 'POST',
-                url: '/products/add_category/',
-                data: {
-                	'name': name,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+        // Category grid
+        $("#categoryGrid").jsGrid({
+                height: "100%",
+                width: "100%",
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 10,
+                pageButtonCount: 5,
+                filtering: true,
+                rowClick: function(args) {
+                    var url = '/products/edit_category/' + args.item.id;
+                    $('#editCategory').attr('href',url).click();
                 },
-                dataType: 'json'
-            });
-            refreshPage();
-        });
-        // delete any category from list
-        $del = $('.del-btn');
-        $del.click(function(){
-	        var $id = $(this).attr('data-id');
-            $('#deleteCategory').click(function(){
-                $.ajax({
-                    type: 'POST',
-                    url: '/products/delete_category/'+$id+'/',
-                    data: {
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                controller: {
+                    loadData: function(filter) {
+                        var d = $.Deferred();
+                        $.ajax({
+                            type: "GET",
+                            url: "/products/list_categories/",
+                            data: filter
+                        }).done(function(result) {
+                            d.resolve($.map(result, function(item) {
+                                return $.extend(item.fields, { id: item.pk });
+                            }));
+                        });
+                        return d.promise();
                     }
-                });
-            refreshPage();
-            })
-        });
-        // edit any category from list
-        $edit = $('.edit-btn');
-        $edit.click(function(){
-            var $old_name = $(this).attr('data-name');
-            var $id = $(this).attr('data-id');
-            $('#message-new-cat').val($old_name);
-            $('#editCategory').click(function(){
-                var name = $('#message-new-cat').val();
-                $.ajax({
-                type: 'POST',
-                url: '/products/edit_category/'+ $id + '/',
-                data: {
-                    'name': name,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
                 },
-                dataType: 'json'
+                fields: [
+                    { name: "id", type: "number", width: 50 },
+                    { name: "name", type: "text", width: 150 }
+                ]
             });
-            refreshPage();
-            })
-        });
     });
     </script>
 

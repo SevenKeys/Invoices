@@ -228,18 +228,75 @@ class ProductGroupListJson(LoginRequiredMixin, CompanyMixin, ListView):
                                                   use_natural_foreign_keys=True),
                             content_type='application/json')
 
+
+class ProductListsJson(LoginRequiredMixin, CompanyMixin, ListView):
+    def GetCurrencyJson(self):
+        try:
+            name_filter = self.GET.get('name')
+            queryset = Currency.objects.exclude(name='None')
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+                       
+    def GetCategoryJson(self):
+        try:
+            name_filter = self.GET.get('name')
+            queryset = Category.objects.all()
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+                            
+    def GetUnitJson(self):
+        try:
+            name_filter = self.GET.get('name')
+            queryset = Unit.objects.all()
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+                            
+    def GetTaxJson(self):
+        try:
+            name_filter = self.GET.get('name')
+            queryset = Tax.objects.all()
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+                            
+                            
+class ProductGroupListsJson(LoginRequiredMixin, CompanyMixin, ListView):
+    def GetCategoryJson(self):
+        try:
+            name_filter = self.GET.get('name')
+            queryset = ProductGroupCategory.objects.all()
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+
+
 # CRUD for Currency
 class CurrencyList(ListView, CompanyMixin):
     model = Currency
     template_name = 'products/currencies/currency_list.html'
-    context_object_name = 'currency_list'
-
-    def get_queryset(self):
-        try:
-            queryset = Currency.objects.order_by('name')
-        except Currency.DoesNotExist:
-            queryset = False
-        return queryset
 
     def get_context_data(self,**kwargs):
         context = super(CurrencyList, self).get_context_data(**kwargs)
@@ -250,29 +307,11 @@ class CurrencyList(ListView, CompanyMixin):
         context['company'] = company
         return context
 
-class AjaxableResponseMixin(object):
-    
-    def form_invalid(self, form):
-        response = super(AjaxableResponseMixin, self).form_invalid(form)
-        if self.request.is_ajax():
-            return JsonResponse(form.errors, status=400)
-        else:
-            return response
-
-    def form_valid(self, form):
-        response = super(AjaxableResponseMixin, self).form_valid(form)
-        if self.request.is_ajax():
-            data = {
-                'pk': self.object.pk,
-            }
-            return JsonResponse(data)
-        else:
-            return response
 
 class AddCurrencyView(CreateView):
     model = Currency
     fields = ['name']
-    template_name = '/products/currencies/currency_list.html'
+    template_name = 'products/currencies/add_edit_currency.html'
     success_url = '/products/currencies/'
 
 
@@ -282,12 +321,18 @@ class DeleteCurrencyView(DeleteView):
     pk_url_kwarg = 'cur_id'
     success_url = '/products/currencies/'
 
-class EditCurrencyView(UpdateView, AjaxableResponseMixin):
+
+class EditCurrencyView(UpdateView):
     model = Currency
     fields = ['name']
-    template_name = 'products/currencies/currency_list.html'
+    template_name = 'products/currencies/add_edit_currency.html'
     pk_url_kwarg = 'cur_id'
     success_url = '/products/currencies/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(EditCurrencyView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
     
 # CRUD for Category
@@ -317,6 +362,7 @@ class AddCategoryView(CreateView):
     fields = ['name']
     template_name = '/products/categories/currency_list.html'
     success_url = '/products/categories/'
+
 
 class EditCategoryView(UpdateView):
     model = Category

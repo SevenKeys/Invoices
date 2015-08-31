@@ -1,34 +1,23 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_js %} 
+    <script src="{% static 'js/jquery_forms.js' %}"></script> 
+{% endblock %}
 {% block content %}
 
-{% include "products/currencies/currency_modals.html" %}
+<div class="modal fade" id="modalAddCurrency" tabindex="-1" role="dialog" aria-labelledby="addCurrencyModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
 
-{% if currency_list.count > 0 %}
-	<h2>List of currencies</h2>
-
-    <!-- Form -->
-	<ul class="list-group">
-	{% for currency in currency_list %}
-		<form action="" class="form-inline" method="POST">{% csrf_token %}
-			<li class="list-group-item"><b>{{ currency.name | upper }}</b>
-                <!-- Button trigger modal delete-->
-		        <input type="button" data-id="{{ currency.id }}" class="btn btn-primary pull-right del-btn" style="margin:-7px 2px" value="Delete" data-toggle="modal" data-target="#modalDelete"/>
-                <!-- Button trigger modal edit-->
-                <input type="button" data-id="{{ currency.id }}" data-name="{{ currency.name }}" class="btn btn-primary pull-right edit-btn" style="margin:-7px 2px" value="Edit" data-toggle="modal" data-target="#modalEdit"/>
-	        </li>
-	    </form>
-	{% endfor %}
-	</ul>
-{% else %}
-
-	<h3>No currencies was added yet</h3>
-
-{% endif %}
-	<form action="" method="POST">
-	{% csrf_token %}
-        <!-- Button trigger modal add-->
-	    <input type="button" class="btn btn-primary" value="Add New Currency" data-toggle="modal" data-target="#modalAdd"/>
-	</form>
+<h2>List of currencies</h2>
+	<!-- Button trigger modal add-->
+	<a type="button" class="btn btn-primary pull-right" href="{% url 'add_currency' %}" data-toggle="modal" data-target="#modalAddCurrency"/>Add a new currency</a>
+    <!-- Button trigger modal edit-->
+    <a type="button" id="editCurrency" style="display:none" data-toggle="modal" data-target="#modalAddCurrency"/></a>
+    <!-- Js-Grid -->
+    <div id="currencyGrid" style="min-height: 150px;"></div>
 
 {% endblock %}
 
@@ -55,56 +44,40 @@
         var refreshPage = function(){
         	window.location.reload(true);
         }
-        // add new currency after click with ajax
-        $add = $('#addCurrency');
-        $add.click(function(){
-            var name = $('#message-text').val();
-            $.ajax({
-                type: 'POST',
-                url: '/products/add_currency/',
-                data: {
-                	'name': name,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+        // Currency grid
+        $("#currencyGrid").jsGrid({
+                height: "100%",
+                width: "100%",
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 10,
+                pageButtonCount: 5,
+                filtering: true,
+                rowClick: function(args) {
+                    var url = '/products/edit_currency/' + args.item.id;
+                    $('#editCurrency').attr('href',url).click();
                 },
-                dataType: 'json'
-            });
-            refreshPage();
-        });
-        // delete any currency from list
-        $del = $('.del-btn');
-        $del.click(function(){
-	        var $id = $(this).attr('data-id');
-            $('#deleteCurrency').click(function(){
-                $.ajax({
-                    type: 'POST',
-                    url: '/products/delete_currency/'+$id+'/',
-                    data: {
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                controller: {
+                    loadData: function(filter) {
+                        var d = $.Deferred();
+                        $.ajax({
+                            type: "GET",
+                            url: "/products/list_currencies/",
+                            data: filter
+                        }).done(function(result) {
+                            d.resolve($.map(result, function(item) {
+                                return $.extend(item.fields, { id: item.pk });
+                            }));
+                        });
+                        return d.promise();
                     }
-                });
-                refreshPage();
-            })
-        });
-        // edit any currency from list
-        $edit = $('.edit-btn');
-        $edit.click(function(){
-            var $old_name = $(this).attr('data-name');
-            var $id = $(this).attr('data-id');
-            $('#message-new').val($old_name);
-            $('#editCurrency').click(function(){
-                var name = $('#message-new').val();
-                $.ajax({
-                type: 'POST',
-                url: '/products/edit_currency/'+ $id + '/',
-                data: {
-                    'name': name,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
                 },
-                dataType: 'json'
+                fields: [
+                    { name: "id", type: "number", width: 50 },
+                    { name: "name", type: "text", width: 150 }
+                ]
             });
-            refreshPage();
-            })
-        });
     });
     </script>
 

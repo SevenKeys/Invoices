@@ -4,6 +4,7 @@ from .views import UpdateProduct, DeleteProduct
 from .views import ProductGroupList, AddProductGroup, SuccessProductGroup
 from .views import DeleteProductGroup, UpdateProductGroup
 from .views import ProductListJson, ProductGroupListJson
+from .views import ProductListsJson, ProductGroupListsJson
 from .views import CurrencyList, EditCurrencyView, AddCurrencyView, DeleteCurrencyView
 from .views import CategoryList, EditCategoryView, AddCategoryView, DeleteCategoryView
 from .views import UnitList, AddUnitView, EditUnitView, DeleteUnitView
@@ -33,8 +34,15 @@ urlpatterns = [
         name='edit_product_group'),
     url(r'^delete_group/(?P<group_id>\d+)/$', DeleteProductGroup.as_view(), 
         name='delete_product_group'),
+    # JS-GRID
     url(r'^list/', ProductListJson.GetProductsJson),
     url(r'^list_group/', ProductGroupListJson.GetProductGroupsJson),
+    url(r'^list_currencies/', ProductListsJson.GetCurrencyJson),
+    url(r'^list_categories/', ProductListsJson.GetCategoryJson),
+    url(r'^list_units/', ProductListsJson.GetUnitJson),
+    url(r'^list_taxes/', ProductListsJson.GetTaxJson),
+    url(r'^list_group/', ProductGroupListJson.GetProductGroupsJson),
+    url(r'^list_group_categories/', ProductGroupListsJson.GetCategoryJson),
     # CRUD for ProductGroup categories
     url(r'^group_categories/$', GroupCatList.as_view(), 
         name='product_group_categories'),

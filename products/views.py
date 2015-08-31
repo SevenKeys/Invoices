@@ -43,6 +43,10 @@ class AddProduct(CreateView, CompanyMixin):
         if cur == '':
             new_cur = Currency.objects.get_or_create(name='None')
             new_product.currency = new_cur[0]
+        unit = self.request.POST['unit']
+        if unit == '':
+            new_unit = Unit.objects.get_or_create(name='None')
+            new_product.unit = new_unit[0]
         new_product.save()
         return super(AddProduct,self).form_valid(form)
 
@@ -84,6 +88,10 @@ class UpdateProduct(UpdateView, CompanyMixin):
         if cur == '':
             new_cur = Currency.objects.get_or_create(name='None')
             new_product.currency = new_cur[0]
+        unit = self.request.POST['unit']
+        if unit == '':
+            new_unit = Unit.objects.get_or_create(name='None')
+            new_product.unit = new_unit[0]
         new_product.save()
         return super(UpdateProduct,self).form_valid(form)
 

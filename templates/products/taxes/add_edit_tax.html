@@ -2,16 +2,16 @@
 
 {% if edit %}
 <!-- Form -->
-<form id="update_currency_form" class="form" action="{% url 'edit_currency' object.id %}" method="POST">
+<form id="update_tax_form" class="form" action="{% url 'edit_tax' object.id %}" method="POST">
 {% else %}
-<form id="update_currency_form" class="form" action="{% url 'add_currency' %}" method="POST">
+<form id="update_tax_form" class="form" action="{% url 'add_tax' %}" method="POST">
 {% endif %}
     <div class="modal-header">
         <button type="button" id="close_window" class="close btn_modal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         {% if edit %}
-            <h4 class="modal-title" id="addCurrencyModalLabel">Edit currency</h4>
+            <h4 class="modal-title" id="addTaxModalLabel">Edit tax</h4>
         {% else %}
-            <h4 class="modal-title" id="addCurrencyModalLabel">Add a new currency</h4>
+            <h4 class="modal-title" id="addTaxModalLabel">Add a new tax</h4>
         {% endif %}
     </div>
     <div class="modal-body">
@@ -50,7 +50,7 @@
 {% if edit %}
     <!-- Button trigger modal delete-->
     <div>
-        <input type="button" id="currency_delete" class="btn tm_style_2 btn_delete" value="Delete Currency" style="margin:10px 245px">
+        <input type="button" id="tax_delete" class="btn tm_style_2 btn_delete" value="Delete tax" style="margin:10px 245px">
     </div>
 {% endif %}
 
@@ -60,12 +60,12 @@
 <script type="text/javascript">
 $(function(){
     var form_options = { 
-        target: '#modalAddCurrency .modal-content', 
+        target: '#modalAddTax .modal-content', 
         success: function() { } 
     };
-    $('#update_currency_form').ajaxForm(form_options);
+    $('#update_tax_form').ajaxForm(form_options);
     $('.btn_modal').on('click', function(){
-        window.location.href = '/products/currencies/'
+        window.location.href = '/products/taxes/'
     });
 });
 </script>
@@ -89,17 +89,17 @@ $(function(){
         }
         var csrftoken = getCookie('csrftoken');
 
-        // Delete currency with ajax
-        $del = $('#currency_delete');
+        // Delete tax with ajax
+        $del = $('#tax_delete');
         $del.click(function(){
             $.ajax({
                 type: 'POST',
-                url: '/products/delete_currency/{{ object.id }}/',
+                url: '/products/delete_tax/{{ object.id }}/',
                 data: {
                 'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
                 },
                 success: function(){
-                    window.location.href = '/products/currencies/'
+                    window.location.href = '/products/taxs/'
                 }
             });
         });

@@ -268,13 +268,15 @@ class ProductListsJson(LoginRequiredMixin, CompanyMixin, ListView):
                             
     def GetTaxJson(self):
         try:
-            name_filter = self.GET.get('name')
+            value_filter = self.GET.get('value')
+            value_filter = int(value_filter)
             queryset = Tax.objects.all()
-            if name_filter:
-                queryset = queryset.filter(name__contains=name_filter)
+            if value_filter:
+                queryset = queryset.filter(value=value_filter)
         except BaseException as exc:
             queryset = []
-        results = Paginator(queryset.order_by('name'), 20)
+        results = Paginator(queryset.order_by('value'), 20)
+        print(queryset)
         return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
                             content_type='application/json')
                             
@@ -312,14 +314,18 @@ class AddCurrencyView(CreateView):
     model = Currency
     fields = ['name']
     template_name = 'products/currencies/add_edit_currency.html'
-    success_url = '/products/currencies/'
+    success_url = '/products/success_currency/'
 
 
+class SuccessCurrency(TemplateView):
+    template_name = 'products/currencies/currency_success.html'
+    
+    
 class DeleteCurrencyView(DeleteView):
     model = Currency
     template_name = 'products/currencies/currency_list.html'
     pk_url_kwarg = 'cur_id'
-    success_url = '/products/currencies/'
+    success_url = '/products/success_currency/'
 
 
 class EditCurrencyView(UpdateView):
@@ -327,7 +333,7 @@ class EditCurrencyView(UpdateView):
     fields = ['name']
     template_name = 'products/currencies/add_edit_currency.html'
     pk_url_kwarg = 'cur_id'
-    success_url = '/products/currencies/'
+    success_url = '/products/currency_success/'
     
     def get_context_data(self, **kwargs):
         context = super(EditCurrencyView, self).get_context_data(**kwargs)
@@ -355,15 +361,19 @@ class AddCategoryView(CreateView):
     model = Category
     fields = ['name']
     template_name = 'products/categories/add_edit_category.html'
-    success_url = '/products/categories/'
+    success_url = '/products/success_category/'
 
 
+class SuccessCategory(TemplateView):
+    template_name = 'products/categories/success_category.html'
+    
+    
 class EditCategoryView(UpdateView):
     model = Category
     fields = ['name']
     template_name = 'products/categories/add_edit_category.html'
     pk_url_kwarg = 'cat_id'
-    success_url = '/products/categories/'
+    success_url = '/products/success_category/'
     
     def get_context_data(self, **kwargs):
         context = super(EditCategoryView, self).get_context_data(**kwargs)
@@ -443,16 +453,20 @@ class TaxList(ListView, CompanyMixin):
 class AddTaxView(CreateView):
     model = Tax
     fields = ['value']
-    template_name = '/products/taxes/add_edit_tax.html'
-    success_url = '/products/taxes/'
+    template_name = 'products/taxes/add_edit_tax.html'
+    success_url = '/products/success_tax/'
 
 
+class SuccessTax(TemplateView):
+    template_name = 'products/taxes/success_tax.html'
+    
+    
 class EditTaxView(UpdateView):
     model = Tax
     fields = ['value']
     template_name = 'products/taxes/add_edit_tax.html'
     pk_url_kwarg = 'tax_id'
-    success_url = '/products/taxes/'
+    success_url = '/products/success_tax/'
     
     def get_context_data(self, **kwargs):
         context = super(EditTaxView, self).get_context_data(**kwargs)

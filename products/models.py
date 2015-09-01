@@ -59,7 +59,7 @@ class Unit(models.Model):
 
 
 class Tax(models.Model):
-    value = models.IntegerField()
+    value = models.IntegerField(unique=True)
 
     def __str__(self):
         return str(self.value)

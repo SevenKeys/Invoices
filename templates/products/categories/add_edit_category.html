@@ -42,11 +42,7 @@
         {% endfor %}  
     </div>
     <div class="modal-footer">
-    {% if add %}
         <input type="submit" class="btn btn-primary" value="Submit" />
-    {% else %}
-        <input type="submit" class="btn btn-primary btn_modal" value="Submit" />
-    {% endif %}
         <input type="button" class="btn btn-default btn_modal" data-dismiss="modal" value="Cancel" />
     </div>
     
@@ -63,14 +59,14 @@
 
 <script type="text/javascript">
 $(function(){
-    $('.btn_modal').click(function(){
-        window.location.href = '/products/categories/';
-    });
     var form_options = { 
         target: '#modalAddCategory .modal-content', 
         success: function() { } 
     };
     $('#update_category_form').ajaxForm(form_options);
+    $('.btn_modal').on('click', function(){
+        window.location.href = '/products/categories/'
+    });
 });
 </script>
 {% if edit %}

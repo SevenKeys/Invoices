@@ -11,7 +11,7 @@ from .views import UnitList, AddUnitView, EditUnitView, DeleteUnitView
 from .views import TaxList, AddTaxView, EditTaxView, DeleteTaxView
 from .views import GroupCatList, AddGroupCategoryView
 from .views import EditGroupCategoryView, DeleteGroupCategoryView
-from .views import SuccessUnit
+from .views import SuccessUnit, SuccessCategory, SuccessTax, SuccessCurrency
 
 urlpatterns = [
     url(r'^all/$', ProductList.as_view(), 
@@ -58,6 +58,7 @@ urlpatterns = [
         name='product_currencies'),
     url(r'^add_currency/$', AddCurrencyView.as_view(), 
         name='add_currency'),
+    url(r'^success_currency/', SuccessCurrency.as_view()),
     url(r'^delete_currency/(?P<cur_id>\d+)/$', DeleteCurrencyView.as_view(), 
         name='delete_currency'),
     url(r'^edit_currency/(?P<cur_id>\d+)/$', EditCurrencyView.as_view(), 
@@ -67,6 +68,7 @@ urlpatterns = [
         name='product_categories'),
     url(r'^add_category/$', AddCategoryView.as_view(), 
         name='add_category'),
+    url(r'^success_category/', SuccessCategory.as_view()),
     url(r'^delete_category/(?P<cat_id>\d+)/$', DeleteCategoryView.as_view(), 
         name='delete_category'),
     url(r'^edit_category/(?P<cat_id>\d+)/$', EditCategoryView.as_view(), 
@@ -86,6 +88,7 @@ urlpatterns = [
         name='product_taxes'),
     url(r'^add_tax/$', AddTaxView.as_view(), 
         name='add_tax'),
+    url(r'^success_tax/', SuccessTax.as_view()),
     url(r'^delete_tax/(?P<tax_id>\d+)/$', DeleteTaxView.as_view(), 
         name='delete_tax'),
     url(r'^edit_tax/(?P<tax_id>\d+)/$', EditTaxView.as_view(), 

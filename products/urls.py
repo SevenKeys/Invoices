@@ -11,6 +11,7 @@ from .views import UnitList, AddUnitView, EditUnitView, DeleteUnitView
 from .views import TaxList, AddTaxView, EditTaxView, DeleteTaxView
 from .views import GroupCatList, AddGroupCategoryView
 from .views import EditGroupCategoryView, DeleteGroupCategoryView
+from .views import SuccessUnit
 
 urlpatterns = [
     url(r'^all/$', ProductList.as_view(), 
@@ -75,6 +76,7 @@ urlpatterns = [
         name='product_units'),
     url(r'^add_unit/$', AddUnitView.as_view(), 
         name='add_unit'),
+    url(r'^success_unit/', SuccessUnit.as_view()),
     url(r'^delete_unit/(?P<unit_id>\d+)/$', DeleteUnitView.as_view(), 
         name='delete_unit'),
     url(r'^edit_unit/(?P<unit_id>\d+)/$', EditUnitView.as_view(), 

@@ -257,7 +257,7 @@ class ProductListsJson(LoginRequiredMixin, CompanyMixin, ListView):
     def GetUnitJson(self):
         try:
             name_filter = self.GET.get('name')
-            queryset = Unit.objects.all()
+            queryset = Unit.objects.exclude(name='None')
             if name_filter:
                 queryset = queryset.filter(name__contains=name_filter)
         except BaseException as exc:
@@ -384,13 +384,6 @@ class UnitList(ListView, CompanyMixin):
     template_name = 'products/units/unit_list.html'
     context_object_name = 'unit_list'
 
-    def get_queryset(self):
-        try:
-            queryset = Unit.objects.order_by('name')
-        except Unit.DoesNotExist:
-            queryset = False
-        return queryset
-
     def get_context_data(self,**kwargs):
         context = super(UnitList, self).get_context_data(**kwargs)
         try:
@@ -400,18 +393,30 @@ class UnitList(ListView, CompanyMixin):
         context['company'] = company
         return context
 
+
 class AddUnitView(CreateView):
     model = Unit
     fields = ['name']
-    template_name = '/products/units/unit_list.html'
-    success_url = '/products/units/'
+    template_name = 'products/units/add_edit_unit.html'
+    success_url = '/products/success_unit/'
+
+
+class SuccessUnit(TemplateView):
+    template_name = 'products/units/success_unit.html'
+    
 
 class EditUnitView(UpdateView):
     model = Unit
     fields = ['name']
-    template_name = 'products/units/unit_list.html'
+    template_name = 'products/units/add_edit_unit.html'
     pk_url_kwarg = 'unit_id'
-    success_url = '/products/units/'
+    success_url = '/products/success_unit/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(EditUnitView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
+
 
 class DeleteUnitView(DeleteView):
     model = Unit
@@ -419,18 +424,11 @@ class DeleteUnitView(DeleteView):
     pk_url_kwarg = 'unit_id'
     success_url = '/products/units/'
 
+
 # CRUD for Tax
 class TaxList(ListView, CompanyMixin):
     model = Tax
     template_name = 'products/taxes/tax_list.html'
-    context_object_name = 'tax_list'
-
-    def get_queryset(self):
-        try:
-            queryset = Tax.objects.order_by('value')
-        except Tax.DoesNotExist:
-            queryset = False
-        return queryset
 
     def get_context_data(self,**kwargs):
         context = super(TaxList, self).get_context_data(**kwargs)
@@ -445,16 +443,21 @@ class TaxList(ListView, CompanyMixin):
 class AddTaxView(CreateView):
     model = Tax
     fields = ['value']
-    template_name = '/products/taxes/tax_list.html'
+    template_name = '/products/taxes/add_edit_tax.html'
     success_url = '/products/taxes/'
 
 
 class EditTaxView(UpdateView):
     model = Tax
     fields = ['value']
-    template_name = 'products/taxes/tax_list.html'
+    template_name = 'products/taxes/add_edit_tax.html'
     pk_url_kwarg = 'tax_id'
     success_url = '/products/taxes/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(EditTaxView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
 
 class DeleteTaxView(DeleteView):
@@ -468,15 +471,6 @@ class DeleteTaxView(DeleteView):
 class GroupCatList(ListView, CompanyMixin):
     model = ProductGroupCategory
     template_name = 'products/product_groups/prod_group_cat.html'
-    context_object_name = 'prod_group_cat_list'
-
-    def get_queryset(self):
-        try:
-            queryset = ProductGroupCategory.objects.order_by('name')
-        except ProductGroupCategory.DoesNotExist:
-            queryset = False
-        print(queryset)
-        return queryset
 
     def get_context_data(self,**kwargs):
         context = super(GroupCatList, self).get_context_data(**kwargs)
@@ -491,16 +485,21 @@ class GroupCatList(ListView, CompanyMixin):
 class AddGroupCategoryView(CreateView):
     model = ProductGroupCategory
     fields = ['name']
-    template_name = 'products/product_groups/prod_group_cat.html'
+    template_name = 'products/product_groups/add_edit_group_cat.html'
     success_url = '/products/group_categories/'
 
 
 class EditGroupCategoryView(UpdateView):
     model = ProductGroupCategory
     fields = ['name']
-    template_name = 'products/product_groups/prod_group_cat.html'
+    template_name = 'products/product_groups/add_edit_group_cat.html'
     pk_url_kwarg = 'group_cat_id'
     success_url = '/products/group_categories/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(EditGroupCategoryView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
 
 class DeleteGroupCategoryView(DeleteView):

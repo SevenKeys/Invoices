@@ -1,34 +1,23 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_js %} 
+    <script src="{% static 'js/jquery_forms.js' %}"></script> 
+{% endblock %}
 {% block content %}
 
-{% include "customers/languages/language_modals.html" %}
+<div class="modal fade" id="modalAddLanguage" tabindex="-1" role="dialog" aria-labelledby="addLanguageModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
 
-{% if language_list.count > 0 %}
-	<h2>List of languages</h2>
-
-    <!-- Form -->
-	<ul class="list-group">
-	{% for language in language_list %}
-		<form action="" class="form-inline" method="POST">{% csrf_token %}
-			<li class="list-group-item"><b>{{ language.name | upper }}</b>
-                <!-- Button trigger modal delete-->
-		        <input type="button" data-id="{{ language.id }}" class="btn btn-primary pull-right del-btn" style="margin:-7px 2px" value="Delete" data-toggle="modal" data-target="#modalDeleteLang"/>
-                <!-- Button trigger modal edit-->
-                <input type="button" data-id="{{ language.id }}" data-name="{{ language.name }}" class="btn btn-primary pull-right edit-btn" style="margin:-7px 2px" value="Edit" data-toggle="modal" data-target="#modalEditLang"/>
-	        </li>
-	    </form>
-	{% endfor %}
-	</ul>
-{% else %}
-
-	<h3>No languages was added yet</h3>
-
-{% endif %}
-	<form action="" method="POST">
-	{% csrf_token %}
-        <!-- Button trigger modal add-->
-	    <input type="button" class="btn btn-primary" value="Add New language" data-toggle="modal" data-target="#modalAddLang"/>
-	</form>
+<h2>List of languages</h2>
+	<!-- Button trigger modal add-->
+	<a type="button" class="btn btn-primary pull-right" href="{% url 'add_language' %}" data-toggle="modal" data-target="#modalAddLanguage"/>Add a new language</a>
+    <!-- Button trigger modal edit-->
+    <a id="editLanguage" style="display:none" data-toggle="modal" data-target="#modalAddLanguage"/></a>
+    <!-- Js-Grid -->
+    <div id="languageGrid" style="min-height: 250px;"></div>
 
 {% endblock %}
 
@@ -55,57 +44,40 @@
         var refreshPage = function(){
         	window.location.reload(true);
         }
-        // Add new language with ajax
-        $add = $('#addLanguage');
-        $add.click(function(){
-            var name = $('#message-text-lang').val();
-            console.log(name);
-            $.ajax({
-                type: 'POST',
-                url: '/customers/add_language/',
-                data: {
-                	'name': name,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+        // Currency grid
+        $("#languageGrid").jsGrid({
+                height: "100%",
+                width: "100%",
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 10,
+                pageButtonCount: 5,
+                filtering: true,
+                rowClick: function(args) {
+                    var url = '/customers/edit_language/' + args.item.id;
+                    $('#editLanguage').attr('href',url).click();
                 },
-                dataType: 'json'
-            });
-            refreshPage();
-        });
-        // delete any language from list
-        $del = $('.del-btn');
-        $del.click(function(){
-	        var $id = $(this).attr('data-id');
-            $('#deleteLanguage').click(function(){
-                $.ajax({
-                    type: 'POST',
-                    url: '/customers/delete_language/'+$id+'/',
-                    data: {
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                controller: {
+                    loadData: function(filter) {
+                        var d = $.Deferred();
+                        $.ajax({
+                            type: "GET",
+                            url: "/customers/list_languages/",
+                            data: filter
+                        }).done(function(result) {
+                            d.resolve($.map(result, function(item) {
+                                return $.extend(item.fields, { id: item.pk });
+                            }));
+                        });
+                        return d.promise();
                     }
-                });
-                refreshPage();
-            })
-        });
-        // Edit any language in list
-        $edit = $('.edit-btn');
-        $edit.click(function(){
-            var $old_name = $(this).attr('data-name');
-            var $id = $(this).attr('data-id');
-            $('#message-new-lang').val($old_name);
-            $('#editLanguage').click(function(){
-                var name = $('#message-new-lang').val();
-                $.ajax({
-                type: 'POST',
-                url: '/customers/edit_language/'+ $id + '/',
-                data: {
-                    'name': name,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
                 },
-                dataType: 'json'
+                fields: [
+                    { name: "id", type: "number", width: 50 },
+                    { name: "name", type: "text", width: 150 }
+                ]
             });
-            refreshPage();
-            })
-        });
     });
     </script>
 

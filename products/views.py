@@ -484,7 +484,7 @@ class DeleteTaxView(DeleteView):
 # CRUD for ProductGroupCategory
 class GroupCatList(ListView, CompanyMixin):
     model = ProductGroupCategory
-    template_name = 'products/product_groups/prod_group_cat.html'
+    template_name = 'products/product_groups/group_cat_list.html'
 
     def get_context_data(self,**kwargs):
         context = super(GroupCatList, self).get_context_data(**kwargs)
@@ -500,7 +500,11 @@ class AddGroupCategoryView(CreateView):
     model = ProductGroupCategory
     fields = ['name']
     template_name = 'products/product_groups/add_edit_group_cat.html'
-    success_url = '/products/group_categories/'
+    success_url = '/products/success_group_cat/'
+    
+
+class SuccessGroupCat(TemplateView):
+    template_name = 'products/product_groups/success_group_cat.html'
 
 
 class EditGroupCategoryView(UpdateView):
@@ -508,7 +512,7 @@ class EditGroupCategoryView(UpdateView):
     fields = ['name']
     template_name = 'products/product_groups/add_edit_group_cat.html'
     pk_url_kwarg = 'group_cat_id'
-    success_url = '/products/group_categories/'
+    success_url = '/products/success_group_cat/'
     
     def get_context_data(self, **kwargs):
         context = super(EditGroupCategoryView, self).get_context_data(**kwargs)

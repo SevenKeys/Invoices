@@ -12,6 +12,7 @@ from .views import TaxList, AddTaxView, EditTaxView, DeleteTaxView
 from .views import GroupCatList, AddGroupCategoryView
 from .views import EditGroupCategoryView, DeleteGroupCategoryView
 from .views import SuccessUnit, SuccessCategory, SuccessTax, SuccessCurrency
+from .views import SuccessGroupCat
 
 urlpatterns = [
     url(r'^all/$', ProductList.as_view(), 
@@ -49,6 +50,7 @@ urlpatterns = [
         name='product_group_categories'),
     url(r'^add_group_category/$', AddGroupCategoryView.as_view(), 
         name='add_group_category'),
+    url(r'^success_group_cat/', SuccessGroupCat.as_view()),
     url(r'^delete_group_category/(?P<group_cat_id>\d+)/$', DeleteGroupCategoryView.as_view(), 
         name='delete_group_category'),
     url(r'^edit_group_category/(?P<group_cat_id>\d+)/$', EditGroupCategoryView.as_view(), 

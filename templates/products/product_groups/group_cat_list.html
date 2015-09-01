@@ -5,19 +5,19 @@
 {% endblock %}
 {% block content %}
 
-<div class="modal fade" id="modalAddCurrency" tabindex="-1" role="dialog" aria-labelledby="addCurrencyModalLabel">
+<div class="modal fade" id="modalAddGroup_cat" tabindex="-1" role="dialog" aria-labelledby="addGroup_catModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content"></div>
     </div>
 </div>
 
-<h2>List of currencies</h2>
+<h2>List of group categories</h2>
 	<!-- Button trigger modal add-->
-	<a type="button" class="btn btn-primary pull-right" href="{% url 'add_currency' %}" data-toggle="modal" data-target="#modalAddCurrency"/>Add a new currency</a>
+	<a type="button" class="btn btn-primary pull-right" href="{% url 'add_group_category' %}" data-toggle="modal" data-target="#modalAddGroup_cat"/>Add a new category</a>
     <!-- Button trigger modal edit-->
-    <a id="editCurrency" style="display:none" data-toggle="modal" data-target="#modalAddCurrency"/></a>
+    <a id="editGroup_cat" style="display:none" data-toggle="modal" data-target="#modalAddGroup_cat"/></a>
     <!-- Js-Grid -->
-    <div id="currencyGrid" style="min-height: 250px;"></div>
+    <div id="group_catGrid" style="min-height: 250px;"></div>
 
 {% endblock %}
 
@@ -45,7 +45,7 @@
         	window.location.reload(true);
         }
         // Currency grid
-        $("#currencyGrid").jsGrid({
+        $("#group_catGrid").jsGrid({
                 height: "100%",
                 width: "100%",
                 sorting: true,
@@ -55,15 +55,15 @@
                 pageButtonCount: 5,
                 filtering: true,
                 rowClick: function(args) {
-                    var url = '/products/edit_currency/' + args.item.id;
-                    $('#editCurrency').attr('href',url).click();
+                    var url = '/products/edit_group_category/' + args.item.id;
+                    $('#editGroup_cat').attr('href',url).click();
                 },
                 controller: {
                     loadData: function(filter) {
                         var d = $.Deferred();
                         $.ajax({
                             type: "GET",
-                            url: "/products/list_currencies/",
+                            url: "/products/list_group_categories/",
                             data: filter
                         }).done(function(result) {
                             d.resolve($.map(result, function(item) {

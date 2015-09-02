@@ -158,7 +158,7 @@ class AddCustomerGroup(CreateView, CompanyMixin):
 
 
 class SuccessCustomerGroup(TemplateView):
-    template_name = '/customers/customer_groups/add_group_success.html'
+    template_name = 'customers/customer_groups/add_group_success.html'
 
 
 class UpdateCustomerGroup(UpdateView, CompanyMixin):
@@ -171,7 +171,6 @@ class UpdateCustomerGroup(UpdateView, CompanyMixin):
     def get_context_data(self,**kwargs):
         context = super(UpdateCustomerGroup, self).get_context_data(**kwargs)
         context['edit'] = True
-        context['company'] = self.get_company()
         return context
 
 

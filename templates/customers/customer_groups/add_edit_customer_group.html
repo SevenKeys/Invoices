@@ -1,9 +1,7 @@
 {% load extra_customers %}
 	
-{% if edit %}
-<!-- Modal delete customer group -->
-{% include "customers/customer_groups/delete_customer_group.html" %}
 <!-- Form -->
+{% if edit %}
 <form id="update_customer_group_form" class="form" action="{% url 'edit_customer_group' object.id %}" method="POST">
 {% else %}
 <form id="update_customer_group_form" class="form" action="{% url 'add_customer_group' %}" method="POST">
@@ -45,18 +43,14 @@
         {% endfor %}  
     </div>
     <div class="modal-footer">
-    {% if edit %}
-        <input type="submit" class="btn btn-primary btn_modal" value="Submit" />
-    {% else %}
         <input type="submit" class="btn btn-primary" value="Submit" />
-    {% endif %}
         <input type="button" class="btn btn-default btn_modal" data-dismiss="modal" value="Cancel" />
     </div>
 </form>
 {% if edit %}
 <!-- Button trigger modal delete group -->
 <div>
-    <input type="button" id="customer_group_delete" class="btn tm_style_2 btn_delete" value="Delete Customer Group" data-toggle="modal" data-target="#modalDeleteCustomerGroup" style="margin:10px 245px">
+    <input type="button" id="customer_group_delete" class="btn tm_style_2 btn_delete" value="Delete Client Group" style="margin:10px 245px">
 </div>
 {% endif %}
 
@@ -64,14 +58,14 @@
 {% block scripts %}
 <script type="text/javascript">
 $(function(){
-    $('.btn_modal').click(function(){
-        window.location.href = '/customers/groups/';
-    });
     var form_options = { 
         target: '#modalAddCustomerGroup .modal-content', 
         success: function() { } 
     };
     $('#update_customer_group_form').ajaxForm(form_options);
+    $('.btn_modal').on('click', function(){
+        window.location.href = '/customers/groups/'
+    });
 });
 </script>
 {% if edit %}
@@ -96,13 +90,7 @@ $(function(){
 
 		// Delete customer group with ajax
         $del = $('#customer_group_delete');
-        $button = $('#customer_group_{{ object.id }}');
-        $del.click(function(){
-            $('#modalAddCustomerGroup').on('hidden.bs.modal',function(){
-                $('#modalDeleteCustomerGroup').modal('show');
-            });
-        });
-    	$button.click(function(){
+    	$del.click(function(){
 	    	$.ajax({
 	    		type: 'POST',
 	    		url: '/customers/delete_group/{{ object.id }}/',

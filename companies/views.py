@@ -45,7 +45,8 @@ class NavMenuView(TemplateView, CompanyMixin):
     def get_template_names(self):
         return [
         'index.html',
-        'navigation_menu.html'
+        'navigation_menu.html',
+        'main_logged_in/home.html'
         ]
 
 
@@ -131,7 +132,11 @@ class DeleteCompany(DeleteView):
     form_class = CompanyForm
     template_name = 'companies/delete_company.html'
     pk_url_kwarg = 'company_id'
-    success_url = '/'
+    success_url = '/companies/success_delete/'
+    
+    
+class SuccessDelete(TemplateView):
+    template_name = 'companies/success_delete.html'
 
 
 # class AddCompanySegment(CreateView,CompanyMixin):

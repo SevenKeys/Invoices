@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load add_class %}
 {% block content %}
-
+{% include 'companies/company_modals.html' %}
 	<form class="form-contact col-md-offset-2 col-md-8" action="" method="POST">
 		<div class="row">
 			{% if edit %}
@@ -40,8 +40,56 @@
 
         <div class="col-sm-offset-3 col-sm-6">
           <button type="submit" class="btn btn-primary">Submit</button>
-          &nbsp;<button type="reset" class="btn">Cancel</button>
+          &nbsp;<a type="button" class="btn btn-default" href="/home/">Cancel</a>
         </div>
 	</form>
+    {% if edit %}
+        <!-- Button trigger modal delete-->
+        <div>
+            <button id="company_delete" class="btn tm_style_2 btn_delete" style="margin:10px 245px"
+            data-toggle="modal" data-target="#modalDeleteCompany">
+                Delete Company</button>
+        </div>
+    {% endif %}
+{% endblock %}
 
+<!-- Scripts -->
+{% block scripts %}
+{% if edit %}
+    <script type="text/javascript">
+    $(function(){
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        // Delete company with ajax
+        $del = $('#deleteCompany');
+        $del.click(function(){
+            $.ajax({
+                type: 'POST',
+                url: '/companies/delete_company/{{ object.id }}/',
+                data: {
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(){
+                    window.location.href = '/companies/success_delete/'
+                }
+            });
+        });
+    });
+    </script>
+{% endif  %}
 {% endblock %}

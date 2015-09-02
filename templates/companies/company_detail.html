@@ -37,7 +37,6 @@
             <li class="list-group-item list-group-item-info"><strong>Street:</strong> {{ object.contact.street }}</li>
         <!-- {% endif %} -->
     </ul>
-    <button type="button" class="btn btn-warning tm_style_2"><a href="{% url 'edit_company' object.id %}">Edit company</a></button>
-    <button type="button" class="btn btn-danger tm_style_2"><a href="{% url 'delete_company' object.id %}">Delete company</a></button>
+    <a type="button" class="btn btn-warning tm_style_2" href="{% url 'edit_company' object.id %}">Edit or delete company</a>
 
 {% endblock %}

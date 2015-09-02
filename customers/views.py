@@ -390,7 +390,7 @@ class CustCatAddView(CreateView):
     model = CustomerCategory
     fields = ['name']
     template_name = 'customers/customer_categories/add_edit_cust_cat.html'
-    success_url = '/customers/customer_categories/'
+    success_url = '/customers/success_cust_cat/'
 
 
 class SuccessCustCat(TemplateView):
@@ -409,7 +409,7 @@ class CustCatEditView(UpdateView):
     fields = ['name']
     template_name = 'customers/customer_categories/add_edit_cust_cat.html'
     pk_url_kwarg = 'cust_cat_id'
-    success_url = '/customers/customer_categories/'
+    success_url = '/customers/success_cust_cat/'
     
     def get_context_data(self, **kwargs):
         context = super(CustCatEditView, self).get_context_data(**kwargs)

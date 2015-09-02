@@ -72,5 +72,6 @@ urlpatterns = [
     url(r'^edit_customer_category/(?P<cust_cat_id>\d+)/$', CustCatEditView.as_view(), 
         name='edit_customer_category'),
     url(r'^delete_customer_category/(?P<cust_cat_id>\d+)/$', CustCatDeleteView.as_view(), 
-        name='delete_customer_category')
+        name='delete_customer_category'),
+    url(r'^list_categories/', CustomerListsJson.GetCategoryJson)
 ]

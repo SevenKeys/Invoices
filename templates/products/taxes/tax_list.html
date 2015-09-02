@@ -1,32 +1,23 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_js %} 
+    <script src="{% static 'js/jquery_forms.js' %}"></script> 
+{% endblock %}
 {% block content %}
 
-{% include "products/taxes/tax_modals.html" %}
+<div class="modal fade" id="modalAddTax" tabindex="-1" role="dialog" aria-labelledby="addtaxModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
 
-{% if tax_list.count > 0 %}
-    <h2>List of taxes</h2>
-
-    <ul class="list-group">
-    {% for tax in tax_list %}
-        <form action="" class="form-inline" method="POST">{% csrf_token %}
-            <li class="list-group-item"><b>{{ tax.value | upper }}</b>
-                <!-- Button trigger modal delete-->
-                <input type="button" data-id="{{ tax.id }}" class="btn btn-primary pull-right del-btn" style="margin:-7px 2px" value="Delete" data-toggle="modal" data-target="#modalDeleteTax"/>
-                <!-- Button trigger modal edit-->
-                <input type="button" data-id="{{ tax.id }}" data-value="{{ tax.value }}" class="btn btn-primary pull-right edit-btn" style="margin:-7px 2px" value="Edit" data-toggle="modal" data-target="#modalEditTax"/>
-            </li>
-        </form>
-    {% endfor %}
-    </ul>
-{% else %}
-
-    <h3>No taxes was added yet</h3>
-
-{% endif %}
-    <form action="" method="POST">
-    {% csrf_token %}
-        <input type="button" class="btn btn-primary" value="Add New Tax" data-toggle="modal" data-target="#modalAddTax"/>
-    </form>
+<h2>List of taxes</h2>
+	<!-- Button trigger modal add-->
+	<a type="button" class="btn btn-primary pull-right" href="{% url 'add_tax' %}" data-toggle="modal" data-target="#modalAddTax"/>Add a new tax</a>
+    <!-- Button trigger modal edit-->
+    <a id="editTax" style="display:none" data-toggle="modal" data-target="#modalAddTax"/></a>
+    <!-- Js-Grid -->
+    <div id="taxGrid" style="min-height: 200px;"></div>
 
 {% endblock %}
 
@@ -49,59 +40,44 @@
             return cookieValue;
         }
         var csrftoken = getCookie('csrftoken');
-        // add new tax after click with ajax
+
         var refreshPage = function(){
-            window.location.reload(true);
+        	window.location.reload(true);
         }
-        $add = $('#addTax');
-        $add.click(function(){
-            var value = $('#message-text-tax').val();
-            $.ajax({
-                type: 'POST',
-                url: '/products/add_tax/',
-                data: {
-                    'value': value,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+        // tax grid
+        $("#taxGrid").jsGrid({
+                height: "100%",
+                width: "100%",
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 10,
+                pageButtonCount: 5,
+                filtering: true,
+                rowClick: function(args) {
+                    var url = '/products/edit_tax/' + args.item.id;
+                    $('#editTax').attr('href',url).click();
                 },
-                dataType: 'json'
-            });
-            refreshPage();
-        });
-        // delete any tax from list
-        $del = $('.del-btn');
-        $del.click(function(){
-            var $id = $(this).attr('data-id');
-            $('#deleteTax').click(function(){
-                $.ajax({
-                    type: 'POST',
-                    url: '/products/delete_tax/'+$id+'/',
-                    data: {
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                controller: {
+                    loadData: function(filter) {
+                        var d = $.Deferred();
+                        $.ajax({
+                            type: "GET",
+                            url: "/products/list_taxes/",
+                            data: filter
+                        }).done(function(result) {
+                            d.resolve($.map(result, function(item) {
+                                return $.extend(item.fields, { id: item.pk });
+                            }));
+                        });
+                        return d.promise();
                     }
-                });
-            refreshPage();
-            })
-        });
-        // edit any tax from list
-        $edit = $('.edit-btn');
-        $edit.click(function(){
-            var $old_value = $(this).attr('data-value');
-            var $id = $(this).attr('data-id');
-            $('#message-new-tax').val($old_value);
-            $('#editTax').click(function(){
-                var value = $('#message-new-tax').val();
-                $.ajax({
-                type: 'POST',
-                url: '/products/edit_tax/'+ $id + '/',
-                data: {
-                    'value': value,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
                 },
-                dataType: 'json'
+                fields: [
+                    { name: "id", type: "number", width: 50 },
+                    { name: "value", type: "number", width: 50 }
+                ]
             });
-            refreshPage();
-            })
-        });
     });
     </script>
 

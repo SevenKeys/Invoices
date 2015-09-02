@@ -1,0 +1,109 @@
+{% load extra_customers %}
+
+{% if edit %}
+<!-- Form -->
+<form id="update_language_form" class="form" action="{% url 'edit_language' object.id %}" method="POST">
+{% else %}
+<form id="update_language_form" class="form" action="{% url 'add_language' %}" method="POST">
+{% endif %}
+    <div class="modal-header">
+        <button type="button" id="close_window" class="close btn_modal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {% if edit %}
+            <h4 class="modal-title" id="addLanguageModalLabel">Edit language</h4>
+        {% else %}
+            <h4 class="modal-title" id="addLanguageModalLabel">Add a new language</h4>
+        {% endif %}
+    </div>
+    <div class="modal-body">
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        {% for field in form.visible_fields %}
+            {% if field.errors %}
+              <fieldset class="form-group {% add_css_class 'has-error' %}" >
+            {% elif field.value %}
+              <fieldset class="form-group {% add_css_class 'has-success' %}" >
+            {% else %}
+              <fieldset class="form-group" >
+            {% endif %}
+
+            <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+            {% if not field.field.required %}
+                <span class="special_class">(optional)</span>
+            {% endif %}
+            {% for error in field.errors %}
+                <strong>{{ error|escape }}</strong>
+            {% endfor %}
+              </label>
+                <p class="help-text">{{ field.help_text }}</p>
+            <div class="col-md-9">{{ field | addcss:'form-control' }}</div>         
+            </fieldset>
+        {% endfor %}  
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn btn-primary" value="Submit" />
+        <input type="button" class="btn btn-default btn_modal" data-dismiss="modal" value="Cancel" />
+    </div>
+    
+</form>
+{% if edit %}
+    <!-- Button trigger modal delete-->
+    <div>
+        <input type="button" id="Language_delete" class="btn tm_style_2 btn_delete" value="Delete language" style="margin:10px 245px">
+    </div>
+{% endif %}
+
+<!-- Scripts -->
+{% block scripts %}
+
+<script type="text/javascript">
+$(function(){
+    var form_options = { 
+        target: '#modalAddLanguage .modal-content', 
+        success: function() { } 
+    };
+    $('#update_language_form').ajaxForm(form_options);
+    $('.btn_modal').on('click', function(){
+        window.location.href = '/customers/languages/'
+    });
+});
+</script>
+{% if edit %}
+    <script type="text/javascript">
+    $(function(){
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        // Delete Language with ajax
+        $del = $('#Language_delete');
+        $del.click(function(){
+            $.ajax({
+                type: 'POST',
+                url: '/customers/delete_language/{{ object.id }}/',
+                data: {
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(){
+                    window.location.href = '/customers/languages/'
+                }
+            });
+        });
+    });
+    </script>
+{% endif  %}
+{% endblock %}

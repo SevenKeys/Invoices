@@ -89,10 +89,6 @@ class UpdateCustomer(UpdateView):
 
     def form_valid(self, form):
         new_customer = form.save(commit=False)
-        # name_group = self.request.POST['group']
-        # group = CustomerGroup.objects.get(name=name_group)
-        # group.customers.add(new_customer)
-        # group.save()
         new_customer.save()
         return super(UpdateCustomer, self).form_valid(form)
 
@@ -236,18 +232,57 @@ class CustomerGroupListJson(LoginRequiredMixin, CompanyMixin, ListView):
                             content_type='application/json')
 
 
+class CustomerListsJson(LoginRequiredMixin, ListView):
+    def GetLanguageJson(self):
+        try:
+            name_filter = self.GET.get('name')
+            id_filter = self.GET.get('id')
+            queryset = Language.objects.all()
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+            if id_filter != '0':
+                queryset = queryset.filter(id=int(id_filter))
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+                            
+    def GetTypeJson(self):
+        try:
+            name_filter = self.GET.get('name')
+            id_filter = self.GET.get('id')
+            queryset = ClientType.objects.all()
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+            if id_filter != '0':
+                queryset = queryset.filter(id=int(id_filter))
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+                            
+    def GetCategoryJson(self):
+        try:
+            name_filter = self.GET.get('name')
+            id_filter = self.GET.get('id')
+            queryset = CustomerCategory.objects.all()
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+            if id_filter != '0':
+                queryset = queryset.filter(id=int(id_filter))
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+                            
+                            
 # CRUD for Language
 class LanguageListView(ListView, CompanyMixin, LoginRequiredMixin):
     model = Language
     template_name = 'customers/languages/language_list.html'
-    context_object_name = 'language_list'
-
-    def get_queryset(self):
-        try:
-            queryset = Language.objects.order_by('name')
-        except Language.DoesNotExist:
-            queryset = False
-        return queryset
 
     def get_context_data(self,**kwargs):
         context = super(LanguageListView, self).get_context_data(**kwargs)
@@ -262,8 +297,12 @@ class LanguageListView(ListView, CompanyMixin, LoginRequiredMixin):
 class LanguageAddView(CreateView):
     model = Language
     fields = ['name']
-    template_name = '/customers/languages/language_list.html'
-    success_url = '/customers/languages/'
+    template_name = 'customers/languages/add_edit_language.html'
+    success_url = '/customers/success_language/'
+
+
+class SuccessLanguage(TemplateView):
+    template_name = 'customers/languages/success_language.html'
 
 
 class LanguageDeleteView(DeleteView):
@@ -276,23 +315,20 @@ class LanguageDeleteView(DeleteView):
 class LanguageEditView(UpdateView):
     model = Language
     fields = ['name']
-    template_name = 'customers/languages/language_list.html'
+    template_name = 'customers/languages/add_edit_language.html'
     pk_url_kwarg = 'language_id'
-    success_url = '/customers/languages/'
+    success_url = '/customers/success_language/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(LanguageEditView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
 
 # CRUD for ClientType
 class ClientTypeListView(ListView, CompanyMixin, LoginRequiredMixin):
     model = ClientType
     template_name = 'customers/client_types/client_type_list.html'
-    context_object_name = 'client_type_list'
-
-    def get_queryset(self):
-        try:
-            queryset = ClientType.objects.order_by('name')
-        except ClientType.DoesNotExist:
-            queryset = False
-        return queryset
 
     def get_context_data(self,**kwargs):
         context = super(ClientTypeListView, self).get_context_data(**kwargs)
@@ -307,37 +343,38 @@ class ClientTypeListView(ListView, CompanyMixin, LoginRequiredMixin):
 class ClientTypeAddView(CreateView):
     model = ClientType
     fields = ['name']
-    template_name = '/customers/client_types/client_types_list.html'
-    success_url = '/customers/client_types/'
+    template_name = 'customers/client_types/add_edit_type.html'
+    success_url = '/customers/success_type/'
 
 
+class SuccessType(TemplateView):
+    template_name = 'customers/client_types/success_type.html'
+    
+    
 class ClientTypeDeleteView(DeleteView):
     model = ClientType
-    template_name = 'customers/client_types/client_types_list.html'
+    template_name = 'customers/client_types/client_type_list.html'
     pk_url_kwarg = 'client_type_id'
-    success_url = '/customers/client_types/'
+    success_url = '/customers/success_type/'
 
 
 class ClientTypeEditView(UpdateView):
     model = ClientType
     fields = ['name']
-    template_name = 'customers/client_types/client_types_list.html'
+    template_name = 'customers/client_types/add_edit_type.html'
     pk_url_kwarg = 'client_type_id'
-    success_url = '/customers/client_types/'
+    success_url = '/customers/success_type/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(ClientTypeEditView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
 
 # CRUD for customer categories
 class CustCatListView(ListView, CompanyMixin, LoginRequiredMixin):
     model = CustomerCategory
     template_name = 'customers/customer_categories/cust_cat_list.html'
-    context_object_name = 'cust_cat_list'
-
-    def get_queryset(self):
-        try:
-            queryset = CustomerCategory.objects.order_by('name')
-        except CustomerCategory.DoesNotExist:
-            queryset = False
-        return queryset
 
     def get_context_data(self,**kwargs):
         context = super(CustCatListView, self).get_context_data(**kwargs)
@@ -352,8 +389,12 @@ class CustCatListView(ListView, CompanyMixin, LoginRequiredMixin):
 class CustCatAddView(CreateView):
     model = CustomerCategory
     fields = ['name']
-    template_name = '/customers/customer_categories/cust_cat_list.html'
-    success_url = '/customers/customer_categories/'
+    template_name = 'customers/customer_categories/add_edit_cust_cat.html'
+    success_url = '/customers/success_cust_cat/'
+
+
+class SuccessCustCat(TemplateView):
+    template_name = 'customers/customer_categories/success_cust_cat.html'
 
 
 class CustCatDeleteView(DeleteView):
@@ -362,9 +403,15 @@ class CustCatDeleteView(DeleteView):
     pk_url_kwarg = 'cust_cat_id'
     success_url = '/customers/customer_categories/'
 
+
 class CustCatEditView(UpdateView):
     model = CustomerCategory
     fields = ['name']
-    template_name = 'customers/customer_categories/cust_cat_list.html'
+    template_name = 'customers/customer_categories/add_edit_cust_cat.html'
     pk_url_kwarg = 'cust_cat_id'
-    success_url = '/customers/customer_categories/'
+    success_url = '/customers/success_cust_cat/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(CustCatEditView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context

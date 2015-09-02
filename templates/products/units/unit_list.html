@@ -1,32 +1,23 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_js %} 
+    <script src="{% static 'js/jquery_forms.js' %}"></script> 
+{% endblock %}
 {% block content %}
 
-{% include "products/units/unit_modals.html" %}
+<div class="modal fade" id="modalAddUnit" tabindex="-1" role="dialog" aria-labelledby="addUnitModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
 
-{% if unit_list.count > 0 %}
-    <h2>List of units of measure</h2>
-
-    <ul class="list-group">
-    {% for unit in unit_list %}
-        <form action="" class="form-inline" method="POST">{% csrf_token %}
-            <li class="list-group-item"><b>{{ unit.name | upper }}</b>
-                <!-- Button trigger modal delete-->
-                <input type="button" data-id="{{ unit.id }}" class="btn btn-primary pull-right del-btn" style="margin:-7px 2px" value="Delete" data-toggle="modal" data-target="#modalDeleteUnit"/>
-                <!-- Button trigger modal edit-->
-                <input type="button" data-id="{{ unit.id }}" data-name="{{ unit.name }}" class="btn btn-primary pull-right edit-btn" style="margin:-7px 2px" value="Edit" data-toggle="modal" data-target="#modalEditUnit"/>
-            </li>
-        </form>
-    {% endfor %}
-    </ul>
-{% else %}
-
-    <h3>No units of neasure was added yet</h3>
-
-{% endif %}
-    <form action="" method="POST">
-    {% csrf_token %}
-        <input type="button" class="btn btn-primary" value="Add New Unit" data-toggle="modal" data-target="#modalAddUnit"/>
-    </form>
+<h2>List of units</h2>
+	<!-- Button trigger modal add-->
+	<a type="button" class="btn btn-primary pull-right" href="{% url 'add_unit' %}" data-toggle="modal" data-target="#modalAddUnit"/>Add a new unit</a>
+    <!-- Button trigger modal edit-->
+    <a id="editUnit" style="display:none" data-toggle="modal" data-target="#modalAddUnit"/></a>
+    <!-- Js-Grid -->
+    <div id="unitGrid" style="min-height: 200px;"></div>
 
 {% endblock %}
 
@@ -49,59 +40,44 @@
             return cookieValue;
         }
         var csrftoken = getCookie('csrftoken');
-        // add new unit after click with ajax
+
         var refreshPage = function(){
-            window.location.reload(true);
+        	window.location.reload(true);
         }
-        $add = $('#addUnit');
-        $add.click(function(){
-            var name = $('#message-text-unit').val();
-            $.ajax({
-                type: 'POST',
-                url: '/products/add_unit/',
-                data: {
-                    'name': name,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+        // Unit grid
+        $("#unitGrid").jsGrid({
+                height: "100%",
+                width: "100%",
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 10,
+                pageButtonCount: 5,
+                filtering: true,
+                rowClick: function(args) {
+                    var url = '/products/edit_unit/' + args.item.id;
+                    $('#editUnit').attr('href',url).click();
                 },
-                dataType: 'json'
-            });
-            refreshPage();
-        });
-        // delete any unit from list
-        $del = $('.del-btn');
-        $del.click(function(){
-            var $id = $(this).attr('data-id');
-            $('#deleteUnit').click(function(){
-                $.ajax({
-                    type: 'POST',
-                    url: '/products/delete_unit/'+$id+'/',
-                    data: {
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                controller: {
+                    loadData: function(filter) {
+                        var d = $.Deferred();
+                        $.ajax({
+                            type: "GET",
+                            url: "/products/list_units/",
+                            data: filter
+                        }).done(function(result) {
+                            d.resolve($.map(result, function(item) {
+                                return $.extend(item.fields, { id: item.pk });
+                            }));
+                        });
+                        return d.promise();
                     }
-                });
-            refreshPage();
-            })
-        });
-        // edit any unit from list
-        $edit = $('.edit-btn');
-        $edit.click(function(){
-            var $old_name = $(this).attr('data-name');
-            var $id = $(this).attr('data-id');
-            $('#message-new-unit').val($old_name);
-            $('#editUnit').click(function(){
-                var name = $('#message-new-unit').val();
-                $.ajax({
-                type: 'POST',
-                url: '/products/edit_unit/'+ $id + '/',
-                data: {
-                    'name': name,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
                 },
-                dataType: 'json'
+                fields: [
+                    { name: "id", type: "number", width: 50 },
+                    { name: "name", type: "text", width: 150 }
+                ]
             });
-            refreshPage();
-            })
-        });
     });
     </script>
 

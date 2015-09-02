@@ -228,18 +228,77 @@ class ProductGroupListJson(LoginRequiredMixin, CompanyMixin, ListView):
                                                   use_natural_foreign_keys=True),
                             content_type='application/json')
 
+
+class ProductListsJson(LoginRequiredMixin, CompanyMixin, ListView):
+    def GetCurrencyJson(self):
+        try:
+            name_filter = self.GET.get('name')
+            queryset = Currency.objects.exclude(name='None')
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+                       
+    def GetCategoryJson(self):
+        try:
+            name_filter = self.GET.get('name')
+            queryset = Category.objects.all()
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+                            
+    def GetUnitJson(self):
+        try:
+            name_filter = self.GET.get('name')
+            queryset = Unit.objects.exclude(name='None')
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+                            
+    def GetTaxJson(self):
+        try:
+            value_filter = self.GET.get('value')
+            value_filter = int(value_filter)
+            queryset = Tax.objects.all()
+            if value_filter:
+                queryset = queryset.filter(value=value_filter)
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('value'), 20)
+        print(queryset)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+                            
+                            
+class ProductGroupListsJson(LoginRequiredMixin, CompanyMixin, ListView):
+    def GetCategoryJson(self):
+        try:
+            name_filter = self.GET.get('name')
+            queryset = ProductGroupCategory.objects.all()
+            if name_filter:
+                queryset = queryset.filter(name__contains=name_filter)
+        except BaseException as exc:
+            queryset = []
+        results = Paginator(queryset.order_by('name'), 20)
+        return HttpResponse(serializers.serialize("json", [q for q in results.page(1).object_list]),
+                            content_type='application/json')
+
+
 # CRUD for Currency
 class CurrencyList(ListView, CompanyMixin):
     model = Currency
     template_name = 'products/currencies/currency_list.html'
-    context_object_name = 'currency_list'
-
-    def get_queryset(self):
-        try:
-            queryset = Currency.objects.order_by('name')
-        except Currency.DoesNotExist:
-            queryset = False
-        return queryset
 
     def get_context_data(self,**kwargs):
         context = super(CurrencyList, self).get_context_data(**kwargs)
@@ -250,44 +309,36 @@ class CurrencyList(ListView, CompanyMixin):
         context['company'] = company
         return context
 
-class AjaxableResponseMixin(object):
-    
-    def form_invalid(self, form):
-        response = super(AjaxableResponseMixin, self).form_invalid(form)
-        if self.request.is_ajax():
-            return JsonResponse(form.errors, status=400)
-        else:
-            return response
-
-    def form_valid(self, form):
-        response = super(AjaxableResponseMixin, self).form_valid(form)
-        if self.request.is_ajax():
-            data = {
-                'pk': self.object.pk,
-            }
-            return JsonResponse(data)
-        else:
-            return response
 
 class AddCurrencyView(CreateView):
     model = Currency
     fields = ['name']
-    template_name = '/products/currencies/currency_list.html'
-    success_url = '/products/currencies/'
+    template_name = 'products/currencies/add_edit_currency.html'
+    success_url = '/products/success_currency/'
 
 
+class SuccessCurrency(TemplateView):
+    template_name = 'products/currencies/currency_success.html'
+    
+    
 class DeleteCurrencyView(DeleteView):
     model = Currency
     template_name = 'products/currencies/currency_list.html'
     pk_url_kwarg = 'cur_id'
-    success_url = '/products/currencies/'
+    success_url = '/products/success_currency/'
 
-class EditCurrencyView(UpdateView, AjaxableResponseMixin):
+
+class EditCurrencyView(UpdateView):
     model = Currency
     fields = ['name']
-    template_name = 'products/currencies/currency_list.html'
+    template_name = 'products/currencies/add_edit_currency.html'
     pk_url_kwarg = 'cur_id'
-    success_url = '/products/currencies/'
+    success_url = '/products/currency_success/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(EditCurrencyView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
     
 # CRUD for Category
@@ -295,13 +346,6 @@ class CategoryList(ListView, CompanyMixin):
     model = Category
     template_name = 'products/categories/category_list.html'
     context_object_name = 'category_list'
-
-    def get_queryset(self):
-        try:
-            queryset = Category.objects.order_by('name')
-        except Category.DoesNotExist:
-            queryset = False
-        return queryset
 
     def get_context_data(self,**kwargs):
         context = super(CategoryList, self).get_context_data(**kwargs)
@@ -312,18 +356,29 @@ class CategoryList(ListView, CompanyMixin):
         context['company'] = company
         return context
 
+
 class AddCategoryView(CreateView):
     model = Category
     fields = ['name']
-    template_name = '/products/categories/currency_list.html'
-    success_url = '/products/categories/'
+    template_name = 'products/categories/add_edit_category.html'
+    success_url = '/products/success_category/'
 
+
+class SuccessCategory(TemplateView):
+    template_name = 'products/categories/success_category.html'
+    
+    
 class EditCategoryView(UpdateView):
     model = Category
     fields = ['name']
-    template_name = 'products/categories/category_list.html'
+    template_name = 'products/categories/add_edit_category.html'
     pk_url_kwarg = 'cat_id'
-    success_url = '/products/categories/'
+    success_url = '/products/success_category/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(EditCategoryView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
 
 class DeleteCategoryView(DeleteView):
@@ -339,13 +394,6 @@ class UnitList(ListView, CompanyMixin):
     template_name = 'products/units/unit_list.html'
     context_object_name = 'unit_list'
 
-    def get_queryset(self):
-        try:
-            queryset = Unit.objects.order_by('name')
-        except Unit.DoesNotExist:
-            queryset = False
-        return queryset
-
     def get_context_data(self,**kwargs):
         context = super(UnitList, self).get_context_data(**kwargs)
         try:
@@ -355,18 +403,30 @@ class UnitList(ListView, CompanyMixin):
         context['company'] = company
         return context
 
+
 class AddUnitView(CreateView):
     model = Unit
     fields = ['name']
-    template_name = '/products/units/unit_list.html'
-    success_url = '/products/units/'
+    template_name = 'products/units/add_edit_unit.html'
+    success_url = '/products/success_unit/'
+
+
+class SuccessUnit(TemplateView):
+    template_name = 'products/units/success_unit.html'
+    
 
 class EditUnitView(UpdateView):
     model = Unit
     fields = ['name']
-    template_name = 'products/units/unit_list.html'
+    template_name = 'products/units/add_edit_unit.html'
     pk_url_kwarg = 'unit_id'
-    success_url = '/products/units/'
+    success_url = '/products/success_unit/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(EditUnitView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
+
 
 class DeleteUnitView(DeleteView):
     model = Unit
@@ -374,18 +434,11 @@ class DeleteUnitView(DeleteView):
     pk_url_kwarg = 'unit_id'
     success_url = '/products/units/'
 
+
 # CRUD for Tax
 class TaxList(ListView, CompanyMixin):
     model = Tax
     template_name = 'products/taxes/tax_list.html'
-    context_object_name = 'tax_list'
-
-    def get_queryset(self):
-        try:
-            queryset = Tax.objects.order_by('value')
-        except Tax.DoesNotExist:
-            queryset = False
-        return queryset
 
     def get_context_data(self,**kwargs):
         context = super(TaxList, self).get_context_data(**kwargs)
@@ -400,16 +453,25 @@ class TaxList(ListView, CompanyMixin):
 class AddTaxView(CreateView):
     model = Tax
     fields = ['value']
-    template_name = '/products/taxes/tax_list.html'
-    success_url = '/products/taxes/'
+    template_name = 'products/taxes/add_edit_tax.html'
+    success_url = '/products/success_tax/'
 
 
+class SuccessTax(TemplateView):
+    template_name = 'products/taxes/success_tax.html'
+    
+    
 class EditTaxView(UpdateView):
     model = Tax
     fields = ['value']
-    template_name = 'products/taxes/tax_list.html'
+    template_name = 'products/taxes/add_edit_tax.html'
     pk_url_kwarg = 'tax_id'
-    success_url = '/products/taxes/'
+    success_url = '/products/success_tax/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(EditTaxView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
 
 class DeleteTaxView(DeleteView):
@@ -422,16 +484,7 @@ class DeleteTaxView(DeleteView):
 # CRUD for ProductGroupCategory
 class GroupCatList(ListView, CompanyMixin):
     model = ProductGroupCategory
-    template_name = 'products/product_groups/prod_group_cat.html'
-    context_object_name = 'prod_group_cat_list'
-
-    def get_queryset(self):
-        try:
-            queryset = ProductGroupCategory.objects.order_by('name')
-        except ProductGroupCategory.DoesNotExist:
-            queryset = False
-        print(queryset)
-        return queryset
+    template_name = 'products/product_groups/group_cat_list.html'
 
     def get_context_data(self,**kwargs):
         context = super(GroupCatList, self).get_context_data(**kwargs)
@@ -446,16 +499,25 @@ class GroupCatList(ListView, CompanyMixin):
 class AddGroupCategoryView(CreateView):
     model = ProductGroupCategory
     fields = ['name']
-    template_name = 'products/product_groups/prod_group_cat.html'
-    success_url = '/products/group_categories/'
+    template_name = 'products/product_groups/add_edit_group_cat.html'
+    success_url = '/products/success_group_cat/'
+    
+
+class SuccessGroupCat(TemplateView):
+    template_name = 'products/product_groups/success_group_cat.html'
 
 
 class EditGroupCategoryView(UpdateView):
     model = ProductGroupCategory
     fields = ['name']
-    template_name = 'products/product_groups/prod_group_cat.html'
+    template_name = 'products/product_groups/add_edit_group_cat.html'
     pk_url_kwarg = 'group_cat_id'
-    success_url = '/products/group_categories/'
+    success_url = '/products/success_group_cat/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(EditGroupCategoryView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
 
 class DeleteGroupCategoryView(DeleteView):

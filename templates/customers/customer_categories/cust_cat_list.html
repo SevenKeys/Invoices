@@ -1,34 +1,23 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_js %} 
+    <script src="{% static 'js/jquery_forms.js' %}"></script> 
+{% endblock %}
 {% block content %}
 
-{% include "customers/customer_categories/cust_cat_modals.html" %}
+<div class="modal fade" id="modalAddCustCat" tabindex="-1" role="dialog" aria-labelledby="addCustCatModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
 
-{% if cust_cat_list.count > 0 %}
-	<h2>List of customer categories</h2>
-
-    <!-- Form -->
-	<ul class="list-group">
-	{% for cust_cat in cust_cat_list %}
-		<form action="" class="form-inline" method="POST">{% csrf_token %}
-			<li class="list-group-item"><b>{{ cust_cat.name | upper }}</b>
-                <!-- Button trigger modal delete-->
-		        <input type="button" data-id="{{ cust_cat.id }}" class="btn btn-primary pull-right del-btn" style="margin:-7px 2px" value="Delete" data-toggle="modal" data-target="#modalDeleteCustCat"/>
-                <!-- Button trigger modal edit-->
-                <input type="button" data-id="{{ cust_cat.id }}" data-name="{{ cust_cat.name }}" class="btn btn-primary pull-right edit-btn" style="margin:-7px 2px" value="Edit" data-toggle="modal" data-target="#modalEditCustCat"/>
-	        </li>
-	    </form>
-	{% endfor %}
-	</ul>
-{% else %}
-
-	<h3>No categories was added yet</h3>
-
-{% endif %}
-	<form action="" method="POST">
-	{% csrf_token %}
-        <!-- Button trigger modal add-->
-	    <input type="button" class="btn btn-primary" value="Add New Category" data-toggle="modal" data-target="#modalAddCustCat"/>
-	</form>
+<h2>List of Client Categories</h2>
+	<!-- Button trigger modal add-->
+	<a type="button" class="btn btn-primary pull-right" href="{% url 'add_customer_category' %}" data-toggle="modal" data-target="#modalAddCustCat"/>Add a new category</a>
+    <!-- Button trigger modal edit-->
+    <a id="editCustCat" style="display:none" data-toggle="modal" data-target="#modalAddCustCat"/></a>
+    <!-- Js-Grid -->
+    <div id="CustCatGrid" style="min-height: 250px;"></div>
 
 {% endblock %}
 
@@ -55,56 +44,40 @@
         var refreshPage = function(){
         	window.location.reload(true);
         }
-        // Add new client type with ajax
-        $add = $('#addCust_cat');
-        $add.click(function(){
-            var name = $('#message-text-cust-cat').val();
-            $.ajax({
-                type: 'POST',
-                url: '/customers/add_customer_category/',
-                data: {
-                	'name': name,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+        // Currency grid
+        $("#CustCatGrid").jsGrid({
+                height: "100%",
+                width: "100%",
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 10,
+                pageButtonCount: 5,
+                filtering: true,
+                rowClick: function(args) {
+                    var url = '/customers/edit_customer_category/' + args.item.id;
+                    $('#editCustCat').attr('href',url).click();
                 },
-                dataType: 'json'
-            });
-            refreshPage();
-        });
-        // delete any cust_cat from list
-        $del = $('.del-btn');
-        $del.click(function(){
-	        var $id = $(this).attr('data-id');
-            $('#deleteCust_cat').click(function(){
-                $.ajax({
-                    type: 'POST',
-                    url: '/customers/delete_customer_category/'+$id+'/',
-                    data: {
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                controller: {
+                    loadData: function(filter) {
+                        var d = $.Deferred();
+                        $.ajax({
+                            type: "GET",
+                            url: "/customers/list_categories/",
+                            data: filter
+                        }).done(function(result) {
+                            d.resolve($.map(result, function(item) {
+                                return $.extend(item.fields, { id: item.pk });
+                            }));
+                        });
+                        return d.promise();
                     }
-                });
-                refreshPage();
-            })
-        });
-        // Edit any category in list
-        $edit = $('.edit-btn');
-        $edit.click(function(){
-            var $old_name = $(this).attr('data-name');
-            var $id = $(this).attr('data-id');
-            $('#message-new-cust-cat').val($old_name);
-            $('#editCust_cat').click(function(){
-                var name = $('#message-new-cust-cat').val();
-                $.ajax({
-                type: 'POST',
-                url: '/customers/edit_customer_category/'+ $id + '/',
-                data: {
-                    'name': name,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
                 },
-                dataType: 'json'
+                fields: [
+                    { name: "id", type: "number", width: 50 },
+                    { name: "name", type: "text", width: 150 }
+                ]
             });
-            refreshPage();
-            })
-        });
     });
     </script>
 

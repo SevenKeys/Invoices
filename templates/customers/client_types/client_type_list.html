@@ -1,34 +1,23 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_js %} 
+    <script src="{% static 'js/jquery_forms.js' %}"></script> 
+{% endblock %}
 {% block content %}
 
-{% include "customers/client_types/client_type_modals.html" %}
+<div class="modal fade" id="modalAddClientType" tabindex="-1" role="dialog" aria-labelledby="addClientTypeModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
 
-{% if client_type_list.count > 0 %}
-	<h2>List of client types</h2>
-
-    <!-- Form -->
-	<ul class="list-group">
-	{% for client_type in client_type_list %}
-		<form action="" class="form-inline" method="POST">{% csrf_token %}
-			<li class="list-group-item"><b>{{ client_type.name | upper }}</b>
-                <!-- Button trigger modal delete-->
-		        <input type="button" data-id="{{ client_type.id }}" class="btn btn-primary pull-right del-btn" style="margin:-7px 2px" value="Delete" data-toggle="modal" data-target="#modalDeleteType"/>
-                <!-- Button trigger modal edit-->
-                <input type="button" data-id="{{ client_type.id }}" data-name="{{ client_type.name }}" class="btn btn-primary pull-right edit-btn" style="margin:-7px 2px" value="Edit" data-toggle="modal" data-target="#modalEditType"/>
-	        </li>
-	    </form>
-	{% endfor %}
-	</ul>
-{% else %}
-
-	<h3>No types was added yet</h3>
-
-{% endif %}
-	<form action="" method="POST">
-	{% csrf_token %}
-        <!-- Button trigger modal add-->
-	    <input type="button" class="btn btn-primary" value="Add New Type" data-toggle="modal" data-target="#modalAddType"/>
-	</form>
+<h2>List of Client Types</h2>
+	<!-- Button trigger modal add-->
+	<a type="button" class="btn btn-primary pull-right" href="{% url 'add_client_type' %}" data-toggle="modal" data-target="#modalAddClientType"/>Add a new type</a>
+    <!-- Button trigger modal edit-->
+    <a id="editClientType" style="display:none" data-toggle="modal" data-target="#modalAddClientType"/></a>
+    <!-- Js-Grid -->
+    <div id="ClientTypeGrid" style="min-height: 250px;"></div>
 
 {% endblock %}
 
@@ -55,57 +44,40 @@
         var refreshPage = function(){
         	window.location.reload(true);
         }
-        // Add new client type with ajax
-        $add = $('#addClient_type');
-        $add.click(function(){
-            var name = $('#message-text-type').val();
-            console.log(name);
-            $.ajax({
-                type: 'POST',
-                url: '/customers/add_client_type/',
-                data: {
-                	'name': name,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+        // Currency grid
+        $("#ClientTypeGrid").jsGrid({
+                height: "100%",
+                width: "100%",
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 10,
+                pageButtonCount: 5,
+                filtering: true,
+                rowClick: function(args) {
+                    var url = '/customers/edit_client_type/' + args.item.id;
+                    $('#editClientType').attr('href',url).click();
                 },
-                dataType: 'json'
-            });
-            refreshPage();
-        });
-        // delete any client_type from list
-        $del = $('.del-btn');
-        $del.click(function(){
-	        var $id = $(this).attr('data-id');
-            $('#deleteClient_type').click(function(){
-                $.ajax({
-                    type: 'POST',
-                    url: '/customers/delete_client_type/'+$id+'/',
-                    data: {
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                controller: {
+                    loadData: function(filter) {
+                        var d = $.Deferred();
+                        $.ajax({
+                            type: "GET",
+                            url: "/customers/list_types/",
+                            data: filter
+                        }).done(function(result) {
+                            d.resolve($.map(result, function(item) {
+                                return $.extend(item.fields, { id: item.pk });
+                            }));
+                        });
+                        return d.promise();
                     }
-                });
-                refreshPage();
-            })
-        });
-        // Edit any client_type in list
-        $edit = $('.edit-btn');
-        $edit.click(function(){
-            var $old_name = $(this).attr('data-name');
-            var $id = $(this).attr('data-id');
-            $('#message-new-type').val($old_name);
-            $('#editClient_type').click(function(){
-                var name = $('#message-new-type').val();
-                $.ajax({
-                type: 'POST',
-                url: '/customers/edit_client_type/'+ $id + '/',
-                data: {
-                    'name': name,
-                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
                 },
-                dataType: 'json'
+                fields: [
+                    { name: "id", type: "number", width: 50 },
+                    { name: "name", type: "text", width: 150 }
+                ]
             });
-            refreshPage();
-            })
-        });
     });
     </script>
 

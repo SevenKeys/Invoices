@@ -255,7 +255,7 @@ class CustomerListsJson(LoginRequiredMixin, ListView):
             queryset = ClientType.objects.all()
             if name_filter:
                 queryset = queryset.filter(name__contains=name_filter)
-            if id_filter:
+            if id_filter != '0':
                 queryset = queryset.filter(id=int(id_filter))
         except BaseException as exc:
             queryset = []
@@ -270,7 +270,7 @@ class CustomerListsJson(LoginRequiredMixin, ListView):
             queryset = CustomerCategory.objects.all()
             if name_filter:
                 queryset = queryset.filter(name__contains=name_filter)
-            if id_filter:
+            if id_filter != '0':
                 queryset = queryset.filter(id=int(id_filter))
         except BaseException as exc:
             queryset = []
@@ -353,7 +353,7 @@ class SuccessType(TemplateView):
     
 class ClientTypeDeleteView(DeleteView):
     model = ClientType
-    template_name = 'customers/client_types/client_types_list.html'
+    template_name = 'customers/client_types/client_type_list.html'
     pk_url_kwarg = 'client_type_id'
     success_url = '/customers/success_type/'
 
@@ -363,7 +363,12 @@ class ClientTypeEditView(UpdateView):
     fields = ['name']
     template_name = 'customers/client_types/add_edit_type.html'
     pk_url_kwarg = 'client_type_id'
-    success_url = '/customers/client_types/'
+    success_url = '/customers/success_type/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(ClientTypeEditView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context
 
 
 # CRUD for customer categories
@@ -405,3 +410,8 @@ class CustCatEditView(UpdateView):
     template_name = 'customers/customer_categories/add_edit_cust_cat.html'
     pk_url_kwarg = 'cust_cat_id'
     success_url = '/customers/customer_categories/'
+    
+    def get_context_data(self, **kwargs):
+        context = super(CustCatEditView, self).get_context_data(**kwargs)
+        context['edit'] = True
+        return context

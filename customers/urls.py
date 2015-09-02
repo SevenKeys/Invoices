@@ -62,6 +62,7 @@ urlpatterns = [
         name='edit_client_type'),
     url(r'^delete_client_type/(?P<client_type_id>\d+)/$', ClientTypeDeleteView.as_view(), 
         name='delete_client_type'),
+    url(r'^list_types/', CustomerListsJson.GetTypeJson),
     # CRUD for customer group categories
     url(r'^customer_categories/$', CustCatListView.as_view(), 
         name='customer_categories'),

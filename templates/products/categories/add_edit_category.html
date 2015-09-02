@@ -27,16 +27,17 @@
             {% else %}
               <fieldset class="form-group" >
             {% endif %}
-
-            <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
-            {% if not field.field.required %}
-                <span class="special_class">(optional)</span>
-            {% endif %}
-            {% for error in field.errors %}
-                <strong>{{ error|escape }}</strong>
-            {% endfor %}
-              </label>
+            <div class="col-md-3">
+                <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+                {% if not field.field.required %}
+                    <span class="special_class">(optional)</span>
+                {% endif %}
+                {% for error in field.errors %}
+                    <strong>{{ error|escape }}</strong>
+                {% endfor %}
+                </label>
                 <p class="help-text">{{ field.help_text }}</p>
+            </div>
             <div class="col-md-9">{{ field | addcss:'form-control' }}</div>         
             </fieldset>
         {% endfor %}  

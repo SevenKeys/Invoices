@@ -38,11 +38,17 @@ class AddCustomer(CreateView, CompanyMixin):
     template_name = 'customers/add_edit_customer.html'
     success_url = '/customers/success/'
 
-
     def form_valid(self, form):
         new_customer = form.save(commit=False)
         new_customer.company = self.get_company()
-        # group = self.request.POST['group']
+        try:
+            id_group = self.request.POST['groups']
+            if id_group:
+                new_group = CustomerGroup.objects.get(id=id_group)
+                new_customer.save()
+                new_customer.customergroup_set.add(new_group)
+        except BaseException:
+            pass
         new_customer.save()
         return super(AddCustomer, self).form_valid(form)
 
@@ -88,11 +94,11 @@ class UpdateCustomer(UpdateView):
         return context
 
     def form_valid(self, form):
-        new_customer = form.save(commit=False)
-        # name_group = self.request.POST['group']
-        # group = CustomerGroup.objects.get(name=name_group)
-        # group.customers.add(new_customer)
-        # group.save()
+        new_customer = form.save()
+        id_group = self.request.POST['groups']
+        group = CustomerGroup.objects.get(id=id_group)
+        group.customers.add(new_customer)
+        group.save()
         new_customer.save()
         return super(UpdateCustomer, self).form_valid(form)
 
@@ -162,7 +168,7 @@ class AddCustomerGroup(CreateView, CompanyMixin):
 
 
 class SuccessCustomerGroup(TemplateView):
-    template_name = '/customers/customer_groups/add_group_success.html'
+    template_name = 'customers/customer_groups/add_group_success.html'
 
 
 class UpdateCustomerGroup(UpdateView, CompanyMixin):

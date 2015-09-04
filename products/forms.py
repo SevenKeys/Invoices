@@ -11,6 +11,7 @@ class ProductForm(forms.ModelForm):
                   'category', 'stock', 'group', 'unit', 'tax', 'price_with_tax']
 
 
+
 class ProductGroupForm(forms.ModelForm):
 
     class Meta:

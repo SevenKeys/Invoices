@@ -30,7 +30,7 @@ class ProductList(LoginRequiredMixin, CompanyMixin, ListView):
         return queryset
 
 
-class AddProduct(CreateView, CompanyMixin):
+class AddProduct(CompanyMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'products/add_edit_product.html'
@@ -48,11 +48,6 @@ class AddProduct(CreateView, CompanyMixin):
 
     def get_context_data(self,**kwargs):
         context = super(AddProduct, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
         context['add'] = True
         return context
 
@@ -61,22 +56,12 @@ class SuccessProduct(TemplateView):
     template_name = 'products/add_product_success.html'
 
 
-class UpdateProduct(UpdateView, CompanyMixin):
+class UpdateProduct(CompanyMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'products/add_edit_product.html'
     pk_url_kwarg = 'product_id'
     success_url = '/products/success/'
-
-    def get_context_data(self,**kwargs):
-        context = super(UpdateProduct, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        context['add'] = False
-        return context
 
     def form_valid(self, form):
         new_product = form.save(commit=False)
@@ -101,17 +86,8 @@ class ProductGroupList(LoginRequiredMixin, CompanyMixin, ListView):
     template_name = 'products/product_groups/product_group_list.html'
     model = ProductGroup
 
-    def get_context_data(self,**kwargs):
-        context = super(ProductGroupList, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
 
-
-class AddProductGroup(CreateView, CompanyMixin):
+class AddProductGroup(CompanyMixin, CreateView):
     model = ProductGroup
     form_class = ProductGroupForm
     template_name = 'products/product_groups/add_edit_product_group.html'
@@ -126,15 +102,6 @@ class AddProductGroup(CreateView, CompanyMixin):
             new_group.category = new_cat[0]
         new_group.save()
         return super(AddProductGroup,self).form_valid(form)
-
-    def get_context_data(self,**kwargs):
-        context = super(AddProductGroup, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
 
 
 class SuccessProductGroup(TemplateView):
@@ -221,7 +188,7 @@ class ProductGroupListJson(LoginRequiredMixin, CompanyMixin, ListView):
                             content_type='application/json')
 
 # CRUD for Currency
-class CurrencyList(ListView, CompanyMixin):
+class CurrencyList(CompanyMixin, ListView):
     model = Currency
     template_name = 'products/currencies/currency_list.html'
     context_object_name = 'currency_list'
@@ -233,14 +200,6 @@ class CurrencyList(ListView, CompanyMixin):
             queryset = False
         return queryset
 
-    def get_context_data(self,**kwargs):
-        context = super(CurrencyList, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
 
 class AjaxableResponseMixin(object):
     
@@ -274,6 +233,7 @@ class DeleteCurrencyView(DeleteView):
     pk_url_kwarg = 'cur_id'
     success_url = '/products/currencies/'
 
+
 class EditCurrencyView(UpdateView, AjaxableResponseMixin):
     model = Currency
     fields = ['name']
@@ -283,7 +243,7 @@ class EditCurrencyView(UpdateView, AjaxableResponseMixin):
 
     
 # CRUD for Category
-class CategoryList(ListView, CompanyMixin):
+class CategoryList(CompanyMixin, ListView):
     model = Category
     template_name = 'products/categories/category_list.html'
     context_object_name = 'category_list'
@@ -295,20 +255,13 @@ class CategoryList(ListView, CompanyMixin):
             queryset = False
         return queryset
 
-    def get_context_data(self,**kwargs):
-        context = super(CategoryList, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
 
 class AddCategoryView(CreateView):
     model = Category
     fields = ['name']
     template_name = '/products/categories/currency_list.html'
     success_url = '/products/categories/'
+
 
 class EditCategoryView(UpdateView):
     model = Category
@@ -326,7 +279,7 @@ class DeleteCategoryView(DeleteView):
 
 
 # CRUD for Unit
-class UnitList(ListView, CompanyMixin):
+class UnitList(CompanyMixin, ListView):
     model = Unit
     template_name = 'products/units/unit_list.html'
     context_object_name = 'unit_list'
@@ -338,20 +291,13 @@ class UnitList(ListView, CompanyMixin):
             queryset = False
         return queryset
 
-    def get_context_data(self,**kwargs):
-        context = super(UnitList, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
 
 class AddUnitView(CreateView):
     model = Unit
     fields = ['name']
     template_name = '/products/units/unit_list.html'
     success_url = '/products/units/'
+
 
 class EditUnitView(UpdateView):
     model = Unit
@@ -360,6 +306,7 @@ class EditUnitView(UpdateView):
     pk_url_kwarg = 'unit_id'
     success_url = '/products/units/'
 
+
 class DeleteUnitView(DeleteView):
     model = Unit
     template_name = 'products/units/unit_list.html'
@@ -367,7 +314,7 @@ class DeleteUnitView(DeleteView):
     success_url = '/products/units/'
 
 # CRUD for Tax
-class TaxList(ListView, CompanyMixin):
+class TaxList(CompanyMixin, ListView):
     model = Tax
     template_name = 'products/taxes/tax_list.html'
     context_object_name = 'tax_list'
@@ -378,15 +325,6 @@ class TaxList(ListView, CompanyMixin):
         except Tax.DoesNotExist:
             queryset = False
         return queryset
-
-    def get_context_data(self,**kwargs):
-        context = super(TaxList, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
 
 
 class AddTaxView(CreateView):
@@ -412,7 +350,7 @@ class DeleteTaxView(DeleteView):
 
 
 # CRUD for ProductGroupCategory
-class GroupCatList(ListView, CompanyMixin):
+class GroupCatList(CompanyMixin, ListView):
     model = ProductGroupCategory
     template_name = 'products/product_groups/prod_group_cat.html'
     context_object_name = 'prod_group_cat_list'
@@ -424,15 +362,6 @@ class GroupCatList(ListView, CompanyMixin):
             queryset = False
         print(queryset)
         return queryset
-
-    def get_context_data(self,**kwargs):
-        context = super(GroupCatList, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
 
 
 class AddGroupCategoryView(CreateView):

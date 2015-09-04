@@ -18,7 +18,7 @@ from django.conf.urls import include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import TemplateView
 from companies.views import NavMenuView
-from users.views import ProfileView
+from users.views import ProfileView, HomeView
 
 
 urlpatterns = [
@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^accounts/profile/', ProfileView.as_view(), name='profile'),
     url(r'^$', NavMenuView.as_view(), name='index'),
     url(r'^about-us/', TemplateView.as_view(template_name='aboutus.html'), name='aboutus'),
-    url(r'^home/', TemplateView.as_view(template_name='main_logged_in/home.html'), name='home'),
+    url(r'^home/', HomeView.as_view(), name='home'),
     url(r'^customers/',include('customers.urls')),
     url(r'^users/',include('users.urls')),
     url(r'^products/',include('products.urls')),

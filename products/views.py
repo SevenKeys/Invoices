@@ -282,6 +282,7 @@ class DeleteCurrencyView(DeleteView):
     pk_url_kwarg = 'cur_id'
     success_url = '/products/currencies/'
 
+
 class EditCurrencyView(UpdateView, AjaxableResponseMixin):
     model = Currency
     fields = ['name']
@@ -312,11 +313,13 @@ class CategoryList(ListView, CompanyMixin):
         context['company'] = company
         return context
 
+
 class AddCategoryView(CreateView):
     model = Category
     fields = ['name']
     template_name = '/products/categories/currency_list.html'
     success_url = '/products/categories/'
+
 
 class EditCategoryView(UpdateView):
     model = Category
@@ -355,11 +358,13 @@ class UnitList(ListView, CompanyMixin):
         context['company'] = company
         return context
 
+
 class AddUnitView(CreateView):
     model = Unit
     fields = ['name']
     template_name = '/products/units/unit_list.html'
     success_url = '/products/units/'
+
 
 class EditUnitView(UpdateView):
     model = Unit
@@ -368,11 +373,13 @@ class EditUnitView(UpdateView):
     pk_url_kwarg = 'unit_id'
     success_url = '/products/units/'
 
+
 class DeleteUnitView(DeleteView):
     model = Unit
     template_name = 'products/units/unit_list.html'
     pk_url_kwarg = 'unit_id'
     success_url = '/products/units/'
+
 
 # CRUD for Tax
 class TaxList(ListView, CompanyMixin):

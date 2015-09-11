@@ -41,14 +41,12 @@ class AddCustomer(CreateView, CompanyMixin):
     def form_valid(self, form):
         new_customer = form.save(commit=False)
         new_customer.company = self.get_company()
-        try:
-            id_group = self.request.POST['groups']
-            if id_group:
-                new_group = CustomerGroup.objects.get(id=id_group)
-                new_customer.save()
-                new_customer.customergroup_set.add(new_group)
-        except BaseException:
-            pass
+        id_groups = self.request.POST.getlist('groups')
+        if len(id_groups) > 0:
+            new_customer.save()
+            for id_group in id_groups:
+                group = CustomerGroup.objects.get(id=id_group)
+                new_customer.customergroup_set.add(group)
         new_customer.save()
         return super(AddCustomer, self).form_valid(form)
 
@@ -95,10 +93,12 @@ class UpdateCustomer(UpdateView):
 
     def form_valid(self, form):
         new_customer = form.save()
-        id_group = self.request.POST['groups']
-        group = CustomerGroup.objects.get(id=id_group)
-        group.customers.add(new_customer)
-        group.save()
+        id_groups = self.request.POST.getlist('groups')
+        new_customer.customergroup_set.clear()
+        if len(id_groups) > 0:
+            for id_group in id_groups:
+                group = CustomerGroup.objects.get(id=id_group)
+                new_customer.customergroup_set.add(group)
         new_customer.save()
         return super(UpdateCustomer, self).form_valid(form)
 

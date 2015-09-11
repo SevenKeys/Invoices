@@ -26,7 +26,7 @@ class CompanyMixin(object):
         try:
             user = self.request.user
             company = user.userprofile.company
-        except (UserProfile.DoesNotExist, Company.DoesNotExist):
+        except (UserProfile.DoesNotExist, Company.DoesNotExist, AttributeError):
             company = False
         context['company'] = company
         return context

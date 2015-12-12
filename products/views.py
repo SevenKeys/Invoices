@@ -43,6 +43,10 @@ class AddProduct(CompanyMixin, CreateView):
         if cur == '':
             new_cur = Currency.objects.get_or_create(name='None')
             new_product.currency = new_cur[0]
+        unit = self.request.POST['unit']
+        if unit == '':
+            new_unit = Unit.objects.get_or_create(name='None')
+            new_product.unit = new_unit[0]
         new_product.save()
         return super(AddProduct,self).form_valid(form)
 
@@ -69,6 +73,10 @@ class UpdateProduct(CompanyMixin, UpdateView):
         if cur == '':
             new_cur = Currency.objects.get_or_create(name='None')
             new_product.currency = new_cur[0]
+        unit = self.request.POST['unit']
+        if unit == '':
+            new_unit = Unit.objects.get_or_create(name='None')
+            new_product.unit = new_unit[0]
         new_product.save()
         return super(UpdateProduct,self).form_valid(form)
 
@@ -256,6 +264,7 @@ class CategoryList(CompanyMixin, ListView):
         return queryset
 
 
+
 class AddCategoryView(CreateView):
     model = Category
     fields = ['name']
@@ -292,6 +301,7 @@ class UnitList(CompanyMixin, ListView):
         return queryset
 
 
+
 class AddUnitView(CreateView):
     model = Unit
     fields = ['name']
@@ -312,6 +322,7 @@ class DeleteUnitView(DeleteView):
     template_name = 'products/units/unit_list.html'
     pk_url_kwarg = 'unit_id'
     success_url = '/products/units/'
+
 
 # CRUD for Tax
 class TaxList(CompanyMixin, ListView):

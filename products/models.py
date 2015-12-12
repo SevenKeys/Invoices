@@ -75,7 +75,7 @@ class Product(models.Model):
     stock = models.IntegerField(blank=True, null=True)
     currency = models.ForeignKey(Currency, blank=True, null=True)
     category = models.ForeignKey(Category)
-    unit = models.ForeignKey(Unit)
+    unit = models.ForeignKey(Unit, blank=True, null=True)
     tax = models.ForeignKey(Tax, default=0)
     price_with_tax = models.FloatField(default=0.0)
 

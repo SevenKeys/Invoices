@@ -1,6 +1,6 @@
 #Wysely
 
-Wysely is an web application to manage, create and send invoices for companies and freelancer, making much easier this process and with a very practical UI to generate invoices easily.
+Wysely is an web application to manage, create and send invoices for companies and freelancers, making much easier this process and with a very practical UI to generate invoices easily.
 
 Wysely is developed with django 1.8 and python 3.4.
 

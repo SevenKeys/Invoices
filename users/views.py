@@ -10,17 +10,12 @@ from .models import UserProfile
 from companies.views import CompanyMixin
 
 
-class ProfileView(TemplateView, CompanyMixin):
-    template_name = 'registration/profile.html'
+class HomeView(CompanyMixin, TemplateView):
+    template_name = 'main_logged_in/home.html'
 
-    def get_context_data(self,**kwargs):
-        context = super(ProfileView, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = None
-        context['company'] = company
-        return context
+
+class ProfileView(CompanyMixin, TemplateView):
+    template_name = 'registration/profile.html'
 
 
 def createUserProfile(sender, instance, **kwargs):

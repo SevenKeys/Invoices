@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from .views import CustomerList, SuccessCustomer
 from .views import AddCustomer, DeleteCustomer, UpdateCustomer
-from .views import CustomerGroupList, AddCustomerGroup, CustomerGroupDetail 
+from .views import CustomerGroupList, AddCustomerGroup 
 from .views import UpdateCustomerGroup, DeleteCustomerGroup, SuccessCustomerGroup
 from .views import CustomerListJson, CustomerGroupListJson
 from .views import CustomerListsJson
@@ -34,8 +34,6 @@ urlpatterns = [
         name='add_customer_group'),
     url(r'^success_group/$', SuccessCustomerGroup.as_view(), 
         name='success_customer_group'),
-    url(r'^get_group/(?P<customer_group_id>\d+)/$', CustomerGroupDetail.as_view(), 
-        name='get_customer_group'),
     url(r'^edit_group/(?P<customer_group_id>\d+)/$', UpdateCustomerGroup.as_view(), 
         name='edit_customer_group'),
     url(r'^delete_group/(?P<customer_group_id>\d+)/$', DeleteCustomerGroup.as_view(), 

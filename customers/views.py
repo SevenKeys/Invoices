@@ -38,11 +38,15 @@ class AddCustomer(CompanyMixin, CreateView):
     template_name = 'customers/add_edit_customer.html'
     success_url = '/customers/success/'
 
-
     def form_valid(self, form):
         new_customer = form.save(commit=False)
         new_customer.company = self.get_company()
-        # group = self.request.POST['group']
+        id_groups = self.request.POST.getlist('groups')
+        if len(id_groups) > 0:
+            new_customer.save()
+            for id_group in id_groups:
+                group = CustomerGroup.objects.get(id=id_group)
+                new_customer.customergroup_set.add(group)
         new_customer.save()
         return super(AddCustomer, self).form_valid(form)
 
@@ -65,6 +69,12 @@ class UpdateCustomer(UpdateView):
 
     def form_valid(self, form):
         new_customer = form.save(commit=False)
+        id_groups = self.request.POST.getlist('groups')
+        new_customer.customergroup_set.clear()
+        if len(id_groups) > 0:
+            for id_group in id_groups:
+                group = CustomerGroup.objects.get(id=id_group)
+                new_customer.customergroup_set.add(group)
         new_customer.save()
         return super(UpdateCustomer, self).form_valid(form)
 
@@ -97,11 +107,6 @@ class AddCustomerGroup(CompanyMixin, CreateView):
     form_class = CustomerGroupForm
     template_name = 'customers/customer_groups/add_edit_customer_group.html'
     success_url = '/customers/success_group/'
-
-    # def get_context_data(self,**kwargs):
-    #     context = super(AddCustomerGroup,self).get_context_data(**kwargs)
-    #     context['company'] = self.get_company()
-    #     return context
 
     def form_valid(self, form):
         customer_group = form.save(commit=False)

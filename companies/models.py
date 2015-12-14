@@ -1,6 +1,10 @@
 from django.db import models
 from contacts.models import Contact
 
+class CompanyManager(models.Model):
+
+    def get_by_natural_key(self, name):
+        return self.get(name=name)
 
 class Company(models.Model):
     name = models.CharField(max_length=60)
@@ -14,8 +18,12 @@ class Company(models.Model):
     	return self.name
 
 class CompanySegment(models.Model):
-	company = models.ForeignKey(Company)
-	name = models.CharField(max_length=60)
+    objects = CompanyManager()
+    company = models.ForeignKey(Company)
+    name = models.CharField(max_length=60)
 
-	def __str__(self):
-		return self.name
+    def natural_key(self):
+        return self.name
+
+    def __str__(self):
+        return self.name

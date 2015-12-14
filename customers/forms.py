@@ -4,14 +4,25 @@ from .models import Customer, CustomerGroup
 
 
 class CustomerForm(forms.ModelForm):
-	groups = [((x),(x.name)) for x in CustomerGroup.objects.all()]
 	name = forms.CharField(label='Client name')
-	group = forms.ChoiceField(choices=groups,required=False)
+	all_groups = CustomerGroup.objects.all()
+	groups = forms.ModelMultipleChoiceField(queryset=all_groups, 
+								   required=False)
 
 	class Meta:
 		model = Customer
-		fields = ['name','status','group','comment','language',
+		fields = ['name','status','groups','comment','language',
 				  'client_type','discount_percent','company_segment']
+
+	def __init__(self,*args,**kwargs):
+		super(CustomerForm, self).__init__(*args, **kwargs)
+		try:
+			name = self.initial['name']
+			customer = Customer.objects.get(name=name)
+			self.fields['groups'].initial = CustomerGroup.objects.filter(
+											  customers=customer)
+		except KeyError:
+			pass
 
 
 class CustomerGroupForm(forms.ModelForm):

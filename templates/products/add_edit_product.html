@@ -66,6 +66,19 @@
 
 <script type="text/javascript">
 $(function(){
+    // Calculate price with tax
+    function culPrice(){
+        var tax = $('#id_tax option:selected').text();
+        var price = $('#id_price').val();
+        var price_with_tax = Number(price) + (price * tax / 100);
+        $('#id_price_with_tax').val(price_with_tax);
+    }
+    $('#id_price').change(function(){
+        culPrice();
+    });
+    $('#id_tax').change(function(){
+        culPrice();
+    });
     $('.btn_modal').click(function(){
         window.location.href = '/products/all/';
     });

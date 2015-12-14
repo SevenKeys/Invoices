@@ -24,7 +24,7 @@
     "js-grid": "1.1.0"
   },
   "resolutions": {
-    "bootstrap": "3.3.5"
+    "bootstrap": "~3.3.4"
   },
   "authors": [
     "Francisco Estudillo <festudillobernal@gmail.com>"

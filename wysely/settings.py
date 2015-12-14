@@ -195,3 +195,6 @@ REGISTRATION_AUTO_LOGIN = False
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 AUTH_PROFILE_MODULE = 'wysely.User'
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

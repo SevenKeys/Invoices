@@ -13,7 +13,7 @@ from .forms import CustomerForm, CustomerGroupForm
 from companies.models import Company
 from users.models import UserProfile
 from users.permissions import LoginRequiredMixin
-from companies.views import CompanyMixin, NavMenuView
+from companies.views import CompanyMixin
 from contacts.views import ContactMixin
 
 
@@ -32,7 +32,7 @@ class CustomerList(LoginRequiredMixin, CompanyMixin, ListView):
 
 
 
-class AddCustomer(CreateView, CompanyMixin):
+class AddCustomer(CompanyMixin, CreateView):
     model = Customer
     form_class = CustomerForm
     template_name = 'customers/add_edit_customer.html'
@@ -46,33 +46,9 @@ class AddCustomer(CreateView, CompanyMixin):
         new_customer.save()
         return super(AddCustomer, self).form_valid(form)
 
-    def get_context_data(self,**kwargs):
-        context = super(AddCustomer, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (UserProfile.DoesNotExist, Company.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
-
 
 class SuccessCustomer(TemplateView):
     template_name = 'customers/add_customer_success.html'
-
-
-class CustomerDetail(DetailView,CompanyMixin):
-    model = Customer
-    template_name = 'customers/customer_details.html'
-    pk_url_kwarg = 'customer_id'
-
-    def get_context_data(self,**kwargs):
-        context = super(CustomerDetail, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
 
 
 class UpdateCustomer(UpdateView):
@@ -102,34 +78,11 @@ class DeleteCustomer(DeleteView):
 
 
 # CRUD for CustomerGroup
-class CustomerGroupDetail(DetailView, CompanyMixin):
-    model = CustomerGroup
-    template_name = 'customers/group_details.html'
-    pk_url_kwarg = 'customer_group_id'
 
-    def get_context_data(self,**kwargs):
-        context = super(CustomerGroupDetail, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
-
-
-class CustomerGroupList(ListView, CompanyMixin, LoginRequiredMixin):
+class CustomerGroupList(CompanyMixin, ListView, LoginRequiredMixin):
     model = CustomerGroup
     template_name = 'customers/customer_groups/customer_group_list.html'
     context_object_name = 'customer_group_list'
-
-    def get_context_data(self,**kwargs):
-        context = super(CustomerGroupList, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
 
     def get_queryset(self):
         try:
@@ -139,16 +92,16 @@ class CustomerGroupList(ListView, CompanyMixin, LoginRequiredMixin):
         return queryset
 
 
-class AddCustomerGroup(CreateView, CompanyMixin):
+class AddCustomerGroup(CompanyMixin, CreateView):
     model = CustomerGroup
     form_class = CustomerGroupForm
     template_name = 'customers/customer_groups/add_edit_customer_group.html'
     success_url = '/customers/success_group/'
 
-    def get_context_data(self,**kwargs):
-        context = super(AddCustomerGroup,self).get_context_data(**kwargs)
-        context['company'] = self.get_company()
-        return context
+    # def get_context_data(self,**kwargs):
+    #     context = super(AddCustomerGroup,self).get_context_data(**kwargs)
+    #     context['company'] = self.get_company()
+    #     return context
 
     def form_valid(self, form):
         customer_group = form.save(commit=False)
@@ -279,18 +232,9 @@ class CustomerListsJson(LoginRequiredMixin, ListView):
                             
                             
 # CRUD for Language
-class LanguageListView(ListView, CompanyMixin, LoginRequiredMixin):
+class LanguageListView(CompanyMixin, ListView, LoginRequiredMixin):
     model = Language
     template_name = 'customers/languages/language_list.html'
-
-    def get_context_data(self,**kwargs):
-        context = super(LanguageListView, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
 
 
 class LanguageAddView(CreateView):
@@ -325,18 +269,9 @@ class LanguageEditView(UpdateView):
 
 
 # CRUD for ClientType
-class ClientTypeListView(ListView, CompanyMixin, LoginRequiredMixin):
+class ClientTypeListView(CompanyMixin, ListView, LoginRequiredMixin):
     model = ClientType
     template_name = 'customers/client_types/client_type_list.html'
-
-    def get_context_data(self,**kwargs):
-        context = super(ClientTypeListView, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
 
 
 class ClientTypeAddView(CreateView):
@@ -371,18 +306,9 @@ class ClientTypeEditView(UpdateView):
 
 
 # CRUD for customer categories
-class CustCatListView(ListView, CompanyMixin, LoginRequiredMixin):
+class CustCatListView(CompanyMixin, ListView, LoginRequiredMixin):
     model = CustomerCategory
     template_name = 'customers/customer_categories/cust_cat_list.html'
-
-    def get_context_data(self,**kwargs):
-        context = super(CustCatListView, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist):
-            company = False
-        context['company'] = company
-        return context
 
 
 class CustCatAddView(CreateView):

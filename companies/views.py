@@ -11,8 +11,10 @@ from contacts.views import ContactMixin
 from users.models import UserProfile
 from users.permissions import LoginRequiredMixin
 
+
 # Mixin to get company of user
 class CompanyMixin(object):
+    model = Company
 
     def get_company(self):
         user = self.request.user
@@ -24,30 +26,15 @@ class CompanyMixin(object):
         try:
             user = self.request.user
             company = user.userprofile.company
-        except (UserProfile.DoesNotExist, Company.DoesNotExist):
+        except (UserProfile.DoesNotExist, Company.DoesNotExist, AttributeError):
             company = False
         context['company'] = company
         return context
 
 
 # add company id to navigation menu
-class NavMenuView(TemplateView, CompanyMixin):
-
-    def get_context_data(self,**kwargs):
-        context = super(NavMenuView, self).get_context_data(**kwargs)
-        try:
-            company = self.get_company()
-        except (Company.DoesNotExist, UserProfile.DoesNotExist, AttributeError):
-            company = None
-        context['company'] = company
-        return context
-
-    def get_template_names(self):
-        return [
-        'index.html',
-        'navigation_menu.html',
-        'main_logged_in/home.html'
-        ]
+class NavMenuView(CompanyMixin, TemplateView):
+    template_name = 'index.html'
 
 
 class CompanyDetail(DetailView, LoginRequiredMixin, CompanyMixin):

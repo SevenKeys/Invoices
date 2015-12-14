@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_js %} 
+    <script src="{% static 'js/jquery_forms.js' %}"></script> 
+{% endblock %}
+{% block content %}
+
+<div class="modal fade" id="modalAddUnit" tabindex="-1" role="dialog" aria-labelledby="addUnitModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+
+<h2>List of units</h2>
+	<!-- Button trigger modal add-->
+	<a type="button" class="btn btn-primary pull-right" href="{% url 'add_unit' %}" data-toggle="modal" data-target="#modalAddUnit"/>Add a new unit</a>
+    <!-- Button trigger modal edit-->
+    <a id="editUnit" style="display:none" data-toggle="modal" data-target="#modalAddUnit"/></a>
+    <!-- Js-Grid -->
+    <div id="unitGrid" style="min-height: 200px;"></div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(function(){
+            function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        var refreshPage = function(){
+        	window.location.reload(true);
+        }
+        // Unit grid
+        $("#unitGrid").jsGrid({
+                height: "100%",
+                width: "100%",
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 10,
+                pageButtonCount: 5,
+                filtering: true,
+                rowClick: function(args) {
+                    var url = '/products/edit_unit/' + args.item.id;
+                    $('#editUnit').attr('href',url).click();
+                },
+                controller: {
+                    loadData: function(filter) {
+                        var d = $.Deferred();
+                        $.ajax({
+                            type: "GET",
+                            url: "/products/list_units/",
+                            data: filter
+                        }).done(function(result) {
+                            d.resolve($.map(result, function(item) {
+                                return $.extend(item.fields, { id: item.pk });
+                            }));
+                        });
+                        return d.promise();
+                    }
+                },
+                fields: [
+                    { name: "id", type: "number", width: 50 },
+                    { name: "name", type: "text", width: 150 }
+                ]
+            });
+    });
+    </script>
+
+{% endblock %}

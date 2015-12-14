@@ -1,37 +1,52 @@
+# from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
-from .models import Company
-from .forms import CompanyForm
+from django.http import HttpResponse
+from django.core.urlresolvers import reverse
+from .models import Company, CompanySegment
+from .forms import CompanyForm, SegmentForm
 from contacts.models import Contact
 from contacts.views import ContactMixin
 from users.models import UserProfile
 from users.permissions import LoginRequiredMixin
 
-
 # Mixin to get company of user
 class CompanyMixin(object):
-    def get_company(self, **kwargs):
+
+    def get_company(self):
         user = self.request.user
         company = user.userprofile.company
         return company
+        
+    def get_context_data(self,**kwargs):
+        context = super(CompanyMixin,self).get_context_data(**kwargs)
+        try:
+            user = self.request.user
+            company = user.userprofile.company
+        except (UserProfile.DoesNotExist, Company.DoesNotExist):
+            company = False
+        context['company'] = company
+        return context
 
 
 # add company id to navigation menu
 class NavMenuView(TemplateView, CompanyMixin):
-    def get_context_data(self, **kwargs):
+
+    def get_context_data(self,**kwargs):
         context = super(NavMenuView, self).get_context_data(**kwargs)
         try:
             company = self.get_company()
-        except (Company.DoesNotExist, AttributeError):
+        except (Company.DoesNotExist, UserProfile.DoesNotExist, AttributeError):
             company = None
         context['company'] = company
         return context
 
     def get_template_names(self):
         return [
-            'index.html',
-            'navigation_menu.html'
+        'index.html',
+        'navigation_menu.html',
+        'main_logged_in/home.html'
         ]
 
 
@@ -40,16 +55,16 @@ class CompanyDetail(DetailView, LoginRequiredMixin, CompanyMixin):
     pk_url_kwarg = 'company_id'
     model = Company
 
-
+    
 class AddCompany(CreateView, ContactMixin):
     model = Company
     form_class = CompanyForm
     template_name = 'companies/add_edit_company.html'
     success_url = '/'
 
-    def form_valid(self, form):
+    def form_valid(self,form):
         new_company = form.save(commit=False)
-
+        
         # get from request Contact data
         contact = Contact(phone_number=self.request.POST['phone_number'],
                           email=self.request.POST['email'],
@@ -62,9 +77,9 @@ class AddCompany(CreateView, ContactMixin):
         # write user's first and last names
         full_name = self.request.POST['full_user_name']
         register_user = self.request.user
-        if len(full_name.split(' ')) == 2:
+        if len(full_name.split(' '))==2:
             print('name is twofold')
-            register_user.first_name = full_name.split(' ')[0]
+            register_user.first_name = full_name.split(' ')[0] 
             register_user.last_name = full_name.split(' ')[1]
             register_user.save()
 
@@ -79,12 +94,14 @@ class AddCompany(CreateView, ContactMixin):
         contact.userprofile_set.add(current_user)
         return super(AddCompany, self).form_valid(form)
 
+    
     def get_form_kwargs(self, **kwargs):
         kwargs = super(AddCompany, self).get_form_kwargs(**kwargs)
         kwargs.update({
             'user': self.request.user
-        })
+            })
         return kwargs
+
 
 
 class UpdateCompany(UpdateView):
@@ -92,20 +109,22 @@ class UpdateCompany(UpdateView):
     form_class = CompanyForm
     template_name = 'companies/add_edit_company.html'
     pk_url_kwarg = 'company_id'
-    success_url = '/'
+    # success_url = '/'
 
     def get_form_kwargs(self, **kwargs):
         kwargs = super(UpdateCompany, self).get_form_kwargs(**kwargs)
         kwargs.update({
             'user': self.request.user
-        })
+            })
         return kwargs
-
     # change header in form
     def get_context_data(self, **kwargs):
         context = super(UpdateCompany, self).get_context_data(**kwargs)
         context['edit'] = True
         return context
+
+    def get_success_url(self):
+        return reverse('get_company',kwargs={'company_id':self.object.pk})
 
 
 class DeleteCompany(DeleteView):
@@ -113,4 +132,9 @@ class DeleteCompany(DeleteView):
     form_class = CompanyForm
     template_name = 'companies/delete_company.html'
     pk_url_kwarg = 'company_id'
-    success_url = ''
+    success_url = '/companies/success_delete/'
+    
+    
+class SuccessDelete(TemplateView):
+    template_name = 'companies/success_delete.html'
+

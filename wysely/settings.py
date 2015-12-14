@@ -55,6 +55,7 @@ INSTALLED_APPS = (
     'customers',
     'companies',
     'contacts',
+    'invoicetemplates',
     'common.apps.CommonConfig',
 )
 
@@ -166,8 +167,8 @@ PIPELINE_JS = {
             'bower_components/gridster/dist/jquery.gridster.min.js',
             'bower_components/js-grid/dist/jsgrid.min.js',
             # components
-            # 'wysely/components/sortable_list.js',
-            'js/ajax_search.js',
+            'js/navbar_products.js',
+            'js/navbar_customers.js',
         ),
         # Compress all passed files into `js/libs.min.js`.
         'output_filename': 'js/libs.min.js',

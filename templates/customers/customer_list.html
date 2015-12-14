@@ -1,61 +1,71 @@
 {% extends "base.html" %}
-
+<!-- Script to manage errors in form -->
+{% load staticfiles %}
+{% block extra_js %} 
+    <script src="{% static 'js/jquery_forms.js' %}"></script> 
+{% endblock %}
 {% block content %}
     {% if company %}
+        <!-- Shell for modal -->
+        <div class="modal fade" id="modalAddCustomer" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content"></div>
+            </div>
+        </div>
         <h2>Clients of <strong>{{ company }}</strong> company.</h2>
-            {% csrf_token %}
-            <div class="input-group">
-                <input type="text" id="search_customers" class="form-control" placeholder="Input search text" aria-describedby="sizing-addon2">
-            </div>
-            <div class="dropdown">
-                <ul id="search_customers_results" class="custom_dropdown">
-                </ul>
-            </div>
-            {% if customer_list.count > 0 %}
-                {% for customer in customer_list %}
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Company</th>
-                            <th>Created</th>
-                            <th>Group(s)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                               {{ customer.name }}
-                            </td>
-                            <td>{{ customer.company }}</td>
-                            <td>{{ customer.created }}</td>
-                            <td>
-                            {% if customer.customergroup_set %}
-                        {% for group in customer.customergroup_set.all %}
-                                <p><a href="{% url 'get_group' group.id %}">{{ group }}</a></p>
-                            {% endfor %}
-                        {% endif %}
-                            </td>
-                            <td>
-                                <button type="button"><a href="{% url 'edit_customer' customer.id %}">Edit</a></button>
-                            </td>
-                            <td>
-                                <button type="button"><a href="{% url 'delete_customer' customer.id %}">Delete</a></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                    
-                
-                {% endfor %}
-            {% else %}
-                <h3>No clients was added yet.</h3>
-            {% endif %}
-        </ul>
-        <button type="button"><a href="{% url 'add_customer' %}">Add client</a></button>
-        <button type="button"><a href="{% url 'add_group' %}">Add client group</a></button>
+        {% csrf_token %}
+            <a class="btn btn-primary pull-right" href="{% url 'add_customer' %}" data-toggle="modal" data-target="#modalAddCustomer">Add client</a>
+            <a id="editCustomer" href="" data-toggle="modal" data-target="#modalAddCustomer" style="display:none"></a>
+        {% if customer_list.count > 0 %}
+            <div id="customersGrid" style="min-height: 250px;"></div>
+        {% else %}
+            <h3>No clients was added yet.</h3>
+        {% endif %}
     {% else %}
         <h3>You have not registered a company yet.</h3>
-        <button type="button"><a href="{% url 'add_company' %}">Create company</a></button>
+            <a href="{% url 'add_company' %}" class="btn btn-info tm_style_2">Create company</a>
     {% endif %}
+{% endblock %}
+
+{% block scripts %}
+        <script>
+            $(function() {
+                $("#customersGrid").jsGrid({
+                    height: "100%",
+                    width: "100%",
+                    sorting: true,
+                    paging: true,
+                    autoload: true,
+                    pageSize: 10,
+                    pageButtonCount: 5,
+                    filtering: true,
+                    rowClick: function(args) {
+                        var url = '/customers/edit/' + args.item.id;
+                        $('#editCustomer').attr('href',url).click();
+                    },
+                    controller: {
+                        loadData: function(filter) {
+                            var d = $.Deferred();
+                            $.ajax({
+                                type: "GET",
+                                url: "/customers/list/",
+                                data: filter
+                            }).done(function(result) {
+                                d.resolve($.map(result, function(item) {
+                                    return $.extend(item.fields, { id: item.pk });
+                                }));
+                            });
+                            return d.promise();
+                        }
+                    },
+                    fields: [
+                        { name: "name", type: "text", width: 150 },
+                        { name: "status", type: "text", width: 150 },
+                        { name: "client_type", type: "text", width: 100, title: "client type" },
+                        { name: "company_segment", type: "text", width: 100, title: "company segment" }
+                    ]
+                });
+            });
+        </script>
+
 {% endblock %}

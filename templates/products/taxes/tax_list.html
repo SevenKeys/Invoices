@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_js %} 
+    <script src="{% static 'js/jquery_forms.js' %}"></script> 
+{% endblock %}
+{% block content %}
+
+<div class="modal fade" id="modalAddTax" tabindex="-1" role="dialog" aria-labelledby="addtaxModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+
+<h2>List of taxes</h2>
+	<!-- Button trigger modal add-->
+	<a type="button" class="btn btn-primary pull-right" href="{% url 'add_tax' %}" data-toggle="modal" data-target="#modalAddTax"/>Add a new tax</a>
+    <!-- Button trigger modal edit-->
+    <a id="editTax" style="display:none" data-toggle="modal" data-target="#modalAddTax"/></a>
+    <!-- Js-Grid -->
+    <div id="taxGrid" style="min-height: 200px;"></div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(function(){
+            function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        var refreshPage = function(){
+        	window.location.reload(true);
+        }
+        // tax grid
+        $("#taxGrid").jsGrid({
+                height: "100%",
+                width: "100%",
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 10,
+                pageButtonCount: 5,
+                filtering: true,
+                rowClick: function(args) {
+                    var url = '/products/edit_tax/' + args.item.id;
+                    $('#editTax').attr('href',url).click();
+                },
+                controller: {
+                    loadData: function(filter) {
+                        var d = $.Deferred();
+                        $.ajax({
+                            type: "GET",
+                            url: "/products/list_taxes/",
+                            data: filter
+                        }).done(function(result) {
+                            d.resolve($.map(result, function(item) {
+                                return $.extend(item.fields, { id: item.pk });
+                            }));
+                        });
+                        return d.promise();
+                    }
+                },
+                fields: [
+                    { name: "id", type: "number", width: 50 },
+                    { name: "value", type: "number", width: 50 }
+                ]
+            });
+    });
+    </script>
+
+{% endblock %}

@@ -1,13 +1,26 @@
+from django.views.generic import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView, DeleteView
-
+from django.db.models.signals import post_save
+from django.contrib.auth.models import User
 from .forms import UserForm
 from .permissions import LoginRequiredMixin
+from .models import UserProfile
+from companies.views import CompanyMixin
 
-from django.db.models.signals import post_save
-from users.models import UserProfile
-from django.contrib.auth.models import User
+
+class ProfileView(TemplateView, CompanyMixin):
+    template_name = 'registration/profile.html'
+
+    def get_context_data(self,**kwargs):
+        context = super(ProfileView, self).get_context_data(**kwargs)
+        try:
+            company = self.get_company()
+        except (Company.DoesNotExist, UserProfile.DoesNotExist):
+            company = None
+        context['company'] = company
+        return context
 
 
 def createUserProfile(sender, instance, **kwargs):

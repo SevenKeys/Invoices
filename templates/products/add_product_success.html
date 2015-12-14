@@ -1,0 +1,13 @@
+<div class="modal-dialog" style="display: none"> 
+	<div class="modal-content"> 
+		<script> 
+			setTimeout(function() { 
+				$('#modalAddProduct').modal('hide'); 
+			}, 500); 
+			$('body').on('hidden.bs.modal', '.modal', function () { 
+				$(this).removeData('bs.modal');
+			});
+			window.location.href = '/products/all/';
+		</script>
+	</div><!-- /.modal-content --> 
+</div><!-- /.modal-dialog -->

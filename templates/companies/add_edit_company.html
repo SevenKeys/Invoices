@@ -1,50 +1,95 @@
 {% extends "base.html" %}
 {% load add_class %}
 {% block content %}
-	<form class="form-horizontal" action="" method="POST">
-		{% if edit %}
-		    <legend><span  class="col-sm-offset-6">Edit company data</span></legend>
-		{% else %}
-		    <legend><span  class="col-sm-offset-6">Add company</span></legend>
-		{% endif %}
+{% include 'companies/company_modals.html' %}
+	<form class="form-contact col-md-offset-2 col-md-8" action="" method="POST">
+		<div class="row">
+			{% if edit %}
+			    <h2><span  class="col-sm-offset-6">Edit company</span></h2>
+			{% else %}
+			    <h2><span  class="col-sm-offset-6">Add company</span></h2>
+			{% endif %}
+		</div>
 		{% csrf_token %} 
 		{% for hidden in form.hidden_fields %}
 			{{ hidden }}
 		{% endfor %}
 		{% for field in form.visible_fields %}
-		{% if field.errors %}
-		<fieldset class="form-group {% add_css_class 'has-error' %}" >
-		    <ol>
-		    {% for error in field.errors %}
-		        <li><strong>{{ error|escape }}</strong></li>
-		    {% endfor %}
-		    </ol>
-		{% elif field.value %}
-		  <fieldset class="form-group {% add_css_class 'has-success' %}" >
-		{% else %}
-		  <fieldset class="form-group" >
-		{% endif %}
-		  <label class="col-lg-3 control-label" for="id_{{ field.name }}">{{ field.label }}
-		  {% if field.field.required %}
-			 <span class="special_class">*</span>
-	  	  {% endif %}
-		  	</label>
-            <div class="col-lg-8 ">
-		      <input type="text" class="form-control"
-		        name="{{ field.name }}"
-		        id="id_{{ field.name }}"
-		        value="{{ field.value|default_if_none:"" }}">
-		        <p class="help-text">{{ field.help_text }} </p>
+			{% if field.errors %}
+			  <fieldset class="form-group {% add_css_class 'has-error' %}" >
+			{% elif field.value %}
+			  <fieldset class="form-group {% add_css_class 'has-success' %}" >
+			{% else %}
+			  <fieldset class="form-group" >
+			{% endif %}
+
+		  	<div class="col-md-3">
+			  <label class="control-label" for="id_{{ field.name }}">{{ field.label }}:
+			  {% if not field.field.required %}
+				 <span class="special_class">(optional)</span>
+		  	  {% endif %}
+                {% for error in field.errors %}
+                    <strong>{{ error|escape }}</strong>
+                {% endfor %}
+			  </label>
+		        <p class="help-text">{{ field.help_text }}</p>
             </div>
-		</fieldset>
+            <div class="col-md-9">{{ field | addcss:'form-control' }}</div>	        
+			</fieldset>
 		{% endfor %}
 
-        <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-6">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                  &nbsp;<button type="reset" class="btn">Cancel</button>
-            </div>
+        <div class="col-sm-offset-3 col-sm-6">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          &nbsp;<a type="button" class="btn btn-default" href="/home/">Cancel</a>
         </div>
 	</form>
+    {% if edit %}
+        <!-- Button trigger modal delete-->
+        <div>
+            <button id="company_delete" class="btn tm_style_2 btn_delete" style="margin:10px 245px"
+            data-toggle="modal" data-target="#modalDeleteCompany">
+                Delete Company</button>
+        </div>
+    {% endif %}
+{% endblock %}
 
+<!-- Scripts -->
+{% block scripts %}
+{% if edit %}
+    <script type="text/javascript">
+    $(function(){
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        // Delete company with ajax
+        $del = $('#deleteCompany');
+        $del.click(function(){
+            $.ajax({
+                type: 'POST',
+                url: '/companies/delete_company/{{ object.id }}/',
+                data: {
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(){
+                    window.location.href = '/companies/success_delete/'
+                }
+            });
+        });
+    });
+    </script>
+{% endif  %}
 {% endblock %}

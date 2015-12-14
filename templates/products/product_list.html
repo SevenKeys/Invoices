@@ -1,96 +1,76 @@
 {% extends "base.html" %}
+<!-- Script to manage errors in form -->
+{% load staticfiles %}
+{% block extra_js %} 
+    <script src="{% static 'js/jquery_forms.js' %}"></script> 
+{% endblock %}
 
 {% block content %}
-    {% if company %}
-        <h1>Products of <strong>{{ company }}</strong> company.</h1>
-        <br/>
-        {% csrf_token %}
-        <a class="btn btn-primary pull-right" href="{% url 'add_product' %}">Add New Product</a>
-        <div id="productsGrid" style="min-height: 250px;"></div>
-        <br/><br/>
 
-        <a class="btn btn-primary pull-right" href="{% url 'add_product_group' %}">Add New Product Group</a>
-        <div id="productGroupsGrid" style="min-height: 250px;"></div>
+    {% if company %}
+    <div class="modal fade" id="modalAddProduct" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+        <h1>Products of <strong>{{ company }}</strong> company</h1>
+        {% csrf_token %}
+
+        <a class="btn btn-primary pull-right" href="{% url 'add_product' %}" data-toggle="modal" data-target="#modalAddProduct">
+        Add New Product</a>
+        <a id="editProduct" href="" data-toggle="modal" data-target="#modalAddProduct" style="display:none"></a>
+        <div id="productsGrid" style="min-height: 250px;"></div>
+
     {% else %}
         <h3>You have not registered a company yet.</h3>
-        <button type="button"><a href="{% url 'add_company' %}">Create company</a></button>
+            <a href="{% url 'add_company' %}" class="btn btn-info tm_style_2">Create company</a>
     {% endif %}
 
 {% endblock %}
+
 {% block scripts %}
-        <script>
-            $(function() {
-                $("#productGroupsGrid").jsGrid({
-                    height: "100%",
-                    width: "100%",
-                    sorting: true,
-                    paging: true,
-                    autoload: true,
-                    pageSize: 10,
-                    pageButtonCount: 5,
-                    filtering: true,
-                    rowClick: function(args) {
-                        return window.location.replace("/products/edit_group/"+args.item.id);
-                    },
-                    controller: {
-                        loadData: function(filter) {
-                            var d = $.Deferred();
-                            $.ajax({
-                                type: "GET",
-                                url: "/products/list_group/",
-                                data: filter
-                            }).done(function(result) {
-                                d.resolve($.map(result, function(item) {
-                                    return $.extend(item.fields, { id: item.pk });
-                                }));
-                            });
-                            return d.promise();
-                        }
-                    },
-                    fields: [
-                        { name: "name", type: "text", width: 150 },
-                        { name: "category", type: "text", width: 150 },
-                        { name: "parent", type: "text", width: 100 }
-                    ]
-                });
-            });
+    <script>
 
-            $(function() {
-                $("#productsGrid").jsGrid({
-                    height: "100%",
-                    width: "100%",
-                    sorting: true,
-                    paging: true,
-                    autoload: true,
-                    pageSize: 10,
-                    pageButtonCount: 5,
-                    filtering: true,
-                    rowClick: function(args) {
-                        return window.location.replace("/products/edit/"+args.item.id);
-                    },
-                    controller: {
-                        loadData: function(filter) {
-                            var d = $.Deferred();
-                            $.ajax({
-                                type: "GET",
-                                url: "/products/list/",
-                                data: filter
-                            }).done(function(result) {
-                                d.resolve($.map(result, function(item) {
-                                    return $.extend(item.fields, { id: item.pk });
-                                }));
-                            });
-                            return d.promise();
-                        }
-                    },
-                    fields: [
-                        { name: "name", type: "text", width: 150 },
-                        { name: "code", type: "text", width: 150 },
-                        { name: "price", type: "number", width: 100 },
-                        { name: "currency", type: "text", width: 50 }
-                    ]
-                });
+        $(function() {
+            $("#productsGrid").jsGrid({
+                height: "100%",
+                width: "100%",
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 10,
+                pageButtonCount: 5,
+                filtering: true,
+                rowClick: function(args) {
+                    var url = '/products/edit/' + args.item.id;
+                    $('#editProduct').attr('href',url).click();
+                },
+                controller: {
+                    loadData: function(filter) {
+                        var d = $.Deferred();
+                        $.ajax({
+                            type: "GET",
+                            url: "/products/list/",
+                            data: filter
+                        }).done(function(result) {
+                            d.resolve($.map(result, function(item) {
+                                return $.extend(item.fields, { id: item.pk });
+                            }));
+                        });
+                        return d.promise();
+                    }
+                },
+                fields: [
+                    { name: "id", type: "number", width: 50 },
+                    { name: "name", type: "text", width: 150 },
+                    { name: "code", type: "text", width: 150 },
+                    { name: "category", type: "text", width: 150 },
+                    { name: "stock", type: "text", width: 150 },
+                    { name: "group", type: "text", width: 150 },
+                    { name: "price", type: "number", width: 100 },
+                    { name: "currency", type: "text", width: 50 }
+                ]
             });
-        </script>
-
+        });
+    </script>
 {% endblock %}

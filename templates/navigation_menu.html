@@ -9,15 +9,74 @@
         <li>
             <a href="#"><span class="glyphicon glyphicon-list-alt"></span>{% trans "Invoices" %}</a>
         </li>
-     <li>
-            <a href="/invoices/templates/"><span class="glyphicon glyphicon-tasks"></span>{% trans "Templates" %}</a>
-        </li>
         <li>
-            <a href="{% url 'customers' %}"><span class="glyphicon glyphicon-user"></span>{% trans "Clients" %}</a>
+            <a href="/templates/"><span class="glyphicon glyphicon-tasks"></span>{% trans "Templates" %}</a>
         </li>
+        <!-- Navbar dropdown for customers -->
+        <li id="navbar-customers">
+            <a class="dropdown  dropdown-toggle" data-toggle="dropdown" href="{% url 'products' %}"><span class="glyphicon glyphicon-user"></span>{% trans "Clients" %}</a>
+            <ul id="customers-dropdown-menu">
+                <li>
+                    <a class="products-list" href="{% url 'customers' %}">{% trans "Clients" %}</a>
+                </li>
+                <li>
+                    <a class="products-list" href="{% url 'languages' %}">{% trans "Languages" %}</a>
+                </li>
+                <li>
+                    <a class="products-list" href="{% url 'client_types' %}">{% trans "Client types" %}</a>
+                </li>
+                <li>
+                    <a class="products-list" href="{% url 'customer_groups' %}">{% trans "Client groups" %}</a>
+                </li>
+                <li>
+                    <a class="products-list" href="{% url 'customer_categories' %}">{% trans "Client group categories" %}</a>
+                </li>
+            </ul>
+        </li>
+        <!-- Navbar dropdown for products -->
+        <li id="navbar_products" class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="{% url 'products' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>
+            <ul id="products-dropdown-menu" class="dropdown-menu">
+                <li>
+                    <a class="products-list" href="{% url 'products' %}">{% trans "List Of Products" %}</a>
+                </li>
+                <li>
+                    <a class="products-list" href="{% url 'product_currencies' %}">{% trans "Currencies" %}</a>
+                </li>
+                <li>
+                    <a class="products-list" href="{% url 'product_categories' %}">{% trans "Categories" %}</a>
+                </li>
+                <li>
+                    <a class="products-list" href="{% url 'product_units' %}">{% trans "Units of measure" %}</a>
+                </li>
+                <li>
+                    <a class="products-list" href="{% url 'product_taxes' %}">{% trans "Tax" %}</a>
+                </li>
+                <!-- Navbar dropdown for product groups -->
+                <li id="navbar-product-groups" class="dropdown-submenu">
+                    <a tabindex="-1" href="">{% trans "Product Groups" %}<span class="glyphicon glyphicon-triangle-right"></span></a>
+                    <ul id="product-group-dropdown-menu" class="dropdown-menu">
+                        <li>
+                            <a class="products-list" href="{% url 'product_groups' %}">{% trans "Group List" %}</a>
+                        </li>
+                        <li>
+                            <a class="products-list" href="{% url 'product_group_categories' %}">{% trans "Group Categories" %}</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    
+        {% if company %}
         <li>
-            <a href="{% url 'products' %}"><span class="glyphicon glyphicon-briefcase"></span>{% trans "Products" %}</a>
+            <a href="{% url 'get_company' company.id %}"><span class="glyphicon glyphicon-thumbs-up"></span>{% trans "My Company" %}</a>
         </li>
+            {% else %}
+        <li>
+            <a href="{% url 'add_company' %}"><span class="glyphicon glyphicon-thumbs-up"></span
+                    >{% trans "Create Company" %}</a>
+        </li>
+            {%  endif %}
     {% endif %}
 </ul>
 

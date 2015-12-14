@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Product Group <strong>{{ object.name }}</strong> of company <strong>{{ object.company }}</strong></h2>
+    <h4><strong>Parent group:</strong> {{ object.parent.name| default_if_none:"" }}</h4>
+    <h4><strong>Description:</strong> {{ object.description }}</h4>
+    <h4><strong>Category:</strong> {{ object.category }}</h4>
+    {% if object.product_set.all.count > 0 %}
+        <h3>Products</h3>
+        <ul class="list-group">
+        {% for product in object.product_set.all %}
+            <li class="list-group-item list-group-item-info">
+                {{ product.name }}
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <h3>No products was added in group yet.</h3>
+    {% endif %}
+    <button type="button"><a href="{% url 'edit_product_group' object.id %}">Update group</a></button>
+    <button type="button"><a href="{% url 'delete_product_group' object.id %}">Delete group</a></button>
+
+{% endblock %}

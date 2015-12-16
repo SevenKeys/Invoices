@@ -19,6 +19,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import TemplateView
 from companies.views import NavMenuView
 from users.views import ProfileView, HomeView
+# from wysely.views import *
 
 
 urlpatterns = [
@@ -37,3 +38,14 @@ urlpatterns = [
 ]
 
 urlpatterns += staticfiles_urlpatterns()
+
+#handle errors
+handler404 = 'wysely.views.not_found'
+
+handler500 = 'wysely.views.server_error'
+
+handler403 = 'wysely.views.permission_denied'
+
+handler400 = 'wysely.views.bad_request'
+
+handler405 = 'wysely.views.not_allowed'

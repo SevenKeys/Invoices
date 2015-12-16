@@ -28,7 +28,7 @@ PROJECT_ROOT = os.path.abspath(
 SECRET_KEY = 'ax@e54crmif^1ul_&4a=c05@it#ug%j04gzm&p%j=brj^5l-z6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 ALLOWED_HOSTS = ['*']
@@ -94,16 +94,17 @@ WSGI_APPLICATION = 'wysely.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'wysely',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+DATABASES = {}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'wysely',
+#         'USER': 'postgres',
+#         'PASSWORD': 'postgres',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 FIXTURE_DIRS = {
     'fixtures/'
@@ -135,6 +136,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'pipeline.finders.PipelineFinder',
+    'pipeline.finders.CashedFileFinder',
 )
 
 PIPELINE_CSS = {
@@ -183,8 +185,8 @@ PIPELINE_JS = {
 }
 
 # Parse database configuration from $DATABASE_URL
-# DATABASES['default'] = dj_database_url.config()
-# DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+DATABASES['default'] = dj_database_url.config()
+DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
 
 
 ACCOUNT_ACTIVATION_DAYS = 7
@@ -198,3 +200,8 @@ AUTH_PROFILE_MODULE = 'wysely.User'
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+try:
+    from .local_settings import *
+except Exception as e:
+    print (e)

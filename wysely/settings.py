@@ -95,16 +95,6 @@ WSGI_APPLICATION = 'wysely.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {}
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'wysely',
-#         'USER': 'postgres',
-#         'PASSWORD': 'postgres',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
 
 FIXTURE_DIRS = {
     'fixtures/'
@@ -176,7 +166,7 @@ PIPELINE_JS = {
         ),
         # Compress all passed files into `js/libs.min.js`.
         'output_filename': 'js/common_scripts.js',
-    }
+    },
 
     'products_scripts': {
         'source_filenames': (

@@ -131,8 +131,6 @@ STATICFILES_FINDERS = (
     'pipeline.finders.CachedFileFinder',
 )
 
-# PIPELINE_CSS_COMPRESSOR = None
-# PIPELINE_JS_COMPRESSOR = None
 
 PIPELINE_CSS = {
     # Project libraries.

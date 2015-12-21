@@ -113,12 +113,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_ROOT = 'staticfiles'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static', 'staticfiles')
+STATIC_ROOT = 'static'
+
 STATIC_URL = '/static/'
  
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'static'),
+# )
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
@@ -126,10 +128,11 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'pipeline.finders.PipelineFinder',
+    'pipeline.finders.CachedFileFinder',
 )
 
-PIPELINE_CSS_COMPRESSOR = None
-PIPELINE_JS_COMPRESSOR = None
+# PIPELINE_CSS_COMPRESSOR = None
+# PIPELINE_JS_COMPRESSOR = None
 
 PIPELINE_CSS = {
     # Project libraries.
@@ -144,7 +147,7 @@ PIPELINE_CSS = {
             'css/components/sortable_list.css'
         ),
         # Compress passed libraries and have
-        # the output in`css/libs.min.css`.
+        # the output in`css/common_styles.css`.
         'output_filename': 'css/common_styles.css',
     }
 }
@@ -164,7 +167,7 @@ PIPELINE_JS = {
             'js/navbar_products.js',
             'js/navbar_customers.js',
         ),
-        # Compress all passed files into `js/libs.min.js`.
+        # Compress all passed files into `js/common_scripts.js`.
         'output_filename': 'js/common_scripts.js',
     },
 

@@ -123,12 +123,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_ROOT = 'static'
+STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
-#
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, 'static'),
-# )
+ 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
@@ -136,8 +136,10 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'pipeline.finders.PipelineFinder',
-    'pipeline.finders.CashedFileFinder',
 )
+
+PIPELINE_CSS_COMPRESSOR = None
+PIPELINE_JS_COMPRESSOR = None
 
 PIPELINE_CSS = {
     # Project libraries.
@@ -153,7 +155,7 @@ PIPELINE_CSS = {
         ),
         # Compress passed libraries and have
         # the output in`css/libs.min.css`.
-        'output_filename': 'css/libs.min.css',
+        'output_filename': 'css/common_styles.css',
     }
 }
 # JavaScript files.
@@ -173,15 +175,15 @@ PIPELINE_JS = {
             'js/navbar_customers.js',
         ),
         # Compress all passed files into `js/libs.min.js`.
-        'output_filename': 'js/libs.min.js',
-    },
+        'output_filename': 'js/common_scripts.js',
+    }
 
     'products_scripts': {
         'source_filenames': (
             'wysely/products.js',
         ),
-        'output_filename': 'js/prod.min.js',
-    },
+        'output_filename': 'js/products_scripts.js',
+    }
 }
 
 # Parse database configuration from $DATABASE_URL

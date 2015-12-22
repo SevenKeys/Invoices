@@ -30,13 +30,11 @@ SECRET_KEY = 'ax@e54crmif^1ul_&4a=c05@it#ug%j04gzm&p%j=brj^5l-z6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-
 ALLOWED_HOSTS = ['*']
 
 SECRET_KEY = '_'
 
 SITE_ID = 1
-
 
 # Application definition
 
@@ -90,7 +88,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'wysely.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
@@ -113,8 +110,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# STATIC_ROOT = 'static'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = 'static'
 
 STATIC_URL = '/static/'
  
@@ -122,7 +119,7 @@ STATIC_URL = '/static/'
 #     os.path.join(BASE_DIR, 'static'),
 # )
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -131,7 +128,9 @@ STATICFILES_FINDERS = (
     'pipeline.finders.PipelineFinder',
 )
 
-
+# PIPELINE['COMPILERS'] = (
+#   'pipeline.compilers.less.LessCompiler',
+# )
 PIPELINE_CSS = {
     # Project libraries.
     'common_styles': {
@@ -158,7 +157,7 @@ PIPELINE_JS = {
             'bower_components/bootstrap/dist/js/bootstrap.js',
             'bower_components/jquery-ui/jquery-ui.min.js',
             'bower_components/ckeditor/ckeditor.js',
-            'wysely/site.js',
+            # 'wysely/site.js',
             'bower_components/gridster/dist/jquery.gridster.min.js',
             'bower_components/js-grid/dist/jsgrid.min.js',
             # components
@@ -167,14 +166,14 @@ PIPELINE_JS = {
         ),
         # Compress all passed files into `js/common_scripts.js`.
         'output_filename': 'js/common_scripts.js',
-    },
-
-    'products_scripts': {
-        'source_filenames': (
-            'wysely/products.js',
-        ),
-        'output_filename': 'js/products_scripts.js',
     }
+
+    # 'products_scripts': {
+    #     'source_filenames': (
+    #         'wysely/products.js',
+    #     ),
+    #     'output_filename': 'js/products_scripts.js',
+    # }
 }
 
 # Parse database configuration from $DATABASE_URL

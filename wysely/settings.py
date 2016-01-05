@@ -46,7 +46,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'pipeline',
+    # 'pipeline',
     'invoices',
     'products',
     'users',
@@ -110,65 +110,59 @@ USE_L10N = True
 
 USE_TZ = True
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_ROOT = 'static'
+
 STATIC_URL = '/static/'
  
 # STATICFILES_DIRS = (
 #     os.path.join(BASE_DIR, 'static'),
 # )
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+# STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # 'pipeline.finders.CachedFileFinder',
-    'pipeline.finders.PipelineFinder',
+    # 'pipeline.finders.PipelineFinder',
 )
 
-# PIPELINE['COMPILERS'] = (
-#   'pipeline.compilers.less.LessCompiler',
-# )
-PIPELINE_CSS = {
-    'STYLESHEETS': {
-        # Project libraries.
-        'common_styles': {
-            'source_filenames': (
-                'css/custom-bootstrap.css',
-                'css/main.css',
-                'bower_components/gridster/dist/jquery.gridster.min.css',
-                'bower_components/js-grid/dist/jsgrid.min.css',
-                'bower_components/js-grid/dist/jsgrid-theme.min.css',
-                # components
-                'css/components/sortable_list.css'
-            ),
-            # Compress passed libraries and have
-            # the output in`css/common_styles.css`.
-            'output_filename': 'css/common_styles.css',
-        }
-    },
-    # JavaScript files.
-    'JAVASCRIPT': {
-        # Project JavaScript libraries.
-        'common_scripts': {
-            'source_filenames': (
-                'bower_components/jquery/dist/jquery.js',
-                'bower_components/bootstrap/dist/js/bootstrap.js',
-                'bower_components/jquery-ui/jquery-ui.min.js',
-                'bower_components/ckeditor/ckeditor.js',
-                # 'wysely/site.js',
-                'bower_components/gridster/dist/jquery.gridster.min.js',
-                'bower_components/js-grid/dist/jsgrid.min.js',
-                # components
-                'js/navbar_products.js',
-                'js/navbar_customers.js',
-            ),
-            # Compress all passed files into `js/common_scripts.js`.
-            'output_filename': 'js/common_scripts.js',
-        }
-    }
-}
+# PIPELINE_CSS = {
+    # Project libraries.
+    # 'common_styles': {
+        # 'source_filenames': (
+            # 'css/custom-bootstrap.css',
+            # 'css/main.css',
+            # 'bower_components/gridster/dist/jquery.gridster.min.css',
+            # 'bower_components/js-grid/dist/jsgrid.min.css',
+            # 'bower_components/js-grid/dist/jsgrid-theme.min.css',
+            # components
+            # 'css/components/sortable_list.css'
+        # ),
+        # Compress passed libraries and have
+        # the output in`css/common_styles.css`.
+        # 'output_filename': 'css/common_styles.css',
+    # }
+# }
+# JavaScript files.
+# PIPELINE_JS = {
+    # Project JavaScript libraries.
+    # 'common_scripts': {
+        # 'source_filenames': (
+            # 'bower_components/jquery/dist/jquery.js',
+            # 'bower_components/bootstrap/dist/js/bootstrap.js',
+            # 'bower_components/jquery-ui/jquery-ui.min.js',
+            # 'bower_components/ckeditor/ckeditor.js',
+            # 'wysely/site.js',
+            # 'bower_components/gridster/dist/jquery.gridster.min.js',
+            # 'bower_components/js-grid/dist/jsgrid.min.js',
+            # components
+            # 'js/navbar_products.js',
+            # 'js/navbar_customers.js',
+        # ),
+        # Compress all passed files into `js/common_scripts.js`.
+        # 'output_filename': 'js/common_scripts.js',
+    # }
+# }
 
 # Parse database configuration from $DATABASE_URL
 DATABASES['default'] = dj_database_url.config()

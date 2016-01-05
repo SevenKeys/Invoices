@@ -10,9 +10,8 @@
         {% endblock %}
     </title>
     <meta name="viewport" content="width=device-width">
-    <!-- compressed tags is created by Django Pipeline.  -->
-    {% load pipeline %}
-    {% stylesheet 'common_styles' %}
+    <!-- Include CSS files -->
+    {% include 'components/css_files.html' %}
 
     {% load staticfiles %}
     <link rel="shortcut icon" type="image/png" href='{% static "wysely/favicon.png" %}'/>
@@ -20,7 +19,8 @@
     <meta name="description" content="">
 
     <!-- Include JavaScript files -->
-    {% javascript 'common_scripts' %}
+    {% include 'components/js_files.html' %}
+    
     {% block extra_js %} {% endblock %}
     
     {% block head %}
@@ -71,4 +71,3 @@
 {% endblock %}
 </body>
 </html>
-
